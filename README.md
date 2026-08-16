@@ -1,5 +1,7 @@
 # AURIM
 
+[![Qualité AURIM](https://github.com/Adjanouhoun/aurim/actions/workflows/quality.yml/badge.svg)](https://github.com/Adjanouhoun/aurim/actions/workflows/quality.yml)
+
 Boutique e-commerce Symfony dédiée aux produits cosmétiques AURIM.
 
 La plateforme gère notamment :
@@ -56,6 +58,8 @@ php bin/console doctrine:fixtures:load \
 ## Tests et contrôles
 
 La suite de tests utilise une base SQLite en mémoire et désactive l’envoi réel des e-mails. Elle ne modifie donc pas les commandes, les stocks ou les utilisateurs de votre base locale.
+
+GitHub exécute automatiquement ces contrôles à chaque Pull Request et à chaque modification de `main`. Dependabot surveille chaque semaine les dépendances Composer et GitHub Actions.
 
 ```bash
 php bin/phpunit
