@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="fr">
+<body style="font-family:Arial,sans-serif;color:#30251c">
+<h1>Nouvelle commande {{ order.reference }}</h1>
+<p><strong>Client :</strong> {{ order.customerName }} · {{ order.email }} · {{ order.phone }}</p>
+<p><strong>Pays :</strong> {{ order.market.name }}</p>
+<p><strong>Réception :</strong> {{ order.fulfillmentLabel }} ({{ order.fulfillmentType == 'pickup' ? 'retrait' : 'livraison' }})</p>
+<p><strong>Adresse client :</strong> {{ order.addressLine }}</p>
+<p><strong>Paiement :</strong> {{ order.paymentMethodName }} — en attente de validation</p>
+<ul>
+    {% for item in order.items %}<li>{{ item.productName }} × {{ item.quantity }} — {{ item.totalMinor|price(order.currencyCode) }}</li>{% endfor %}
+</ul>
+<p><strong>Total : {{ order.totalMinor|price(order.currencyCode) }}</strong></p>
+<p><a href="{{ confirmationUrl }}">Voir la confirmation</a></p>
+</body>
+</html>

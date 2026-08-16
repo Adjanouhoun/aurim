@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }} — AURIM{% endblock %}
+
+{% block body %}
+{% include '_header.html.twig' %}
+{% set offerPrice = product_offer.price(product) %}
+{% set availableQuantity = product_offer.availableQuantity(product) %}
+{% set purchasable = product_offer.purchasable(product) %}
+
+<main class="pdp-page">
+    <nav class="pdp-breadcrumbs" aria-label="Fil d’Ariane">
+        <a href="{{ path('app_home') }}">Accueil</a><span>→</span>
+        <a href="{{ path('app_catalog') }}">Boutique</a><span>→</span>
+        <a href="{{ path('app_catalog', {categorie: product.category.slug}) }}">{{ product.category.name }}</a>
+    </nav>
+
+    <section class="pdp-layout">
+        <div class="pdp-gallery" data-product-gallery>
+            <div class="pdp-thumbnails" aria-label="Vues du produit">
+                <button class="active" type="button" data-gallery-view="natural" aria-label="Vue principale">
+                    <img src="{{ asset(product.imagePath) }}" alt="" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
+                </button>
+                <button type="button" data-gallery-view="detail" aria-label="Vue rapprochée">
+                    <img src="{{ asset(product.imagePath) }}" alt="" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
+                </button>
+            </div>
+            <div class="pdp-main-image product-crop-{{ product.imagePosition }}">
+                <img data-gallery-main src="{{ asset(product.imagePath) }}" alt="{{ product.name }} AURIM" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
+                <span class="pdp-image-label">AURIM · Glowing by Rima</span>
+            </div>
+        </div>
+
+        <div class="pdp-info">
+            <p class="eyebrow">{{ product.category.name }} · {{ product.type }}</p>
+            <h1>{{ product.name }}</h1>
+            <p class="pdp-size">{{ product.size }} · Réf. {{ product.sku }}</p>
+            <p class="pdp-lead">{{ product.shortDescription }}</p>
+
+            <ul class="pdp-benefits" aria-label="Bénéfices du produit">
+                {% for benefit in product.benefits %}<li>{{ benefit }}</li>{% endfor %}
+            </ul>
+
+            <div class="pdp-price">
+                {% if offerPrice and store_context.selectedMarket %}
+                    {{ price_formatter.format(offerPrice.amountMinor, store_context.selectedMarket.currencyCode) }}
+                {% elseif store_context.selectedMarket %}
+                    Prix prochainement disponible
+                {% else %}
+                    Sélectionnez votre pays pour voir le prix
+                {% endif %}
+            </div>
+
+            {% for message in app.flashes('cart_error') %}<div class="product-error">{{ message }}</div>{% endfor %}
+            <div class="pdp-availability">
+                <span class="{{ availableQuantity > 0 ? 'available' : '' }}"></span>
+                {% if not store_context.selectedMarket %}
+                    Choisissez votre pays pour vérifier la disponibilité
+                {% elseif availableQuantity > 0 %}
+                    En stock · {{ availableQuantity }} disponible{{ availableQuantity > 1 ? 's' : '' }} dans votre pays
+                {% else %}
+                    Indisponible dans votre pays
+                {% endif %}
+            </div>
+
+            <form class="pdp-buy" action="{{ path('app_cart_add', {id: product.id}) }}" method="post" data-quantity-picker>
+                <input type="hidden" name="_token" value="{{ csrf_token('cart-add-' ~ product.id) }}">
+                <div class="pdp-quantity" aria-label="Quantité">
+                    <button type="button" data-quantity-minus aria-label="Diminuer la quantité">−</button>
+                    <input type="number" name="quantity" value="1" min="1" max="{{ availableQuantity > 20 ? 20 : (availableQuantity > 0 ? availableQuantity : 1) }}" aria-label="Quantité">
+                    <button type="button" data-quantity-plus aria-label="Augmenter la quantité">+</button>
+                </div>
+                <button class="button {{ not purchasable ? 'button-disabled' : '' }}" type="submit" {{ not purchasable ? 'disabled' : '' }}>Ajouter au panier <span>→</span></button>
+            </form>
+
+            <div class="pdp-reassurance">
+                <div><span>01</span><p><strong>Stock local</strong><small>Selon le marché sélectionné</small></p></div>
+                <div><span>02</span><p><strong>Livraison ou retrait</strong><small>Choix lors de la commande</small></p></div>
+                <div><span>03</span><p><strong>Paiement adapté</strong><small>Options locales sécurisées</small></p></div>
+            </div>
+
+            <div class="pdp-accordions">
+                <details open>
+                    <summary>Description <span>+</span></summary>
+                    <div class="pdp-accordion-content"><p>{{ product.description }}</p></div>
+                </details>
+                <details>
+                    <summary>Bénéfices <span>+</span></summary>
+                    <div class="pdp-accordion-content"><ul>{% for benefit in product.benefits %}<li>{{ benefit }}</li>{% endfor %}</ul></div>
+                </details>
+                <details>
+                    <summary>Actifs & ingrédients <span>+</span></summary>
+                    <div class="pdp-accordion-content pdp-actives">
+                        {% for ingredient in product.ingredients %}<article><b>0{{ loop.index }}</b><div><strong>{{ ingredient.name }}</strong><p>{{ ingredient.text }}</p></div></article>{% endfor %}
+                    </div>
+                </details>
+                <details>
+                    <summary>Conseils d’utilisation <span>+</span></summary>
+                    <div class="pdp-accordion-content"><p>{{ product.usageInstructions }}</p></div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <section class="pdp-signature">
+        <div class="pdp-signature-mark">A</div>
+        <div>
+            <p class="eyebrow">Le rituel AURIM</p>
+            <h2>Une peau douce, nourrie et naturellement rayonnante.</h2>
+            <p>Des soins sensoriels imaginés pour transformer chaque geste quotidien en un moment de lumière.</p>
+            <a class="text-link" href="{{ path('app_catalog') }}">Découvrir toute la collection →</a>
+        </div>
+    </section>
+</main>
+{% include '_footer.html.twig' %}
+{% endblock %}

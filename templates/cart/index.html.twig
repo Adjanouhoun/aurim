@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre panier — AURIM{% endblock %}
+
+{% block body %}
+{% include '_header.html.twig' %}
+<main class="cart-page">
+    <div class="cart-heading"><p class="eyebrow">Votre sélection</p><h1>Mon panier</h1></div>
+    {% for message in app.flashes('success') %}<div class="cart-flash">{{ message }}</div>{% endfor %}
+    {% for message in app.flashes('cart_error') %}<div class="checkout-errors" role="alert">{{ message }}</div>{% endfor %}
+    {% if lines is empty %}
+        <section class="cart-empty"><h2>Votre panier est vide.</h2><p>Découvrez les soins AURIM et composez votre rituel.</p><a class="button" href="{{ path('app_catalog') }}">Découvrir la boutique</a></section>
+    {% else %}
+        <div class="cart-layout">
+            <section class="cart-lines">
+                {% for line in lines %}
+                    <article class="cart-line">
+                        <a class="cart-image product-crop-{{ line.product.imagePosition }}" href="{{ path('app_product_show', {slug: line.product.slug}) }}"><img src="{{ asset(line.product.imagePath) }}" alt="{{ line.product.name }}" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'"></a>
+                        <div class="cart-product"><p class="tag">{{ line.product.type }}</p><h2>{{ line.product.name }}</h2><p>{{ line.product.size }}</p>
+                            {% if not line.stockSufficient %}<div class="product-error">{% if line.availableQuantity == 0 %}Rupture de stock dans votre pays.{% else %}Seulement {{ line.availableQuantity }} disponible(s). Réduisez la quantité.{% endif %}</div>{% endif %}
+                            <form action="{{ path('app_cart_update', {id: line.product.id}) }}" method="post"><input type="hidden" name="_token" value="{{ csrf_token('cart-update-' ~ line.product.id) }}"><label>Quantité <input type="number" min="0" max="20" name="quantity" value="{{ line.quantity }}"></label><button type="submit">Mettre à jour</button></form>
+                        </div>
+                        <div class="cart-line-price">
+                            {% if line.lineTotal is not null and store_context.selectedMarket %}<strong>{{ price_formatter.format(line.lineTotal, store_context.selectedMarket.currencyCode) }}</strong>{% else %}<strong>Prix à confirmer</strong>{% endif %}
+                            <form action="{{ path('app_cart_remove', {id: line.product.id}) }}" method="post"><input type="hidden" name="_token" value="{{ csrf_token('cart-remove-' ~ line.product.id) }}"><button type="submit">Supprimer</button></form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </section>
+            <aside class="cart-summary"><p class="eyebrow">Récapitulatif</p><div><span>Sous-total des produits</span><strong>{% if total is not null and store_context.selectedMarket %}{{ price_formatter.format(total, store_context.selectedMarket.currencyCode) }}{% else %}À confirmer{% endif %}</strong></div><p>Le retrait en dépôt ou le tarif de livraison sera ajouté à l’étape suivante.</p>{% if not store_context.selectedMarket %}<div class="cart-warning">Sélectionnez votre pays avant de continuer.</div>{% elseif total is null %}<div class="cart-warning">Les prix de ce marché doivent être publiés dans l’administration.</div>{% elseif not hasSufficientStock %}<div class="cart-warning">Le stock de votre panier est insuffisant. Modifiez les quantités ou retirez le produit indisponible.</div>{% endif %}{% if store_context.selectedMarket and total is not null and hasSufficientStock %}<a class="button" href="{{ path('app_checkout') }}">Choisir la réception</a>{% else %}<button class="button button-disabled" disabled>Choisir la réception</button>{% endif %}</aside>
+        </div>
+    {% endif %}
+</main>
+{% include '_footer.html.twig' %}
+{% endblock %}

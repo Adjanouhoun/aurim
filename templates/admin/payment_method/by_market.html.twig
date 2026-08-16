@@ -1,0 +1,55 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Paiements par pays{% endblock %}
+
+{% block main %}
+    <style>
+        .payment-market-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}.payment-market-tab{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.2rem;border:1px solid #ded7cd;border-radius:12px;background:#fff;color:#4f463d;text-decoration:none}.payment-market-tab:hover{border-color:#b88a43;color:#6f512b}.payment-market-tab.active{border-color:#8b6637;background:#2d261f;color:#fff}.payment-market-tab small{display:block;margin-top:.2rem;color:inherit;opacity:.7}.payment-market-tab span{font-size:.72rem}.payment-market-summary{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:1.2rem;margin-bottom:1.3rem;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.payment-market-summary strong{display:block;color:#8b6637;font-size:1.35rem}.payment-market-summary p{margin:0;color:#756b62}.payment-market-form{overflow:auto;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.payment-market-table{width:100%;margin:0;border-collapse:collapse}.payment-market-table th{padding:.9rem;background:#f8f4ee;color:#766b60;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}.payment-market-table td{padding:.9rem;border-top:1px solid #ece6de;vertical-align:middle}.payment-market-name{min-width:210px}.payment-market-name strong,.payment-market-name small{display:block}.payment-market-name small{color:#837a71}.payment-market-input{width:100%;min-width:180px;padding:.65rem .7rem;border:1px solid #d8cec2;border-radius:7px;background:#fff}.payment-market-switch{text-align:center}.payment-market-switch input{width:19px;height:19px;accent-color:#8b6637}.payment-market-status{display:inline-flex;padding:.3rem .55rem;border-radius:999px;background:#f5e8e4;color:#9b4439;font-size:.7rem;font-weight:700;white-space:nowrap}.payment-market-status.ready{background:#e9f2e5;color:#4e703f}.payment-market-actions{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.1rem 1.2rem;border-top:1px solid #e2dbd2;background:#fbf8f3}.payment-market-actions p{margin:0;color:#756b62;font-size:.78rem}.payment-market-actions button{border:0;border-radius:7px;background:#8b6637;color:#fff;padding:.8rem 1.2rem;font-weight:700;cursor:pointer}@media(max-width:900px){.payment-market-tabs{grid-template-columns:1fr 1fr}.payment-market-summary,.payment-market-actions{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.payment-market-tabs{grid-template-columns:1fr}}
+    </style>
+
+    {% for type in ['success', 'warning', 'danger'] %}
+        {% for message in app.flashes(type) %}<div class="alert alert-{{ type }}">{{ message }}</div>{% endfor %}
+    {% endfor %}
+
+    <nav class="payment-market-tabs" aria-label="Choisir le marché">
+        {% for market in markets %}
+            {% set activeMobile = 0 %}
+            {% set totalMobile = 0 %}
+            <a class="payment-market-tab {{ selectedMarket and selectedMarket.id == market.id ? 'active' : '' }}" href="{{ path('admin_payment_methods_by_market', {pays: market.countryCode}) }}">
+                <div><strong>{{ market.name }}</strong><small>{{ market.currencyCode }}</small></div>
+                <span>{{ market.active ? 'Marché actif' : 'Inactif' }}</span>
+            </a>
+        {% endfor %}
+    </nav>
+
+    {% if selectedMarket %}
+        <section class="payment-market-summary">
+            <div><strong>{{ configuredMobileCount }}/{{ mobileCount }} opérateurs Mobile Money prêts</strong><p>Marché {{ selectedMarket.name }}</p></div>
+            {% if configuredMobileCount < mobileCount %}<span class="payment-market-status">Configuration incomplète</span>{% else %}<span class="payment-market-status ready">Tous configurés</span>{% endif %}
+        </section>
+
+        <form method="post" class="payment-market-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('payment-methods-market-' ~ selectedMarket.id) }}">
+            <table class="payment-market-table">
+                <thead><tr><th>Moyen de paiement</th><th>Numéro bénéficiaire</th><th>Titulaire</th><th>Activer</th><th>État client</th></tr></thead>
+                <tbody>
+                {% for method in methods %}
+                    <tr>
+                        <td class="payment-market-name"><strong>{{ method.name }}</strong><small>{{ method.type == 'cash' ? 'Espèces au retrait' : 'Validation Mobile Money manuelle' }}</small></td>
+                        <td>{% if method.type == 'cash' %}—{% else %}<input class="payment-market-input" name="accounts[{{ method.id }}]" value="{{ method.recipientAccount }}" placeholder="Numéro ou compte marchand">{% endif %}</td>
+                        <td>{% if method.type == 'cash' %}—{% else %}<input class="payment-market-input" name="holders[{{ method.id }}]" value="{{ method.accountHolder }}" placeholder="Nom du titulaire">{% endif %}</td>
+                        <td class="payment-market-switch"><input type="checkbox" name="active[{{ method.id }}]" value="1" {{ method.active ? 'checked' : '' }} aria-label="Activer {{ method.name }}"></td>
+                        <td><span class="payment-market-status {{ method.readyForCheckout ? 'ready' : '' }}">{{ method.readyForCheckout ? 'Disponible' : 'À configurer' }}</span></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5">Aucun moyen de paiement configuré pour ce pays.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="payment-market-actions">
+                <p>Un opérateur Mobile Money sans numéro restera automatiquement indisponible pour les clients.</p>
+                <button type="submit">Enregistrer {{ selectedMarket.name }}</button>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

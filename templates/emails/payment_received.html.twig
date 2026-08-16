@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="fr">
+<body style="margin:0;background:#f7f1e8;color:#30251c;font-family:Arial,sans-serif">
+<div style="max-width:640px;margin:0 auto;padding:32px 20px">
+    <div style="background:#fffaf3;border:1px solid #dfc89d;padding:32px">
+        <p style="margin:0;color:#a4772f;letter-spacing:3px;font-size:13px">AURIM · GLOWING BY RIMA</p>
+        <h1 style="font-family:Georgia,serif;font-weight:400">Paiement confirmé</h1>
+        <p>Bonjour {{ order.customerName }},</p>
+        <p>Nous avons bien reçu votre paiement Mobile Money de <strong>{{ payment.amountMinor|price(payment.currencyCode) }}</strong> effectué via <strong>{{ payment.method.name }}</strong>.</p>
+        <p><strong>Référence de commande :</strong> {{ order.reference }}</p>
+        <p><strong>Numéro utilisé pour le paiement :</strong> {{ payment.payerPhone }}</p>
+        {% if payment.externalReference %}<p><strong>Référence opérateur :</strong> {{ payment.externalReference }}</p>{% endif %}
+        <p>Votre commande est maintenant validée. Nous vous tiendrons informé(e) de sa préparation et de sa remise ou livraison.</p>
+        <p style="font-size:13px;color:#74675c">Merci pour votre confiance.<br>L’équipe AURIM</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion administration — AURIM{% endblock %}
+
+{% block body %}
+<main class="login-page">
+    <a class="brand" href="{{ path('app_home') }}">AURIM<span>Glowing by Rima</span></a>
+    <section class="login-card">
+        <p class="eyebrow">Espace sécurisé</p>
+        <h1>Administration</h1>
+        <p>Connectez-vous pour gérer la boutique, les prix et les stocks AURIM.</p>
+        {% if error %}<div class="login-error">Adresse e-mail ou mot de passe incorrect.</div>{% endif %}
+        <form method="post">
+            <label for="username">Adresse e-mail</label>
+            <input id="username" type="email" name="_username" value="{{ last_username }}" autocomplete="email" required autofocus>
+            <label for="password">Mot de passe</label>
+            <input id="password" type="password" name="_password" autocomplete="current-password" required>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <button class="button" type="submit">Se connecter</button>
+        </form>
+        <a class="login-back" href="{{ path('app_home') }}">← Retour au site</a>
+    </section>
+</main>
+{% endblock %}

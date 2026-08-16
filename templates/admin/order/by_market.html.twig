@@ -1,0 +1,72 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Commandes par pays{% endblock %}
+
+{% block main %}
+    {% set statusLabels = {
+        'pending_payment':'En attente de paiement',
+        'preparing':'En préparation',
+        'shipped':'Expédiée / prête au retrait',
+        'delivered':'Livrée / remise',
+        'delivery_failed':'Livraison échouée',
+        'payment_failed':'Paiement échoué / annulée',
+        'cancelled':'Annulée',
+        'refunded':'Remboursée'
+    } %}
+    {% set statusClasses = {
+        'pending_payment':'warning', 'preparing':'info', 'shipped':'primary', 'delivered':'success',
+        'delivery_failed':'danger', 'payment_failed':'danger', 'cancelled':'secondary', 'refunded':'secondary'
+    } %}
+    <style>
+        .market-order-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.6rem}.market-order-tab{display:flex;justify-content:space-between;align-items:center;padding:1.15rem 1.25rem;border:1px solid #ded7cd;border-radius:12px;background:#fff;color:#4f463d;text-decoration:none}.market-order-tab:hover{border-color:#b88a43;color:#6f512b}.market-order-tab.active{border-color:#8b6637;background:#2d261f;color:#fff}.market-order-tab strong{font-size:.95rem}.market-order-tab span{display:grid;place-items:center;min-width:32px;height:32px;padding:0 .45rem;border-radius:50%;background:#f0e7db;color:#795a32;font-weight:700}.market-order-tab.active span{background:#c99c58;color:#2d261f}.order-view-tabs{display:flex;gap:.65rem;margin:0 0 1.6rem;padding-bottom:1.2rem;border-bottom:1px solid #e3dbd1}.order-view-tab{display:flex;align-items:center;gap:.65rem;padding:.75rem 1rem;border:1px solid #ddd3c7;border-radius:9px;background:#fff;color:#62584e;text-decoration:none;font-weight:600}.order-view-tab span{display:grid;place-items:center;min-width:26px;height:26px;padding:0 .4rem;border-radius:50%;background:#eee6dc;font-size:.72rem}.order-view-tab.active{border-color:#8b6637;background:#f4eadc;color:#6d4d24}.order-view-tab.delivered.active{border-color:#67805a;background:#eef4ea;color:#49613f}.market-order-heading{display:flex;justify-content:space-between;align-items:end;margin:0 0 1rem}.market-order-heading h2{margin:0;font-family:Georgia,serif}.market-order-heading p{margin:0;color:#736a61}.market-orders{overflow:auto;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.market-orders table{width:100%;margin:0}.market-orders th{padding:1rem;background:#f8f4ee;color:#766b60;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}.market-orders td{padding:1rem;vertical-align:middle;border-top:1px solid #ece6de}.market-orders .customer small,.market-orders .reception small{display:block;color:#837a71}.market-orders .total{white-space:nowrap;font-weight:700;color:#8b6637}.market-orders .action{white-space:nowrap;text-align:right}.market-orders .empty{text-align:center;padding:4rem 1rem;color:#756c63}.market-pagination{display:flex;justify-content:center;gap:.4rem;margin-top:1.5rem}.market-pagination a,.market-pagination span{display:grid;place-items:center;min-width:38px;height:38px;border:1px solid #ddd3c7;border-radius:8px;background:#fff}.market-pagination span{background:#2d261f;color:#fff}@media(max-width:900px){.market-order-tabs{grid-template-columns:1fr 1fr}.market-order-heading{display:block}.market-orders{border-radius:8px}}@media(max-width:560px){.market-order-tabs{grid-template-columns:1fr}.order-view-tabs{display:grid;grid-template-columns:1fr}}
+    </style>
+
+    <nav class="market-order-tabs" aria-label="Choisir le pays des commandes">
+        {% for market in markets %}
+            <a class="market-order-tab {{ selectedMarket and selectedMarket.id == market.id ? 'active' : '' }}" href="{{ path('admin_orders_by_market', {pays: market.countryCode}) }}">
+                <strong>{{ market.name }}</strong><span>{{ counts[market.countryCode] ?? 0 }}</span>
+            </a>
+        {% endfor %}
+    </nav>
+
+    {% if selectedMarket %}
+        <nav class="order-view-tabs" aria-label="Type de commandes">
+            <a class="order-view-tab {{ view == 'other' ? 'active' : '' }}" href="{{ path('admin_orders_by_market', {pays: selectedMarket.countryCode, vue: 'other'}) }}">En cours et autres <span>{{ otherCount }}</span></a>
+            <a class="order-view-tab delivered {{ view == 'delivered' ? 'active' : '' }}" href="{{ path('admin_orders_by_market', {pays: selectedMarket.countryCode, vue: 'delivered'}) }}">Livrées / remises <span>{{ deliveredCount }}</span></a>
+        </nav>
+        <div class="market-order-heading">
+            <div><h2>{{ view == 'delivered' ? 'Commandes livrées / remises' : 'Commandes en cours et autres' }} · {{ selectedMarket.name }}</h2><p>Marché {{ selectedMarket.countryCode }}</p></div>
+            {% set viewCount = view == 'delivered' ? deliveredCount : otherCount %}
+            <p><strong>{{ viewCount }}</strong> commande{{ viewCount > 1 ? 's' : '' }}</p>
+        </div>
+        <div class="market-orders">
+            <table>
+                <thead><tr><th>Référence</th><th>Date</th><th>Client</th><th>Réception</th><th>Paiement</th><th>Statut</th><th>Total</th><th></th></tr></thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td><strong>{{ order.reference }}</strong></td>
+                        <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                        <td class="customer"><strong>{{ order.customerName }}</strong><small>{{ order.phone }}</small></td>
+                        <td class="reception"><strong>{{ order.fulfillmentType == 'pickup' ? 'Retrait' : 'Livraison' }}</strong><small>{{ order.city }}</small></td>
+                        <td>{{ order.paymentMethodName }}</td>
+                        <td><span class="badge badge-{{ statusClasses[order.status] ?? 'secondary' }}">{{ statusLabels[order.status] ?? order.status }}</span></td>
+                        <td class="total">{{ order.totalMinor|price(order.currencyCode) }}</td>
+                        <td class="action"><a class="btn btn-primary" href="{{ path('admin_order_workflow', {id: order.id}) }}">Traiter</a></td>
+                    </tr>
+                {% else %}
+                    <tr><td class="empty" colspan="8">{{ view == 'delivered' ? 'Aucune commande livrée ou remise pour ce pays.' : 'Aucune autre commande pour ce pays.' }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pageCount > 1 %}
+            <nav class="market-pagination" aria-label="Pagination">
+                {% for pageNumber in 1..pageCount %}
+                    {% if pageNumber == page %}<span>{{ pageNumber }}</span>{% else %}<a href="{{ path('admin_orders_by_market', {pays: selectedMarket.countryCode, vue: view, page: pageNumber}) }}">{{ pageNumber }}</a>{% endif %}
+                {% endfor %}
+            </nav>
+        {% endif %}
+    {% endif %}
+{% endblock %}

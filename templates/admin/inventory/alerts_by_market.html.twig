@@ -1,0 +1,57 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Stocks à surveiller{% endblock %}
+
+{% block main %}
+    <style>
+        .stock-alert-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}.stock-alert-tab{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.2rem;border:1px solid #ded7cd;border-radius:12px;background:#fff;color:#4f463d;text-decoration:none}.stock-alert-tab:hover{border-color:#b88a43;color:#6f512b}.stock-alert-tab.active{border-color:#8b6637;background:#2d261f;color:#fff}.stock-alert-tab small{display:block;margin-top:.2rem;color:inherit;opacity:.7}.stock-alert-tab span{font-size:.72rem}.stock-alert-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-bottom:1.3rem}.stock-alert-summary article{padding:1.2rem;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.stock-alert-summary strong{display:block;color:#8b6637;font-size:1.5rem}.stock-alert-summary span{color:#756b62;font-size:.78rem}.stock-alert-notice{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.2rem;margin-bottom:1.2rem;border-left:4px solid #c99c58;background:#faf4ea}.stock-alert-notice p{margin:0}.stock-alert-notice a,.stock-alert-empty a{display:inline-flex;padding:.7rem 1rem;border-radius:7px;background:#8b6637;color:#fff;text-decoration:none;font-weight:700;white-space:nowrap}.stock-alert-table-wrap{overflow:auto;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.stock-alert-table{width:100%;margin:0;border-collapse:collapse}.stock-alert-table th{padding:.9rem;background:#f8f4ee;color:#766b60;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}.stock-alert-table td{padding:.85rem;border-top:1px solid #ece6de;vertical-align:middle}.stock-alert-product{display:flex;align-items:center;gap:.8rem;min-width:270px}.stock-alert-product img{width:52px;height:52px;border-radius:8px;object-fit:cover;background:#f0e9df}.stock-alert-product strong,.stock-alert-product small{display:block}.stock-alert-product small{color:#837a71}.stock-alert-number{font-weight:700}.stock-alert-status{display:inline-flex;padding:.3rem .6rem;border-radius:999px;background:#fff0d9;color:#8a5b16;font-size:.72rem;font-weight:700;white-space:nowrap}.stock-alert-status.out{background:#f5e4e1;color:#a24136}.stock-alert-empty{padding:3rem;text-align:center;border:1px solid #dce8d7;border-radius:12px;background:#f5faf2}.stock-alert-empty strong,.stock-alert-empty p{display:block;margin-bottom:1rem}.stock-alert-inactive{padding:1rem 1.2rem;margin-bottom:1rem;border-left:4px solid #a24136;background:#f8e9e6;color:#873c33}@media(max-width:900px){.stock-alert-tabs{grid-template-columns:1fr 1fr}.stock-alert-summary{grid-template-columns:1fr}.stock-alert-notice{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.stock-alert-tabs{grid-template-columns:1fr}}
+    </style>
+
+    <nav class="stock-alert-tabs" aria-label="Choisir le marché">
+        {% for market in markets %}
+            <a class="stock-alert-tab {{ selectedMarket and selectedMarket.id == market.id ? 'active' : '' }}" href="{{ path('admin_stock_alerts_by_market', {pays: market.countryCode}) }}">
+                <div><strong>{{ market.name }}</strong><small>{{ market.currencyCode }}</small></div>
+                <span>{{ market.active ? 'Marché actif' : 'Inactif' }}</span>
+            </a>
+        {% endfor %}
+    </nav>
+
+    {% if selectedMarket %}
+        {% if not warehouse %}
+            <div class="stock-alert-inactive">Aucun entrepôt local n’est associé au marché {{ selectedMarket.name }}.</div>
+        {% else %}
+            {% if not selectedMarket.active or not warehouse.active %}<div class="stock-alert-inactive">Ce marché ou son entrepôt est désactivé : il n’est pas proposé aux clients.</div>{% endif %}
+            <section class="stock-alert-summary">
+                <article><strong>{{ outOfStockCount }}</strong><span>Ruptures de stock</span></article>
+                <article><strong>{{ lowStockCount }}</strong><span>Stocks sous le seuil d’alerte</span></article>
+                <article><strong>{{ reservedTotal }}</strong><span>Unités réservées sur ces références</span></article>
+            </section>
+
+            {% if rows %}
+                <div class="stock-alert-notice">
+                    <p><strong>{{ rows|length }} référence{{ rows|length > 1 ? 's' : '' }} à vérifier</strong><br>Le disponible correspond au stock physique moins les unités réservées par les commandes.</p>
+                    <a href="{{ path('admin_catalog_by_market', {pays: selectedMarket.countryCode}) }}">Mettre à jour le stock</a>
+                </div>
+                <div class="stock-alert-table-wrap">
+                    <table class="stock-alert-table">
+                        <thead><tr><th>Produit</th><th>Stock physique</th><th>Réservé</th><th>Disponible</th><th>Seuil</th><th>État</th></tr></thead>
+                        <tbody>
+                        {% for row in rows %}
+                            <tr>
+                                <td><div class="stock-alert-product"><img src="{{ asset(row.product.imagePath) }}" alt=""><div><strong>{{ row.product.name }}</strong><small>{{ row.product.sku }} · {{ row.product.size }}</small></div></div></td>
+                                <td class="stock-alert-number">{{ row.inventory ? row.inventory.quantityOnHand : 0 }}</td>
+                                <td>{{ row.inventory ? row.inventory.quantityReserved : 0 }}</td>
+                                <td class="stock-alert-number">{{ row.available }}</td>
+                                <td>{{ row.threshold }}</td>
+                                <td><span class="stock-alert-status {{ row.outOfStock ? 'out' : '' }}">{{ row.outOfStock ? 'Rupture' : 'Stock faible' }}</span></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="stock-alert-empty"><strong>Aucune alerte pour {{ selectedMarket.name }}</strong><p>Tous les produits actifs disposent d’un stock supérieur à leur seuil d’alerte.</p><a href="{{ path('admin_catalog_by_market', {pays: selectedMarket.countryCode}) }}">Voir les prix et stocks</a></div>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endblock %}

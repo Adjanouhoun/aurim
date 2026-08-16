@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suivre ma commande — AURIM{% endblock %}
+
+{% block body %}
+{% include '_header.html.twig' %}
+<main class="tracking-page">
+    <section class="tracking-hero">
+        <div class="tracking-intro">
+            <p class="eyebrow">Votre commande AURIM</p>
+            <h1>Suivez chaque étape de votre rituel.</h1>
+            <p>Consultez en un instant la préparation, l’expédition ou la disponibilité de votre commande au dépôt.</p>
+            <div class="tracking-reassurance">
+                <span><b>01</b> Référence sécurisée</span>
+                <span><b>02</b> Mise à jour du statut</span>
+                <span><b>03</b> Suivi local</span>
+            </div>
+        </div>
+
+        <div class="tracking-search">
+            <span class="tracking-search-mark">A</span>
+            <p class="eyebrow">Retrouver ma commande</p>
+            <h2>Renseignez vos informations</h2>
+            <p>Votre référence figure dans l’e-mail de confirmation.</p>
+            {% if error %}<div class="tracking-error" role="alert">{{ error }}</div>{% endif %}
+            <form method="post" action="{{ path('app_order_tracking') }}" data-turbo="false">
+                <input type="hidden" name="_token" value="{{ csrf_token('order-tracking') }}">
+                <label for="tracking-reference">Référence de commande</label>
+                <input id="tracking-reference" name="reference" placeholder="AUR-260814-XXXXXXXXXXXX" value="{{ app.request.request.get('reference') }}" autocomplete="off" required>
+                <label for="tracking-email">Adresse e-mail</label>
+                <input id="tracking-email" type="email" name="email" placeholder="vous@exemple.com" value="{{ app.request.request.get('email') }}" autocomplete="email" required>
+                <button class="button" type="submit">Afficher le suivi <span>→</span></button>
+            </form>
+        </div>
+    </section>
+
+    {% if order %}
+        {% set statusLabels = {'pending_payment':'En attente de paiement','preparing':'En préparation','shipped':order.fulfillmentType == 'pickup' ? 'Prête au retrait' : 'Expédiée','delivered':order.fulfillmentType == 'pickup' ? 'Remise' : 'Livrée','delivery_failed':'Livraison échouée','payment_failed':'Paiement échoué / commande annulée','cancelled':'Commande annulée','refunded':'Commande remboursée'} %}
+        {% set progress = {'pending_payment':1,'preparing':2,'shipped':3,'delivered':4}[order.status] ?? 0 %}
+        {% set paymentLabels = {'pending':'En attente','received':'Reçu','failed':'Échoué','refunded':'Remboursé'} %}
+        <section class="tracking-result" aria-live="polite">
+            <header class="tracking-result-head">
+                <div>
+                    <p class="eyebrow">Commande {{ order.reference }}</p>
+                    <h2>{{ statusLabels[order.status] ?? order.status }}</h2>
+                    <p>Dernier statut connu de votre commande.</p>
+                </div>
+                <div class="tracking-order-total"><span>Total</span><strong>{{ order.totalMinor|price(order.currencyCode) }}</strong></div>
+            </header>
+
+            {% if progress %}
+                <ol class="tracking-steps">
+                    {% for number,label in {1:'Commande enregistrée',2:'En préparation',3:order.fulfillmentType == 'pickup' ? 'Prête au retrait' : 'Expédiée',4:order.fulfillmentType == 'pickup' ? 'Remise' : 'Livrée'} %}
+                        <li class="{{ progress >= number ? 'complete' : '' }} {{ progress == number ? 'current' : '' }}">
+                            <span>{{ '%02d'|format(number) }}</span>
+                            <div><strong>{{ label }}</strong>{% if progress == number %}<small>Étape actuelle</small>{% endif %}</div>
+                        </li>
+                    {% endfor %}
+                </ol>
+            {% else %}
+                <div class="tracking-error tracking-status-error">{{ statusLabels[order.status] ?? 'Cette commande nécessite votre attention.' }}</div>
+            {% endif %}
+
+            <div class="tracking-details">
+                <article><span>Mode de réception</span><strong>{{ order.fulfillmentLabel }}</strong><small>{{ order.fulfillmentType == 'pickup' ? 'Retrait au dépôt choisi' : 'Livraison à l’adresse indiquée' }}</small></article>
+                <article><span>Paiement</span><strong>{{ order.paymentMethodName }}</strong><small>{{ order.payment ? paymentLabels[order.payment.status] ?? order.payment.status : 'Information à venir' }}</small></article>
+                <article><span>{{ order.fulfillmentType == 'pickup' ? 'Dépôt de retrait' : 'Adresse de livraison' }}</span><strong>{{ order.fulfillmentType == 'pickup' and order.fulfillmentAddress ? order.fulfillmentAddress : order.addressLine }}</strong><small>{{ order.city }}</small></article>
+            </div>
+        </section>
+    {% else %}
+        <section class="tracking-help">
+            <p class="eyebrow">Besoin d’aide ?</p>
+            <h2>Votre référence commence par AUR-</h2>
+            <p>Utilisez exactement l’adresse e-mail saisie lors de la commande. Pour protéger vos informations, aucun résultat ne sera affiché si les deux données ne correspondent pas.</p>
+        </section>
+    {% endif %}
+</main>
+{% include '_footer.html.twig' %}
+{% endblock %}

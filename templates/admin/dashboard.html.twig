@@ -1,0 +1,28 @@
+{% extends '@EasyAdmin/layout.html.twig' %}
+
+{% block content_title %}Vue d’ensemble{% endblock %}
+
+{% block main %}
+    <style>
+        .aurim-welcome{padding:2rem;border-radius:16px;background:linear-gradient(135deg,#2d261f,#6d5334);color:#fff;margin-bottom:1.5rem}.aurim-welcome h2{font-family:Georgia,serif;font-size:2rem;color:#fff!important}.aurim-welcome p{color:#e9ded0}.aurim-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1rem}.aurim-stats.orders{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:1rem}.aurim-stat{padding:1.4rem;border:1px solid #e5dccf;border-radius:12px;background:#fff}.aurim-stat-link{display:block;color:inherit;text-decoration:none;transition:border-color .2s,transform .2s}.aurim-stat-link:hover{border-color:#b88a43;transform:translateY(-2px);color:inherit}.aurim-stat strong{display:block;font-size:2rem;color:#9a733f}.aurim-stat span{color:#6f655b;font-size:.8rem}.aurim-alert{margin-top:1.5rem;padding:1rem 1.2rem;border-left:4px solid #c99c58;background:#faf4ea}.aurim-alert a{color:#79592f;font-weight:700}@media(max-width:900px){.aurim-stats,.aurim-stats.orders{grid-template-columns:1fr 1fr}}
+    </style>
+    <section class="aurim-welcome">
+        <h2>Bienvenue dans l’administration AURIM</h2>
+        <p>Gérez ici votre catalogue, vos marchés africains et vos stocks distribués.</p>
+    </section>
+    <h3>Commandes à traiter</h3>
+    <section class="aurim-stats orders">
+        <article class="aurim-stat"><strong>{{ pendingOrderCount }}</strong><span>En attente de paiement</span></article>
+        <article class="aurim-stat"><strong>{{ preparingOrderCount }}</strong><span>En préparation</span></article>
+        <article class="aurim-stat"><strong>{{ shippingOrderCount }}</strong><span>Expédiées / prêtes</span></article>
+        <article class="aurim-stat"><strong>{{ failedOrderCount }}</strong><span>Échecs à traiter</span></article>
+    </section>
+    <section class="aurim-stats">
+        <article class="aurim-stat"><strong>{{ productCount }}</strong><span>Produits publiés</span></article>
+        <article class="aurim-stat"><strong>{{ marketCount }}</strong><span>Marchés actifs</span></article>
+        <article class="aurim-stat"><strong>{{ warehouseCount }}</strong><span>Entrepôts actifs</span></article>
+        <a class="aurim-stat aurim-stat-link" href="{{ path('admin_stock_alerts_by_market') }}"><strong>{{ lowStockCount }}</strong><span>Stocks à surveiller →</span></a>
+        <article class="aurim-stat"><strong>{{ unpublishedPriceCount }}</strong><span>Prix à valider</span></article>
+    </section>
+    {% if lowStockCount or unpublishedPriceCount %}<p class="aurim-alert">Des stocks ou des prix nécessitent votre attention avant de poursuivre les ventes sur tous les marchés. {% if lowStockCount %}<a href="{{ path('admin_stock_alerts_by_market') }}">Consulter les alertes</a>{% endif %}</p>{% endif %}
+{% endblock %}

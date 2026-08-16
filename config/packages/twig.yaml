@@ -1,0 +1,11 @@
+twig:
+    file_name_pattern: '*.twig'
+    globals:
+        store_context: '@App\Store\StoreContext'
+        cart: '@App\Store\Cart'
+        price_formatter: '@App\Store\PriceFormatter'
+        product_offer: '@App\Store\ProductOffer'
+
+when@test:
+    twig:
+        strict_variables: true

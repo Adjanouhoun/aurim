@@ -1,0 +1,53 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Journal des stocks{% endblock %}
+
+{% block main %}
+    <style>
+        .movement-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.8rem;margin-bottom:1.3rem}.movement-tab{display:flex;justify-content:space-between;align-items:center;padding:1rem;border:1px solid #ded7cd;border-radius:12px;background:#fff;color:#4f463d;text-decoration:none}.movement-tab:hover{border-color:#b88a43;color:#6f512b}.movement-tab.active{border-color:#8b6637;background:#2d261f;color:#fff}.movement-tab small{display:block;margin-top:.2rem;color:inherit;opacity:.7}.movement-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.2rem}.movement-summary article{padding:1.1rem;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.movement-summary strong{display:block;color:#8b6637;font-size:1.45rem}.movement-summary span{color:#756b62;font-size:.76rem}.movement-filters{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:1rem}.movement-filter{padding:.55rem .8rem;border:1px solid #d8cec2;border-radius:999px;background:#fff;color:#66594d;text-decoration:none;font-size:.76rem;font-weight:700}.movement-filter.active{border-color:#8b6637;background:#8b6637;color:#fff}.movement-table-wrap{overflow:auto;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.movement-table{width:100%;margin:0;border-collapse:collapse}.movement-table th{padding:.85rem;background:#f8f4ee;color:#766b60;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}.movement-table td{padding:.8rem;border-top:1px solid #ece6de;vertical-align:middle}.movement-product{min-width:220px}.movement-product strong,.movement-product small{display:block}.movement-product small,.movement-meta{color:#837a71;font-size:.72rem}.movement-type{display:inline-flex;padding:.3rem .55rem;border-radius:999px;background:#eee8df;color:#65584c;font-size:.7rem;font-weight:700;white-space:nowrap}.movement-type.order_reserved,.movement-type.transfer_received{background:#e8f2e4;color:#4d713f}.movement-type.order_committed,.movement-type.transfer_shipped{background:#fff0d9;color:#8a5b16}.movement-type.order_released{background:#e8eef5;color:#49637e}.movement-type.manual_adjustment{background:#eee5f5;color:#684b7c}.movement-delta{font-weight:800;white-space:nowrap}.movement-delta.positive{color:#4f7b40}.movement-delta.negative{color:#a2483e}.movement-reference{font-family:ui-monospace,monospace;font-size:.72rem;white-space:nowrap}.movement-empty{padding:3rem;text-align:center;color:#756b62}.movement-pages{display:flex;justify-content:center;gap:.4rem;padding:1rem}.movement-pages a,.movement-pages span{display:inline-flex;min-width:34px;height:34px;align-items:center;justify-content:center;border:1px solid #d8cec2;border-radius:7px;color:#66594d;text-decoration:none}.movement-pages span{border-color:#8b6637;background:#8b6637;color:#fff}@media(max-width:1100px){.movement-tabs{grid-template-columns:repeat(2,1fr)}.movement-summary{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.movement-tabs,.movement-summary{grid-template-columns:1fr}}
+    </style>
+
+    <nav class="movement-tabs" aria-label="Choisir l’entrepôt">
+        {% for market in markets %}
+            <a class="movement-tab {{ selectedMarket and selectedMarket.id == market.id ? 'active' : '' }}" href="{{ path('admin_stock_movements', {pays: market.countryCode, filtre: filter}) }}"><div><strong>{{ market.countryCode == 'US' ? 'Stock central' : market.name }}</strong><small>{{ market.countryCode }}</small></div></a>
+        {% endfor %}
+    </nav>
+
+    {% if selectedMarket and warehouse %}
+        <section class="movement-summary">
+            <article><strong>{{ physicalTotal }}</strong><span>Unités physiques</span></article>
+            <article><strong>{{ reservedTotal }}</strong><span>Unités réservées</span></article>
+            <article><strong>{{ availableTotal }}</strong><span>Unités disponibles</span></article>
+            <article><strong>{{ movementCount }}</strong><span>Mouvements dans ce filtre</span></article>
+        </section>
+
+        <nav class="movement-filters" aria-label="Filtrer les mouvements">
+            {% set filterLabels = {all: 'Tous', orders: 'Commandes', transfers: 'Transferts', adjustments: 'Corrections et solde initial'} %}
+            {% for key, label in filterLabels %}<a class="movement-filter {{ filter == key ? 'active' : '' }}" href="{{ path('admin_stock_movements', {pays: selectedMarket.countryCode, filtre: key}) }}">{{ label }}</a>{% endfor %}
+        </nav>
+
+        <div class="movement-table-wrap">
+            <table class="movement-table">
+                <thead><tr><th>Date</th><th>Produit</th><th>Opération</th><th>Physique</th><th>Réservé</th><th>Solde après opération</th><th>Référence</th></tr></thead>
+                <tbody>
+                {% for movement in movements %}
+                    <tr>
+                        <td class="movement-meta">{{ movement.createdAt|date('d/m/Y H:i') }}</td>
+                        <td class="movement-product"><strong>{{ movement.product.name }}</strong><small>{{ movement.product.sku }}</small></td>
+                        <td><span class="movement-type {{ movement.movementType }}">{{ typeLabels[movement.movementType] ?? movement.movementType }}</span>{% if movement.triggersLowStockAlert %} <span class="movement-type order_committed">Alerte envoyée</span>{% endif %}<div class="movement-meta">{{ movement.description }}{% if movement.performedBy and movement.performedBy != 'system' %}<br>Par {{ movement.performedBy }}{% endif %}</div></td>
+                        <td class="movement-delta {{ movement.quantityOnHandDelta > 0 ? 'positive' : (movement.quantityOnHandDelta < 0 ? 'negative' : '') }}">{% if movement.quantityOnHandDelta > 0 %}+{% endif %}{{ movement.quantityOnHandDelta }}</td>
+                        <td class="movement-delta {{ movement.quantityReservedDelta > 0 ? 'positive' : (movement.quantityReservedDelta < 0 ? 'negative' : '') }}">{% if movement.quantityReservedDelta > 0 %}+{% endif %}{{ movement.quantityReservedDelta }}</td>
+                        <td><strong>{{ movement.balanceOnHand }}</strong> physique<br><small>{{ movement.balanceReserved }} réservé · {{ max(0, movement.balanceOnHand - movement.balanceReserved) }} disponible</small></td>
+                        <td class="movement-reference">{{ movement.reference ?? '—' }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="7" class="movement-empty">Aucun mouvement ne correspond à ce filtre.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if pageCount > 1 %}<nav class="movement-pages" aria-label="Pages">{% for pageNumber in 1..pageCount %}{% if pageNumber == page %}<span>{{ pageNumber }}</span>{% else %}<a href="{{ path('admin_stock_movements', {pays: selectedMarket.countryCode, filtre: filter, page: pageNumber}) }}">{{ pageNumber }}</a>{% endif %}{% endfor %}</nav>{% endif %}
+        </div>
+    {% elseif selectedMarket %}
+        <div class="movement-empty">Aucun entrepôt n’est associé à ce marché.</div>
+    {% endif %}
+{% endblock %}

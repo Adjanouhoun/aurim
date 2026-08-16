@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}La boutique — AURIM{% endblock %}
+
+{% block body %}
+{% include '_header.html.twig' %}
+<main>
+    <section class="catalog-hero">
+        <p class="eyebrow">La collection AURIM</p>
+        <h1>Des soins pour révéler votre lumière.</h1>
+        <p>Découvrez le rituel AURIM au curcuma, à la vitamine C et à la niacinamide.</p>
+    </section>
+    <section class="catalog-layout">
+        <aside class="catalog-filters">
+            <p>Filtrer par</p>
+            <a class="{{ selectedCategory == '' ? 'filter-active' : '' }}" href="{{ path('app_catalog') }}">Tous les soins</a>
+            {% for category in categories %}
+                <a class="{{ selectedCategory == category.slug ? 'filter-active' : '' }}" href="{{ path('app_catalog', {categorie: category.slug}) }}">{{ category.name }} <span>{{ category.activeProductCount }}</span></a>
+            {% endfor %}
+        </aside>
+        <div class="catalog-results">
+            <div class="catalog-toolbar"><p>{{ products|length }} soins</p><p>Trier : Nouveautés</p></div>
+            <div class="catalog-grid">
+                {% for product in products %}
+                    <article class="catalog-card">
+                        <a class="catalog-card-image product-crop-{{ product.imagePosition }}" href="{{ path('app_product_show', {slug: product.slug}) }}">
+                            <img src="{{ asset(product.imagePath) }}" alt="{{ product.name }} AURIM" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
+                            <span>Nouveau</span>
+                        </a>
+                        <p class="tag">{{ product.type }}</p>
+                        <p class="catalog-category">{{ product.category.name }}</p>
+                        <h2><a href="{{ path('app_product_show', {slug: product.slug}) }}">{{ product.name }}</a></h2>
+                        <p>{{ product.size }}</p>
+                        {% set offerPrice = product_offer.price(product) %}
+                        {% if offerPrice and store_context.selectedMarket %}
+                            <strong>{{ price_formatter.format(offerPrice.amountMinor, store_context.selectedMarket.currencyCode) }}</strong>
+                            <small class="stock-label">{{ product_offer.availableQuantity(product) > 0 ? 'En stock dans votre pays' : 'Rupture de stock' }}</small>
+                        {% elseif store_context.selectedMarket %}
+                            <strong>Prix à venir</strong>
+                        {% else %}
+                            <strong>Choisissez votre pays</strong>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+{% include '_footer.html.twig' %}
+{% endblock %}

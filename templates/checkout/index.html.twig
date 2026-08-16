@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+{% block title %}Livraison — AURIM{% endblock %}
+{% block body %}
+{% include '_header.html.twig' %}
+<main class="checkout-page">
+    <div class="checkout-heading"><p class="eyebrow">Finaliser la commande</p><h1>Vos informations de livraison</h1><p>Livraison locale en {{ market.name }}</p></div>
+    {% if shippingRates is empty %}<div class="checkout-alert">Aucun mode de réception n’est encore configuré pour ce pays. Ajoutez un dépôt ou un tarif de livraison depuis l’administration.</div>{% endif %}
+    {% if errors %}<div id="checkout-errors" class="checkout-errors" role="alert" tabindex="-1"><strong>La commande n’a pas été créée. Vérifiez les informations suivantes :</strong><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+    <div class="checkout-layout">
+        <form class="checkout-form" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token('checkout') }}">
+            <label>Nom complet<input name="name" value="{{ app.request.request.get('name') }}" required></label>
+            <div class="form-row"><label>Adresse e-mail<input type="email" name="email" value="{{ app.request.request.get('email') }}" required></label><label><span id="phone-label">Téléphone</span><input type="tel" name="phone" value="{{ app.request.request.get('phone') }}" required aria-describedby="payment-phone-help"></label></div>
+            <fieldset class="fulfillment-options">
+                <legend>Comment souhaitez-vous recevoir votre commande ?</legend>
+                {% for type, title in {'pickup': 'Retrait dans un dépôt local', 'delivery': 'Livraison à domicile'} %}
+                    {% set typeRates = shippingRates|filter(rate => rate.fulfillmentType == type) %}
+                    {% if typeRates is not empty %}
+                        <h2>{{ title }}</h2>
+                        {% for rate in typeRates %}
+                            <label class="fulfillment-card">
+                                <input type="radio" name="shipping_rate" value="{{ rate.id }}" data-fulfillment="{{ type }}" data-shipping="{{ price_formatter.format(rate.amountMinor, market.currencyCode) }}" data-total="{{ price_formatter.format(subtotal + rate.amountMinor, market.currencyCode) }}" {{ app.request.request.get('shipping_rate') == rate.id ? 'checked' : '' }} required>
+                                <span><strong>{{ rate.label }}</strong><small>{{ rate.city }} · {{ rate.minimumDays }}–{{ rate.maximumDays }} jours</small>{% if rate.addressLine %}<small class="pickup-address">{{ rate.addressLine }}</small>{% endif %}</span>
+                                <b>{{ rate.amountMinor == 0 ? 'Gratuit' : price_formatter.format(rate.amountMinor, market.currencyCode) }}</b>
+                            </label>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </fieldset>
+            <fieldset class="fulfillment-options payment-options">
+                <legend>Comment souhaitez-vous payer ?</legend>
+                <p id="payment-choice-help" class="payment-guidance">Choisissez d’abord votre mode de réception pour afficher les paiements disponibles.</p>
+                {% for method in paymentMethods %}
+                    <label class="fulfillment-card payment-card" data-scope="{{ method.fulfillmentScope }}" data-payment-type="{{ method.type }}">
+                        <input type="radio" name="payment_method" value="{{ method.id }}" {{ app.request.request.get('payment_method') == method.id ? 'checked' : '' }} required>
+                        <span><strong>{{ method.name }}</strong>{% if method.instructions %}<small>{{ method.instructions }}</small>{% endif %}</span>
+                        <b>{{ method.type == 'cash' ? 'Espèces' : (method.type == 'mobile_money_manual' ? 'Mobile Money' : 'En ligne') }}</b>
+                    </label>
+                {% else %}
+                    <div class="checkout-alert">Aucun moyen de paiement actif pour ce pays.</div>
+                {% endfor %}
+                <div id="payment-unavailable" class="checkout-alert" hidden>Aucun moyen de paiement n’est encore configuré pour ce mode de réception.</div>
+                <div id="payment-phone-help" class="payment-phone-help" hidden>
+                    <strong>Important pour identifier votre paiement</strong>
+                    <span>Saisissez plus haut le numéro Mobile Money avec lequel vous effectuerez le transfert. Ce même numéro permettra à AURIM de retrouver et valider votre paiement.</span>
+                </div>
+            </fieldset>
+            <label>Votre adresse et indications<textarea name="address" rows="4" required>{{ app.request.request.get('address') }}</textarea></label>
+            <button id="checkout-submit" class="button" type="submit" disabled>Créer la commande</button>
+        </form>
+        <aside class="checkout-summary"><p class="eyebrow">Votre commande</p>{% for line in lines %}<div class="checkout-line"><span>{{ line.product.name }} × {{ line.quantity }}</span><strong>{{ price_formatter.format(line.lineTotal, market.currencyCode) }}</strong></div>{% endfor %}<div class="checkout-line"><span>Sous-total</span><strong>{{ price_formatter.format(subtotal, market.currencyCode) }}</strong></div><div class="checkout-line"><span>Réception</span><strong id="shipping-amount">À sélectionner</strong></div><div class="checkout-total"><span>Total</span><strong id="order-total">—</strong></div><p>Le total est recalculé immédiatement selon le dépôt ou la livraison choisis.</p></aside>
+    </div>
+</main>
+<script>
+const checkoutErrors = document.getElementById('checkout-errors');
+if (checkoutErrors) {
+    checkoutErrors.scrollIntoView({behavior: 'smooth', block: 'center'});
+    checkoutErrors.focus({preventScroll: true});
+}
+const paymentCards = document.querySelectorAll('.payment-card');
+const paymentChoiceHelp = document.getElementById('payment-choice-help');
+const paymentPhoneHelp = document.getElementById('payment-phone-help');
+const paymentUnavailable = document.getElementById('payment-unavailable');
+const phoneLabel = document.getElementById('phone-label');
+const checkoutSubmit = document.getElementById('checkout-submit');
+
+const updatePaymentPhoneHelp = () => {
+    const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
+    const isMobileMoney = selectedPayment?.closest('.payment-card')?.dataset.paymentType === 'mobile_money_manual';
+    paymentPhoneHelp.hidden = !isMobileMoney;
+    phoneLabel.textContent = isMobileMoney ? 'Numéro Mobile Money utilisé pour le paiement' : 'Téléphone';
+};
+
+paymentCards.forEach((card) => {
+    card.querySelector('input').addEventListener('change', updatePaymentPhoneHelp);
+});
+
+document.querySelectorAll('input[name="shipping_rate"]').forEach((input) => {
+    const update = () => {
+        document.getElementById('shipping-amount').textContent = input.dataset.shipping;
+        document.getElementById('order-total').textContent = input.dataset.total;
+        paymentChoiceHelp.hidden = true;
+        let visiblePaymentCount = 0;
+        paymentCards.forEach((card) => {
+            const visible = card.dataset.scope === 'both' || card.dataset.scope === input.dataset.fulfillment;
+            card.hidden = !visible;
+            if (!visible) card.querySelector('input').checked = false;
+            if (visible) visiblePaymentCount++;
+        });
+        paymentUnavailable.hidden = visiblePaymentCount > 0;
+        checkoutSubmit.disabled = visiblePaymentCount === 0;
+        updatePaymentPhoneHelp();
+    };
+    input.addEventListener('change', update);
+    if (input.checked) update();
+});
+
+if (!document.querySelector('input[name="shipping_rate"]:checked')) {
+    paymentCards.forEach((card) => card.hidden = true);
+    checkoutSubmit.disabled = true;
+}
+updatePaymentPhoneHelp();
+</script>
+{% include '_footer.html.twig' %}
+{% endblock %}

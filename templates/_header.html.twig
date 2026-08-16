@@ -1,0 +1,22 @@
+<div class="announcement">Livraison locale en Mauritanie, au Sénégal, au Mali et en Guinée</div>
+<header class="site-header">
+    <a class="brand" href="{{ path('app_home') }}">AURIM<span>Glowing by Rima</span></a>
+    <nav aria-label="Navigation principale">
+        <a href="{{ path('app_catalog') }}">Boutique</a>
+        <a href="{{ path('app_home') }}#rituel">Votre rituel</a>
+        <a href="{{ path('app_home') }}#ingredients">Nos ingrédients</a>
+        <a href="{{ path('app_home') }}#histoire">Notre histoire</a>
+        <a href="{{ path('app_order_tracking') }}">Suivre ma commande</a>
+    </nav>
+    <div class="header-actions">
+        <form class="market-selector" action="{{ path('app_market_select') }}" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token('select-market') }}">
+            <label for="market">Pays</label>
+            <select id="market" name="market" onchange="this.form.submit()">
+                <option value="">Choisir</option>
+                {% for market in store_context.markets %}<option value="{{ market.countryCode }}" {{ store_context.selectedMarket and store_context.selectedMarket.id == market.id ? 'selected' : '' }}>{{ market.name }}</option>{% endfor %}
+            </select>
+        </form>
+        <a href="{{ path('app_cart') }}">Panier ({{ cart.count }})</a>
+    </div>
+</header>

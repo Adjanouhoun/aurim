@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AURIM — La beauté qui rayonne{% endblock %}
+
+{% block body %}
+{% include '_header.html.twig' %}
+
+<main>
+    <section class="hero">
+        <div class="hero-copy">
+            <p class="eyebrow">Le rituel corps illuminateur</p>
+            <h1>Révélez l’éclat naturel de votre peau.</h1>
+            <p>Des soins généreux au curcuma, à la vitamine C et à la niacinamide, pensés pour exfolier, nourrir et illuminer la peau.</p>
+            <a class="button" href="{{ path('app_catalog') }}">Découvrir la collection</a>
+        </div>
+        <div class="hero-product" aria-label="Collection AURIM">
+            <div class="jar jar-large"><span>AURIM</span><small>Radiance-Boosting<br>Body Scrub</small></div>
+            <div class="jar jar-small"><span>AURIM</span><small>Radiant<br>Body Butter</small></div>
+        </div>
+    </section>
+
+    <section class="trust-strip">
+        <p><strong>Stock local</strong><span>Livraison plus rapide</span></p>
+        <p><strong>Paiement adapté</strong><span>À chaque marché</span></p>
+        <p><strong>Formules expertes</strong><span>Des actifs reconnus</span></p>
+        <p><strong>Service client</strong><span>À votre écoute</span></p>
+    </section>
+
+    <section class="section products" id="boutique">
+        <p class="eyebrow">Les essentiels AURIM</p>
+        <h2>Les gestes d’une peau rayonnante</h2>
+        <div class="essentials-carousel" data-essentials-slider>
+            <div class="essentials-controls" aria-label="Navigation des produits">
+                <button type="button" data-slider-previous aria-label="Produit précédent">←</button>
+                <span><b data-slider-current>01</b> / {{ '%02d'|format(products|length) }}</span>
+                <button type="button" data-slider-next aria-label="Produit suivant">→</button>
+            </div>
+            <div class="product-grid essentials-track" data-slider-track>
+                {% for product in products %}
+                    <article class="product-card">
+                        <a class="product-visual product-crop-{{ product.imagePosition }}" href="{{ path('app_product_show', {slug: product.slug}) }}">
+                            <img src="{{ asset(product.imagePath) }}" alt="{{ product.name }} AURIM" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
+                            <span class="product-category">{{ product.category.name }}</span>
+                        </a>
+                        <p class="tag">{{ product.type }}</p>
+                        <h3>{{ product.name }}</h3>
+                        <p>{{ product.shortDescription }}</p>
+                        <a href="{{ path('app_product_show', {slug: product.slug}) }}">Découvrir le soin <span>→</span></a>
+                    </article>
+                {% else %}
+                    <p>Aucun essentiel n’est publié pour le moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="ritual" id="rituel">
+        <div>
+            <p class="eyebrow">Deux gestes, un éclat durable</p>
+            <h2>Le rituel AURIM</h2>
+        </div>
+        <ol>
+            <li><span>01</span><h3>Exfolier</h3><p>Massez le gommage sur peau humide pour lisser le grain de peau.</p></li>
+            <li><span>02</span><h3>Nourrir</h3><p>Appliquez le beurre corporel pour envelopper la peau de confort.</p></li>
+            <li><span>03</span><h3>Rayonner</h3><p>Retrouvez une peau douce, uniforme et naturellement lumineuse.</p></li>
+        </ol>
+    </section>
+
+    <section class="ingredients section" id="ingredients">
+        <p class="eyebrow">Au cœur des formules</p>
+        <h2>Des ingrédients choisis pour votre éclat</h2>
+        <div class="ingredient-grid">
+            <article><span>01</span><h3>Curcuma</h3><p>Connu pour aider à raviver l’éclat et unifier visiblement la peau.</p></article>
+            <article><span>02</span><h3>Vitamine C</h3><p>Un actif incontournable pour soutenir la luminosité du teint.</p></article>
+            <article><span>03</span><h3>Niacinamide</h3><p>Aide à renforcer la barrière cutanée et à améliorer la texture.</p></article>
+        </div>
+    </section>
+
+    <section class="story" id="histoire">
+        <div class="story-art"><span>A</span></div>
+        <div class="story-copy">
+            <p class="eyebrow">Glowing by Rima</p>
+            <h2>Une beauté lumineuse, pensée pour vous.</h2>
+            <p>AURIM imagine des soins sensoriels qui transforment la routine quotidienne en un moment de douceur et de confiance.</p>
+            <a class="text-link" href="#">Découvrir notre histoire →</a>
+        </div>
+    </section>
+</main>
+
+{% include '_footer.html.twig' %}
+{% endblock %}
