@@ -27,16 +27,7 @@ final class OrderMailer
 
     public function sendOrderCreated(CustomerOrder $order, Payment $payment): void
     {
-        $confirmationPath = $this->urlGenerator->generate('app_order_confirmation', ['reference' => $order->getReference()]);
-        $context = [
-            'order' => $order,
-            'payment' => $payment,
-            'confirmationUrl' => $this->urlGenerator->generate(
-                'app_locale_switch',
-                ['locale' => $order->getLocale(), 'returnTo' => $confirmationPath],
-                UrlGeneratorInterface::ABSOLUTE_URL,
-            ),
-        ];
+        $context = $this->orderContext($order, $payment);
 
         $this->send((new TemplatedEmail())
             ->from(new Address($this->senderAddress, 'AURIM'))
@@ -45,6 +36,13 @@ final class OrderMailer
             ->htmlTemplate('emails/order_confirmation.html.twig')
             ->locale($order->getLocale())
             ->context($context));
+
+        $this->sendAdminOrderCreated($order, $payment);
+    }
+
+    public function sendAdminOrderCreated(CustomerOrder $order, Payment $payment): void
+    {
+        $context = $this->orderContext($order, $payment);
 
         foreach ($this->adminRecipients($order) as $recipient) {
             $this->send((new TemplatedEmail())
@@ -55,6 +53,22 @@ final class OrderMailer
                 ->htmlTemplate('emails/admin_new_order.html.twig')
                 ->context($context));
         }
+    }
+
+    /** @return array{order: CustomerOrder, payment: Payment, confirmationUrl: string} */
+    private function orderContext(CustomerOrder $order, Payment $payment): array
+    {
+        $confirmationPath = $this->urlGenerator->generate('app_order_confirmation', ['reference' => $order->getReference()]);
+
+        return [
+            'order' => $order,
+            'payment' => $payment,
+            'confirmationUrl' => $this->urlGenerator->generate(
+                'app_locale_switch',
+                ['locale' => $order->getLocale(), 'returnTo' => $confirmationPath],
+                UrlGeneratorInterface::ABSOLUTE_URL,
+            ),
+        ];
     }
 
     /** @return list<Address> */

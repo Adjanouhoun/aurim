@@ -10,6 +10,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -25,7 +26,9 @@ final class ResendOrderEmailCommand extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('reference', InputArgument::REQUIRED, 'Référence de la commande');
+        $this
+            ->addArgument('reference', InputArgument::REQUIRED, 'Référence de la commande')
+            ->addOption('admin-only', null, InputOption::VALUE_NONE, 'Renvoie uniquement la notification aux administrateurs');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -43,8 +46,13 @@ final class ResendOrderEmailCommand extends Command
             return Command::FAILURE;
         }
 
-        $this->orderMailer->sendOrderCreated($order, $payment);
-        $io->success(sprintf('E-mails renvoyés pour %s.', $reference));
+        if ((bool) $input->getOption('admin-only')) {
+            $this->orderMailer->sendAdminOrderCreated($order, $payment);
+            $io->success(sprintf('Notification administrateur renvoyée pour %s.', $reference));
+        } else {
+            $this->orderMailer->sendOrderCreated($order, $payment);
+            $io->success(sprintf('E-mails renvoyés pour %s.', $reference));
+        }
 
         return Command::SUCCESS;
     }
