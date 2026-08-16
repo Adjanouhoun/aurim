@@ -4,6 +4,7 @@ namespace App\Notification;
 
 use App\Entity\CustomerOrder;
 use App\Entity\Payment;
+use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -19,6 +20,7 @@ final class OrderMailer
         private readonly LoggerInterface $logger,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly TranslatorInterface $translator,
+        private readonly UserRepository $users,
         private readonly string $senderAddress,
         private readonly string $adminAddress,
     ) {}
@@ -44,13 +46,31 @@ final class OrderMailer
             ->locale($order->getLocale())
             ->context($context));
 
-        $this->send((new TemplatedEmail())
-            ->from(new Address($this->senderAddress, 'AURIM'))
-            ->to($this->adminAddress)
-            ->replyTo($order->getEmail())
-            ->subject('Nouvelle commande '.$order->getReference())
-            ->htmlTemplate('emails/admin_new_order.html.twig')
-            ->context($context));
+        foreach ($this->adminRecipients($order) as $recipient) {
+            $this->send((new TemplatedEmail())
+                ->from(new Address($this->senderAddress, 'AURIM'))
+                ->to($recipient)
+                ->replyTo($order->getEmail())
+                ->subject('Nouvelle commande '.$order->getReference())
+                ->htmlTemplate('emails/admin_new_order.html.twig')
+                ->context($context));
+        }
+    }
+
+    /** @return list<Address> */
+    private function adminRecipients(CustomerOrder $order): array
+    {
+        $addresses = [];
+        foreach ($this->users->findOrderNotificationRecipients($order->getMarket()) as $user) {
+            $email = mb_strtolower($user->getEmail());
+            $addresses[$email] = new Address($user->getEmail());
+        }
+
+        if ([] === $addresses) {
+            $addresses[mb_strtolower($this->adminAddress)] = new Address($this->adminAddress);
+        }
+
+        return array_values($addresses);
     }
 
     public function sendPaymentReceived(Payment $payment): void

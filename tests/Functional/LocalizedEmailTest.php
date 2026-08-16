@@ -63,7 +63,7 @@ final class LocalizedEmailTest extends AurimWebTestCase
         ]));
 
         self::assertResponseRedirects();
-        self::assertEmailCount(2);
+        self::assertEmailCount(3);
         $confirmationEmail = $this->findEmailBySubject($orderSubject);
         self::assertNotNull($confirmationEmail);
         self::assertEmailSubjectContains($confirmationEmail, $orderSubject);
@@ -77,14 +77,14 @@ final class LocalizedEmailTest extends AurimWebTestCase
 
         $mailer = static::getContainer()->get(OrderMailer::class);
         $mailer->sendPaymentReceived($payment);
-        self::assertEmailCount(3);
+        self::assertEmailCount(4);
         $paymentEmail = $this->findEmailBySubject($paymentSubject);
         self::assertNotNull($paymentEmail);
         self::assertEmailSubjectContains($paymentEmail, $paymentSubject);
         self::assertEmailHtmlBodyContains($paymentEmail, $paymentBody);
 
         $mailer->sendStatusChanged($order, 'shipped');
-        self::assertEmailCount(4);
+        self::assertEmailCount(5);
         $statusEmail = $this->findEmailBySubject($statusSubject);
         self::assertNotNull($statusEmail);
         self::assertEmailSubjectContains($statusEmail, $statusSubject);

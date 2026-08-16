@@ -43,7 +43,7 @@ final class StorefrontFlowTest extends AurimWebTestCase
         ]);
         $this->client->submit($checkoutForm);
         self::assertResponseRedirects();
-        self::assertEmailCount(2);
+        self::assertEmailCount(3);
         $this->client->followRedirect();
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('.order-confirmation h1', 'Merci, Cliente Test AURIM');
