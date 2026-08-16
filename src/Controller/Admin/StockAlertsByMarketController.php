@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\Market;
 use App\Entity\Product;
 use App\Entity\Warehouse;
+use App\Security\AdminMarketAccess;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class StockAlertsByMarketController extends AbstractController
 {
     #[AdminRoute('/stocks-a-surveiller', name: 'stock_alerts_by_market', options: ['methods' => ['GET']])]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, AdminMarketAccess $marketAccess): Response
     {
         $markets = $entityManager->createQueryBuilder()
             ->select('market')
@@ -26,6 +27,7 @@ final class StockAlertsByMarketController extends AbstractController
             ->getQuery()
             ->getResult();
 
+        $markets = $marketAccess->filterMarkets($markets);
         $selectedMarket = $this->selectMarket($markets, strtoupper(trim((string) $request->query->get('pays'))));
         $warehouse = $selectedMarket instanceof Market
             ? $entityManager->getRepository(Warehouse::class)->findOneBy(['market' => $selectedMarket, 'central' => false])

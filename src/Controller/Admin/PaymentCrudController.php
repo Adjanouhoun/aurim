@@ -20,7 +20,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Order\OrderStockManager;
 use App\Notification\OrderMailer;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_SUPER_ADMIN')]
 final class PaymentCrudController extends AbstractCrudController
 {
     public function __construct(

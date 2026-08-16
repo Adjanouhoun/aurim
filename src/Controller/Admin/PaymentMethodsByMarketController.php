@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Market;
 use App\Entity\PaymentMethod;
+use App\Security\AdminMarketAccess;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class PaymentMethodsByMarketController extends AbstractController
 {
     #[AdminRoute('/paiements-par-pays', name: 'payment_methods_by_market', options: ['methods' => ['GET', 'POST']])]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, AdminMarketAccess $marketAccess): Response
     {
         $markets = $entityManager->createQueryBuilder()
             ->select('market')
@@ -25,6 +26,7 @@ final class PaymentMethodsByMarketController extends AbstractController
             ->getQuery()
             ->getResult();
 
+        $markets = $marketAccess->filterMarkets($markets);
         $selectedMarket = $this->selectMarket($markets, strtoupper(trim((string) $request->query->get('pays'))));
         $methods = $selectedMarket instanceof Market
             ? $entityManager->getRepository(PaymentMethod::class)->findBy(['market' => $selectedMarket], ['type' => 'DESC', 'name' => 'ASC'])

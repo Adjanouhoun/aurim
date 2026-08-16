@@ -26,13 +26,19 @@ cp .env.example .env.local
 docker compose up -d
 php bin/console doctrine:migrations:migrate --no-interaction
 php bin/console app:catalog:seed
-php bin/console app:admin:create adresse@example.com
+php bin/console app:admin:create adresse@example.com --super-admin
 symfony server:start
 ```
 
 La boutique est ensuite accessible sur `http://localhost:8000/` et l'administration sur `http://localhost:8000/admin`.
 
 Les paramètres propres à l'environnement (base de données, messagerie et secrets) doivent être renseignés dans `.env.local`. Ce fichier n'est jamais versionné.
+
+Pour créer un administrateur limité à un pays, indiquez le code de son marché :
+
+```bash
+php bin/console app:admin:create responsable-senegal@example.com --market=SN
+```
 
 ## Données de démonstration facultatives
 

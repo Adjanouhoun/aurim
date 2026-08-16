@@ -9,6 +9,7 @@ use App\Entity\StockTransfer;
 use App\Entity\StockTransferItem;
 use App\Entity\Warehouse;
 use App\Inventory\StockTransferManager;
+use App\Security\AdminMarketAccess;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,6 +24,7 @@ final class StockTransfersController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         StockTransferManager $transferManager,
+        AdminMarketAccess $marketAccess,
     ): Response {
         $markets = $entityManager->createQueryBuilder()
             ->select('market')
@@ -32,6 +34,7 @@ final class StockTransfersController extends AbstractController
             ->addOrderBy("CASE WHEN market.countryCode = 'MR' THEN 1 WHEN market.countryCode = 'SN' THEN 2 WHEN market.countryCode = 'ML' THEN 3 WHEN market.countryCode = 'GN' THEN 4 ELSE 5 END", 'ASC')
             ->getQuery()
             ->getResult();
+        $markets = $marketAccess->filterMarkets($markets);
         $selectedMarket = $this->selectMarket($markets, strtoupper(trim((string) $request->query->get('pays'))));
         $centralWarehouse = $entityManager->getRepository(Warehouse::class)->findOneBy(['central' => true, 'active' => true]);
         $destinationWarehouse = $selectedMarket instanceof Market

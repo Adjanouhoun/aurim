@@ -6,6 +6,7 @@ use App\Entity\CustomerOrder;
 use App\Entity\Payment;
 use App\Order\OrderWorkflow;
 use App\Payment\PaymentWorkflow;
+use App\Security\AdminMarketAccess;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,8 +17,9 @@ use Symfony\Component\Routing\Attribute\Route;
 final class OrderWorkflowController extends AbstractController
 {
     #[Route('/{id}', name: 'admin_order_workflow', methods: ['GET'])]
-    public function show(CustomerOrder $order, OrderWorkflow $workflow, PaymentWorkflow $paymentWorkflow, EntityManagerInterface $entityManager): Response
+    public function show(CustomerOrder $order, OrderWorkflow $workflow, PaymentWorkflow $paymentWorkflow, EntityManagerInterface $entityManager, AdminMarketAccess $marketAccess): Response
     {
+        $marketAccess->denyUnlessGranted($order->getMarket());
         $payment = $entityManager->getRepository(Payment::class)->findOneBy(['customerOrder' => $order]);
 
         return $this->render('admin/order/workflow.html.twig', [
@@ -29,8 +31,9 @@ final class OrderWorkflowController extends AbstractController
     }
 
     #[Route('/{id}/statut/{status}', name: 'admin_order_transition', methods: ['POST'])]
-    public function transition(CustomerOrder $order, string $status, Request $request, OrderWorkflow $workflow): Response
+    public function transition(CustomerOrder $order, string $status, Request $request, OrderWorkflow $workflow, AdminMarketAccess $marketAccess): Response
     {
+        $marketAccess->denyUnlessGranted($order->getMarket());
         if (!$this->isCsrfTokenValid('order-transition-'.$order->getId().'-'.$status, (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
         }
