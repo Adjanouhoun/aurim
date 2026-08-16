@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\Market;
 use App\Entity\StockMovement;
 use App\Entity\Warehouse;
+use App\Security\AdminMarketAccess;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +35,7 @@ final class StockMovementsController extends AbstractController
     ];
 
     #[AdminRoute('/mouvements-de-stock', name: 'stock_movements', options: ['methods' => ['GET']])]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, AdminMarketAccess $marketAccess): Response
     {
         $markets = $entityManager->createQueryBuilder()
             ->select('market')
@@ -42,6 +43,7 @@ final class StockMovementsController extends AbstractController
             ->addOrderBy("CASE WHEN market.countryCode = 'MR' THEN 1 WHEN market.countryCode = 'SN' THEN 2 WHEN market.countryCode = 'ML' THEN 3 WHEN market.countryCode = 'GN' THEN 4 WHEN market.countryCode = 'US' THEN 5 ELSE 6 END", 'ASC')
             ->getQuery()
             ->getResult();
+        $markets = $marketAccess->filterMarkets($markets);
         $selectedMarket = $this->selectMarket($markets, strtoupper(trim((string) $request->query->get('pays'))));
         $warehouse = $selectedMarket instanceof Market
             ? $entityManager->getRepository(Warehouse::class)->findOneBy(['market' => $selectedMarket])

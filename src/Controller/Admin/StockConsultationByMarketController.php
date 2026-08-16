@@ -13,9 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class StockAlertsByMarketController extends AbstractController
+final class StockConsultationByMarketController extends AbstractController
 {
-    #[AdminRoute('/stocks-a-surveiller', name: 'stock_alerts_by_market', options: ['methods' => ['GET']])]
+    #[AdminRoute('/stocks-par-pays', name: 'stock_consultation_by_market', options: ['methods' => ['GET']])]
     public function index(Request $request, EntityManagerInterface $entityManager, AdminMarketAccess $marketAccess): Response
     {
         $markets = $entityManager->createQueryBuilder()
@@ -26,7 +26,6 @@ final class StockAlertsByMarketController extends AbstractController
             ->addOrderBy("CASE WHEN market.countryCode = 'MR' THEN 1 WHEN market.countryCode = 'SN' THEN 2 WHEN market.countryCode = 'ML' THEN 3 WHEN market.countryCode = 'GN' THEN 4 ELSE 5 END", 'ASC')
             ->getQuery()
             ->getResult();
-
         $markets = $marketAccess->filterMarkets($markets);
         $selectedMarket = $this->selectMarket($markets, strtoupper(trim((string) $request->query->get('pays'))));
         $warehouse = $selectedMarket instanceof Market
@@ -46,72 +45,46 @@ final class StockAlertsByMarketController extends AbstractController
             ->getResult();
 
         $rows = [];
-        $outOfStockCount = 0;
-        $lowStockCount = 0;
+        $physicalTotal = 0;
         $reservedTotal = 0;
-
+        $availableTotal = 0;
+        $lowStockCount = 0;
         if ($warehouse instanceof Warehouse) {
             foreach ($products as $product) {
                 $inventory = $entityManager->getRepository(Inventory::class)->findOneBy([
                     'product' => $product,
                     'warehouse' => $warehouse,
                 ]);
+                $physical = $inventory instanceof Inventory ? $inventory->getQuantityOnHand() : 0;
+                $reserved = $inventory instanceof Inventory ? $inventory->getQuantityReserved() : 0;
                 $available = $inventory instanceof Inventory ? $inventory->getAvailableQuantity() : 0;
                 $threshold = $inventory instanceof Inventory ? $inventory->getLowStockThreshold() : 5;
-                if ($available > $threshold) {
-                    continue;
-                }
-
-                if (0 === $available) {
-                    ++$outOfStockCount;
-                } else {
-                    ++$lowStockCount;
-                }
-                $reservedTotal += $inventory instanceof Inventory ? $inventory->getQuantityReserved() : 0;
-                $rows[] = [
-                    'product' => $product,
-                    'inventory' => $inventory,
-                    'available' => $available,
-                    'threshold' => $threshold,
-                    'outOfStock' => 0 === $available,
-                ];
+                $isLowStock = $available <= $threshold;
+                $physicalTotal += $physical;
+                $reservedTotal += $reserved;
+                $availableTotal += $available;
+                $lowStockCount += $isLowStock ? 1 : 0;
+                $rows[] = compact('product', 'inventory', 'physical', 'reserved', 'available', 'threshold', 'isLowStock');
             }
         }
 
-        usort($rows, static function (array $left, array $right): int {
-            if ($left['outOfStock'] !== $right['outOfStock']) {
-                return $left['outOfStock'] ? -1 : 1;
-            }
-            if ($left['available'] !== $right['available']) {
-                return $left['available'] <=> $right['available'];
-            }
-
-            return strcmp($left['product']->getName(), $right['product']->getName());
-        });
-
-        return $this->render('admin/inventory/alerts_by_market.html.twig', [
+        return $this->render('admin/inventory/consultation_by_market.html.twig', [
             'markets' => $markets,
             'selectedMarket' => $selectedMarket,
             'warehouse' => $warehouse,
             'rows' => $rows,
-            'outOfStockCount' => $outOfStockCount,
-            'lowStockCount' => $lowStockCount,
+            'physicalTotal' => $physicalTotal,
             'reservedTotal' => $reservedTotal,
+            'availableTotal' => $availableTotal,
+            'lowStockCount' => $lowStockCount,
         ]);
     }
 
-    /**
-     * @param list<Market> $markets
-     */
+    /** @param list<Market> $markets */
     private function selectMarket(array $markets, string $requestedCode): ?Market
     {
         foreach ($markets as $market) {
             if ($market->getCountryCode() === $requestedCode) {
-                return $market;
-            }
-        }
-        foreach ($markets as $market) {
-            if ($market->isActive()) {
                 return $market;
             }
         }

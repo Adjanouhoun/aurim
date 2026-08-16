@@ -29,7 +29,9 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_SUPER_ADMIN')]
 final class ProductCrudController extends AbstractCrudController
 {
     public function __construct(

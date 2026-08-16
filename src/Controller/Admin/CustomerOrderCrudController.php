@@ -20,7 +20,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use App\Order\OrderStockManager;
 use App\Notification\OrderMailer;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_SUPER_ADMIN')]
 final class CustomerOrderCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string { return CustomerOrder::class; }

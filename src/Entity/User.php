@@ -26,6 +26,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private string $password;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Market $market = null;
+
     public function getId(): ?int { return $this->id; }
     public function getEmail(): string { return $this->email; }
     public function setEmail(string $email): self { $this->email = mb_strtolower(trim($email)); return $this; }
@@ -42,5 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRoles(array $roles): self { $this->roles = $roles; return $this; }
     public function getPassword(): string { return $this->password; }
     public function setPassword(string $password): self { $this->password = $password; return $this; }
+    public function getMarket(): ?Market { return $this->market; }
+    public function setMarket(?Market $market): self { $this->market = $market; return $this; }
     public function eraseCredentials(): void {}
 }

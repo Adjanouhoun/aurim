@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\CustomerOrder;
 use App\Entity\Market;
+use App\Security\AdminMarketAccess;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +16,7 @@ final class OrdersByMarketController extends AbstractController
     private const ORDERS_PER_PAGE = 25;
 
     #[AdminRoute('/commandes', name: 'orders_by_market', options: ['methods' => ['GET']])]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, AdminMarketAccess $marketAccess): Response
     {
         $markets = $entityManager->createQueryBuilder()
             ->select('market')
@@ -25,6 +26,8 @@ final class OrdersByMarketController extends AbstractController
             ->addOrderBy("CASE WHEN market.countryCode = 'MR' THEN 1 WHEN market.countryCode = 'SN' THEN 2 WHEN market.countryCode = 'ML' THEN 3 WHEN market.countryCode = 'GN' THEN 4 ELSE 5 END", 'ASC')
             ->getQuery()
             ->getResult();
+
+        $markets = $marketAccess->filterMarkets($markets);
 
         $counts = [];
         foreach ($markets as $market) {

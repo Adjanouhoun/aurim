@@ -8,6 +8,7 @@ use App\Entity\MarketPrice;
 use App\Entity\Product;
 use App\Entity\Warehouse;
 use App\Inventory\StockMovementRecorder;
+use App\Security\AdminMarketAccess;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 final class CatalogByMarketController extends AbstractController
 {
     #[AdminRoute('/catalogue-par-pays', name: 'catalog_by_market', options: ['methods' => ['GET', 'POST']])]
-    public function index(Request $request, EntityManagerInterface $entityManager, StockMovementRecorder $movementRecorder): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, StockMovementRecorder $movementRecorder, AdminMarketAccess $marketAccess): Response
     {
         $markets = $entityManager->createQueryBuilder()
             ->select('market')
@@ -29,6 +30,7 @@ final class CatalogByMarketController extends AbstractController
             ->getQuery()
             ->getResult();
 
+        $markets = $marketAccess->filterMarkets($markets);
         $requestedCode = strtoupper(trim((string) $request->query->get('pays')));
         $selectedMarket = $this->selectMarket($markets, $requestedCode);
         $warehouse = $selectedMarket instanceof Market

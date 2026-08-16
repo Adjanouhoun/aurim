@@ -9,6 +9,7 @@ use App\Entity\Market;
 use App\Entity\MarketPrice;
 use App\Entity\Product;
 use App\Entity\Warehouse;
+use App\Security\AdminMarketAccess;
 use Doctrine\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -19,13 +20,28 @@ use Symfony\Component\HttpFoundation\Response;
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 final class DashboardController extends AbstractDashboardController
 {
-    public function __construct(private readonly ManagerRegistry $doctrine) {}
+    public function __construct(
+        private readonly ManagerRegistry $doctrine,
+        private readonly AdminMarketAccess $marketAccess,
+    ) {}
 
     public function index(): Response
     {
         $manager = $this->doctrine->getManager();
+        $isGlobal = $this->marketAccess->isGlobal();
+        $assignedMarket = $this->marketAccess->assignedMarket();
+        if (!$isGlobal && !$assignedMarket instanceof Market) {
+            throw $this->createAccessDeniedException('Aucun marché n’est attribué à ce compte administrateur.');
+        }
         $inventories = $manager->getRepository(Inventory::class)->findAll();
-        $unpublishedPriceCount = (int) $manager->createQueryBuilder()
+        if (!$isGlobal) {
+            $inventories = array_filter(
+                $inventories,
+                static fn (Inventory $inventory): bool => $inventory->getWarehouse()->getMarket()?->getCountryCode() === $assignedMarket->getCountryCode(),
+            );
+        }
+
+        $priceQuery = $manager->createQueryBuilder()
             ->select('COUNT(marketPrice.id)')
             ->from(MarketPrice::class, 'marketPrice')
             ->innerJoin('marketPrice.product', 'product')
@@ -35,14 +51,39 @@ final class DashboardController extends AbstractDashboardController
             ->setParameter('active', true)
             ->setParameter('internalMarket', 'US')
             ->andWhere('marketPrice.published = :published')
-            ->setParameter('published', false)
+            ->setParameter('published', false);
+        if (!$isGlobal) {
+            $priceQuery->andWhere('marketPrice.market = :assignedMarket')->setParameter('assignedMarket', $assignedMarket);
+        }
+        $unpublishedPriceCount = (int) $priceQuery
             ->getQuery()
             ->getSingleScalarResult();
 
+        $productCount = $isGlobal
+            ? $manager->getRepository(Product::class)->count(['active' => true])
+            : (int) $manager->createQueryBuilder()
+                ->select('COUNT(DISTINCT product.id)')
+                ->from(MarketPrice::class, 'marketPrice')
+                ->innerJoin('marketPrice.product', 'product')
+                ->andWhere('marketPrice.market = :assignedMarket')
+                ->andWhere('marketPrice.published = :published')
+                ->andWhere('product.active = :active')
+                ->setParameter('assignedMarket', $assignedMarket)
+                ->setParameter('published', true)
+                ->setParameter('active', true)
+                ->getQuery()
+                ->getSingleScalarResult();
+        $orderCount = static fn (string $status): int => $manager->getRepository(CustomerOrder::class)->count(
+            $isGlobal ? ['status' => $status] : ['status' => $status, 'market' => $assignedMarket],
+        );
+
         return $this->render('admin/dashboard.html.twig', [
-            'productCount' => $manager->getRepository(Product::class)->count(['active' => true]),
-            'marketCount' => $manager->getRepository(Market::class)->count(['active' => true]),
-            'warehouseCount' => $manager->getRepository(Warehouse::class)->count(['active' => true]),
+            'scopeLabel' => $isGlobal ? 'Tous les marchés' : $assignedMarket?->getName(),
+            'productCount' => $productCount,
+            'marketCount' => $isGlobal ? $manager->getRepository(Market::class)->count(['active' => true]) : ($assignedMarket?->isActive() ? 1 : 0),
+            'warehouseCount' => $isGlobal
+                ? $manager->getRepository(Warehouse::class)->count(['active' => true])
+                : $manager->getRepository(Warehouse::class)->count(['active' => true, 'market' => $assignedMarket]),
             'unpublishedPriceCount' => $unpublishedPriceCount,
             'lowStockCount' => count(array_filter($inventories, static fn (Inventory $inventory): bool =>
                 $inventory->getProduct()->isActive()
@@ -50,10 +91,10 @@ final class DashboardController extends AbstractDashboardController
                 && !$inventory->getWarehouse()->isCentral()
                 && $inventory->isLowStock()
             )),
-            'pendingOrderCount' => $manager->getRepository(CustomerOrder::class)->count(['status' => 'pending_payment']),
-            'preparingOrderCount' => $manager->getRepository(CustomerOrder::class)->count(['status' => 'preparing']),
-            'shippingOrderCount' => $manager->getRepository(CustomerOrder::class)->count(['status' => 'shipped']),
-            'failedOrderCount' => $manager->getRepository(CustomerOrder::class)->count(['status' => 'delivery_failed']) + $manager->getRepository(CustomerOrder::class)->count(['status' => 'payment_failed']),
+            'pendingOrderCount' => $orderCount('pending_payment'),
+            'preparingOrderCount' => $orderCount('preparing'),
+            'shippingOrderCount' => $orderCount('shipped'),
+            'failedOrderCount' => $orderCount('delivery_failed') + $orderCount('payment_failed'),
         ]);
     }
 
@@ -67,23 +108,31 @@ final class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Vue d’ensemble', 'fa fa-chart-line');
-        yield MenuItem::section('Catalogue');
-        yield MenuItem::linkTo(CategoryCrudController::class, 'Catégories', 'fa fa-layer-group');
-        yield MenuItem::linkTo(ProductCrudController::class, 'Produits', 'fa fa-jar');
+        yield MenuItem::section('Marché');
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            yield MenuItem::linkTo(CategoryCrudController::class, 'Catégories', 'fa fa-layer-group');
+            yield MenuItem::linkTo(ProductCrudController::class, 'Produits', 'fa fa-jar');
+        }
         yield MenuItem::linkToRoute('Prix & stocks par pays', 'fa fa-table-cells', 'admin_catalog_by_market');
-        yield MenuItem::linkTo(MarketPriceCrudController::class, 'Prix par marché', 'fa fa-tags');
         yield MenuItem::linkToRoute('Commandes par pays', 'fa fa-receipt', 'admin_orders_by_market');
-        yield MenuItem::linkTo(PaymentCrudController::class, 'Paiements', 'fa fa-money-check');
         yield MenuItem::linkToRoute('Paiements par pays', 'fa fa-wallet', 'admin_payment_methods_by_market');
-        yield MenuItem::linkTo(PaymentMethodCrudController::class, 'Moyens de paiement · avancé', 'fa fa-sliders');
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            yield MenuItem::linkTo(MarketPriceCrudController::class, 'Prix par marché', 'fa fa-tags');
+            yield MenuItem::linkTo(PaymentCrudController::class, 'Paiements', 'fa fa-money-check');
+            yield MenuItem::linkTo(PaymentMethodCrudController::class, 'Moyens de paiement · avancé', 'fa fa-sliders');
+        }
         yield MenuItem::section('Logistique');
         yield MenuItem::linkToRoute('Transferts de stock', 'fa fa-arrow-right-arrow-left', 'admin_stock_transfers');
         yield MenuItem::linkToRoute('Journal des stocks', 'fa fa-clock-rotate-left', 'admin_stock_movements');
         yield MenuItem::linkToRoute('Stocks à surveiller', 'fa fa-triangle-exclamation', 'admin_stock_alerts_by_market');
-        yield MenuItem::linkTo(InventoryCrudController::class, 'Stocks · consultation', 'fa fa-boxes-stacked');
-        yield MenuItem::linkTo(WarehouseCrudController::class, 'Entrepôts', 'fa fa-warehouse');
-        yield MenuItem::linkTo(MarketCrudController::class, 'Marchés', 'fa fa-earth-africa');
-        yield MenuItem::linkTo(ShippingRateCrudController::class, 'Tarifs de livraison', 'fa fa-truck');
+        yield MenuItem::linkToRoute('Stocks · consultation', 'fa fa-boxes-stacked', 'admin_stock_consultation_by_market');
+        yield MenuItem::linkToRoute('Tarifs de livraison', 'fa fa-truck', 'admin_shipping_rates_by_market');
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            yield MenuItem::linkTo(WarehouseCrudController::class, 'Entrepôts', 'fa fa-warehouse');
+            yield MenuItem::linkTo(MarketCrudController::class, 'Marchés', 'fa fa-earth-africa');
+            yield MenuItem::section('Administration');
+            yield MenuItem::linkToRoute('Utilisateurs', 'fa fa-users-gear', 'admin_users');
+        }
         yield MenuItem::section();
         yield MenuItem::linkToRoute('Voir la boutique', 'fa fa-arrow-up-right-from-square', 'app_catalog');
         yield MenuItem::linkToLogout('Se déconnecter', 'fa fa-right-from-bracket');
