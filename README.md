@@ -11,7 +11,10 @@ La plateforme gère notamment :
 - les prix et les stocks par entrepôt ;
 - le retrait en dépôt ou la livraison locale ;
 - le paiement Mobile Money à validation manuelle et le paiement en espèces au retrait ;
-- le suivi des commandes, les notifications par e-mail et l'administration.
+- le suivi des commandes, les notifications par e-mail et l'administration ;
+- l’interface client en français, anglais et arabe avec affichage RTL ;
+- les e-mails client dans la langue utilisée lors de la commande ;
+- les pages légales et de confidentialité configurables.
 
 ## Prérequis
 
@@ -35,6 +38,21 @@ symfony server:start
 La boutique est ensuite accessible sur `http://localhost:8000/` et l'administration sur `http://localhost:8000/admin`.
 
 Les paramètres propres à l'environnement (base de données, messagerie et secrets) doivent être renseignés dans `.env.local`. Ce fichier n'est jamais versionné.
+
+Avant la mise en ligne, renseignez également dans `.env.local` toutes les variables
+`AURIM_LEGAL_*` documentées dans `.env.example` : identité et forme juridique,
+immatriculation, siège, contact, direction de publication et hébergeur. Les pages
+légales affichent volontairement un avertissement tant que ces informations sont
+incomplètes.
+
+Les traductions françaises, anglaises et arabes des neuf produits du catalogue
+sont chargées par `app:catalog:seed`. Pour les nouveaux produits, les contenus
+anglais et arabes se saisissent dans l’administration ; un champ non renseigné
+utilise automatiquement sa version française.
+
+Les prix réels, les quantités en stock, les adresses des dépôts, les tarifs de
+livraison et les coordonnées Mobile Money sont des données d’exploitation à
+renseigner dans l’administration avant la mise en ligne.
 
 Pour créer un administrateur limité à un pays, indiquez le code de son marché :
 

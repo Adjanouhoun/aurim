@@ -1,77 +1,77 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Suivre ma commande — AURIM{% endblock %}
+{% block title %}{{ 'tracking.meta_title'|trans }}{% endblock %}
 
 {% block body %}
 {% include '_header.html.twig' %}
 <main class="tracking-page">
     <section class="tracking-hero">
         <div class="tracking-intro">
-            <p class="eyebrow">Votre commande AURIM</p>
-            <h1>Suivez chaque étape de votre rituel.</h1>
-            <p>Consultez en un instant la préparation, l’expédition ou la disponibilité de votre commande au dépôt.</p>
+            <p class="eyebrow">{{ 'tracking.hero.eyebrow'|trans }}</p>
+            <h1>{{ 'tracking.hero.title'|trans }}</h1>
+            <p>{{ 'tracking.hero.text'|trans }}</p>
             <div class="tracking-reassurance">
-                <span><b>01</b> Référence sécurisée</span>
-                <span><b>02</b> Mise à jour du statut</span>
-                <span><b>03</b> Suivi local</span>
+                <span><b>01</b> {{ 'tracking.hero.secure'|trans }}</span>
+                <span><b>02</b> {{ 'tracking.hero.status'|trans }}</span>
+                <span><b>03</b> {{ 'tracking.hero.local'|trans }}</span>
             </div>
         </div>
 
         <div class="tracking-search">
             <span class="tracking-search-mark">A</span>
-            <p class="eyebrow">Retrouver ma commande</p>
-            <h2>Renseignez vos informations</h2>
-            <p>Votre référence figure dans l’e-mail de confirmation.</p>
-            {% if error %}<div class="tracking-error" role="alert">{{ error }}</div>{% endif %}
+            <p class="eyebrow">{{ 'tracking.search.eyebrow'|trans }}</p>
+            <h2>{{ 'tracking.search.title'|trans }}</h2>
+            <p>{{ 'tracking.search.text'|trans }}</p>
+            {% if error %}<div class="tracking-error" role="alert">{{ error|trans }}</div>{% endif %}
             <form method="post" action="{{ path('app_order_tracking') }}" data-turbo="false">
                 <input type="hidden" name="_token" value="{{ csrf_token('order-tracking') }}">
-                <label for="tracking-reference">Référence de commande</label>
+                <label for="tracking-reference">{{ 'tracking.search.reference'|trans }}</label>
                 <input id="tracking-reference" name="reference" placeholder="AUR-260814-XXXXXXXXXXXX" value="{{ app.request.request.get('reference') }}" autocomplete="off" required>
-                <label for="tracking-email">Adresse e-mail</label>
+                <label for="tracking-email">{{ 'tracking.search.email'|trans }}</label>
                 <input id="tracking-email" type="email" name="email" placeholder="vous@exemple.com" value="{{ app.request.request.get('email') }}" autocomplete="email" required>
-                <button class="button" type="submit">Afficher le suivi <span>→</span></button>
+                <button class="button" type="submit">{{ 'tracking.search.submit'|trans }} <span>→</span></button>
             </form>
         </div>
     </section>
 
     {% if order %}
-        {% set statusLabels = {'pending_payment':'En attente de paiement','preparing':'En préparation','shipped':order.fulfillmentType == 'pickup' ? 'Prête au retrait' : 'Expédiée','delivered':order.fulfillmentType == 'pickup' ? 'Remise' : 'Livrée','delivery_failed':'Livraison échouée','payment_failed':'Paiement échoué / commande annulée','cancelled':'Commande annulée','refunded':'Commande remboursée'} %}
+        {% set statusLabels = {'pending_payment':'tracking.status.pending_payment'|trans,'preparing':'tracking.status.preparing'|trans,'shipped':(order.fulfillmentType == 'pickup' ? 'tracking.status.ready' : 'tracking.status.shipped')|trans,'delivered':(order.fulfillmentType == 'pickup' ? 'tracking.status.handed' : 'tracking.status.delivered')|trans,'delivery_failed':'tracking.status.delivery_failed'|trans,'payment_failed':'tracking.status.payment_failed'|trans,'cancelled':'tracking.status.cancelled'|trans,'refunded':'tracking.status.refunded'|trans} %}
         {% set progress = {'pending_payment':1,'preparing':2,'shipped':3,'delivered':4}[order.status] ?? 0 %}
-        {% set paymentLabels = {'pending':'En attente','received':'Reçu','failed':'Échoué','refunded':'Remboursé'} %}
+        {% set paymentLabels = {'pending':'tracking.payment.pending'|trans,'received':'tracking.payment.received'|trans,'failed':'tracking.payment.failed'|trans,'refunded':'tracking.payment.refunded'|trans} %}
         <section class="tracking-result" aria-live="polite">
             <header class="tracking-result-head">
                 <div>
                     <p class="eyebrow">Commande {{ order.reference }}</p>
                     <h2>{{ statusLabels[order.status] ?? order.status }}</h2>
-                    <p>Dernier statut connu de votre commande.</p>
+                    <p>{{ 'tracking.result.latest'|trans }}</p>
                 </div>
-                <div class="tracking-order-total"><span>Total</span><strong>{{ order.totalMinor|price(order.currencyCode) }}</strong></div>
+                <div class="tracking-order-total"><span>{{ 'tracking.result.total'|trans }}</span><strong>{{ order.totalMinor|price(order.currencyCode) }}</strong></div>
             </header>
 
             {% if progress %}
                 <ol class="tracking-steps">
-                    {% for number,label in {1:'Commande enregistrée',2:'En préparation',3:order.fulfillmentType == 'pickup' ? 'Prête au retrait' : 'Expédiée',4:order.fulfillmentType == 'pickup' ? 'Remise' : 'Livrée'} %}
+                    {% for number,label in {1:'tracking.steps.created'|trans,2:'tracking.status.preparing'|trans,3:(order.fulfillmentType == 'pickup' ? 'tracking.status.ready' : 'tracking.status.shipped')|trans,4:(order.fulfillmentType == 'pickup' ? 'tracking.status.handed' : 'tracking.status.delivered')|trans} %}
                         <li class="{{ progress >= number ? 'complete' : '' }} {{ progress == number ? 'current' : '' }}">
                             <span>{{ '%02d'|format(number) }}</span>
-                            <div><strong>{{ label }}</strong>{% if progress == number %}<small>Étape actuelle</small>{% endif %}</div>
+                            <div><strong>{{ label }}</strong>{% if progress == number %}<small>{{ 'tracking.steps.current'|trans }}</small>{% endif %}</div>
                         </li>
                     {% endfor %}
                 </ol>
             {% else %}
-                <div class="tracking-error tracking-status-error">{{ statusLabels[order.status] ?? 'Cette commande nécessite votre attention.' }}</div>
+                <div class="tracking-error tracking-status-error">{{ statusLabels[order.status] ?? 'tracking.status.attention'|trans }}</div>
             {% endif %}
 
             <div class="tracking-details">
-                <article><span>Mode de réception</span><strong>{{ order.fulfillmentLabel }}</strong><small>{{ order.fulfillmentType == 'pickup' ? 'Retrait au dépôt choisi' : 'Livraison à l’adresse indiquée' }}</small></article>
-                <article><span>Paiement</span><strong>{{ order.paymentMethodName }}</strong><small>{{ order.payment ? paymentLabels[order.payment.status] ?? order.payment.status : 'Information à venir' }}</small></article>
-                <article><span>{{ order.fulfillmentType == 'pickup' ? 'Dépôt de retrait' : 'Adresse de livraison' }}</span><strong>{{ order.fulfillmentType == 'pickup' and order.fulfillmentAddress ? order.fulfillmentAddress : order.addressLine }}</strong><small>{{ order.city }}</small></article>
+                <article><span>{{ 'tracking.details.fulfillment'|trans }}</span><strong>{{ order.fulfillmentLabel }}</strong><small>{{ (order.fulfillmentType == 'pickup' ? 'tracking.details.pickup' : 'tracking.details.delivery')|trans }}</small></article>
+                <article><span>{{ 'tracking.details.payment'|trans }}</span><strong>{{ order.paymentMethodName }}</strong><small>{{ order.payment ? paymentLabels[order.payment.status] ?? order.payment.status : 'tracking.details.pending_info'|trans }}</small></article>
+                <article><span>{{ (order.fulfillmentType == 'pickup' ? 'tracking.details.pickup_location' : 'tracking.details.delivery_address')|trans }}</span><strong>{{ order.fulfillmentType == 'pickup' and order.fulfillmentAddress ? order.fulfillmentAddress : order.addressLine }}</strong><small>{{ order.city }}</small></article>
             </div>
         </section>
     {% else %}
         <section class="tracking-help">
-            <p class="eyebrow">Besoin d’aide ?</p>
-            <h2>Votre référence commence par AUR-</h2>
-            <p>Utilisez exactement l’adresse e-mail saisie lors de la commande. Pour protéger vos informations, aucun résultat ne sera affiché si les deux données ne correspondent pas.</p>
+            <p class="eyebrow">{{ 'tracking.help.eyebrow'|trans }}</p>
+            <h2>{{ 'tracking.help.title'|trans }}</h2>
+            <p>{{ 'tracking.help.text'|trans }}</p>
         </section>
     {% endif %}
 </main>

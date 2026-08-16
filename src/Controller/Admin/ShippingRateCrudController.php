@@ -22,6 +22,8 @@ final class ShippingRateCrudController extends AbstractCrudController
         yield AssociationField::new('market', 'Marché');
         yield ChoiceField::new('fulfillmentType', 'Mode')->setChoices(['Livraison à domicile' => 'delivery', 'Retrait dans un dépôt' => 'pickup']);
         yield TextField::new('label', 'Nom affiché')->setHelp('Exemple : Livraison à Nouakchott ou Dépôt AURIM Dakar.');
+        yield TextField::new('labelEn', 'Nom affiché en anglais')->hideOnIndex()->setRequired(false);
+        yield TextField::new('labelAr', 'Nom affiché en arabe')->hideOnIndex()->setRequired(false)->setFormTypeOption('attr.dir', 'rtl');
         yield TextField::new('city', 'Ville ou zone');
         yield TextField::new('addressLine', 'Adresse du dépôt')->setHelp('Obligatoire pour un retrait en dépôt.')->hideOnIndex();
         yield IntegerField::new('amountMinor', 'Montant en unité minimale')

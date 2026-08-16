@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="fr">
-<body style="margin:0;background:#f7f1e8;color:#30251c;font-family:Arial,sans-serif">
+<html lang="{{ order.locale }}" dir="{{ order.locale == 'ar' ? 'rtl' : 'ltr' }}">
+<body style="margin:0;background:#f7f1e8;color:#30251c;font-family:Arial,sans-serif;text-align:{{ order.locale == 'ar' ? 'right' : 'left' }}">
 <div style="max-width:640px;margin:0 auto;padding:32px 20px">
     <div style="background:#fffaf3;border:1px solid #dfc89d;padding:32px">
         <p style="margin:0;color:#a4772f;letter-spacing:3px;font-size:13px">AURIM · GLOWING BY RIMA</p>
-        <h1 style="font-family:Georgia,serif;font-weight:400">Paiement confirmé</h1>
-        <p>Bonjour {{ order.customerName }},</p>
-        <p>Nous avons bien reçu votre paiement Mobile Money de <strong>{{ payment.amountMinor|price(payment.currencyCode) }}</strong> effectué via <strong>{{ payment.method.name }}</strong>.</p>
-        <p><strong>Référence de commande :</strong> {{ order.reference }}</p>
-        <p><strong>Numéro utilisé pour le paiement :</strong> {{ payment.payerPhone }}</p>
-        {% if payment.externalReference %}<p><strong>Référence opérateur :</strong> {{ payment.externalReference }}</p>{% endif %}
-        <p>Votre commande est maintenant validée. Nous vous tiendrons informé(e) de sa préparation et de sa remise ou livraison.</p>
-        <p style="font-size:13px;color:#74675c">Merci pour votre confiance.<br>L’équipe AURIM</p>
+        <h1 style="font-family:Georgia,serif;font-weight:400">{{ 'email.payment.title'|trans }}</h1>
+        <p>{{ 'email.common.hello'|trans({'%name%': order.customerName}) }}</p>
+        <p>{{ 'email.payment.received'|trans }} <strong>{{ payment.amountMinor|price(payment.currencyCode) }}</strong> {{ 'email.payment.via'|trans }} <strong>{{ payment.method.localizedName(order.locale) }}</strong>.</p>
+        <p><strong>{{ 'email.payment.order_reference'|trans }} :</strong> {{ order.reference }}</p>
+        <p><strong>{{ 'email.payment.payer_phone'|trans }} :</strong> {{ payment.payerPhone }}</p>
+        {% if payment.externalReference %}<p><strong>{{ 'email.payment.operator_reference'|trans }} :</strong> {{ payment.externalReference }}</p>{% endif %}
+        <p>{{ 'email.payment.next'|trans }}</p>
+        <p style="font-size:13px;color:#74675c">{{ 'email.common.thanks'|trans }}<br>{{ 'email.common.team'|trans }}</p>
     </div>
 </div>
 </body>

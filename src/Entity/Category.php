@@ -16,6 +16,12 @@ class Category
     #[ORM\Column(length: 120)]
     private string $name;
 
+    #[ORM\Column(length: 120, nullable: true)]
+    private ?string $nameEn = null;
+
+    #[ORM\Column(length: 120, nullable: true)]
+    private ?string $nameAr = null;
+
     #[ORM\Column(length: 140, unique: true)]
     private string $slug;
 
@@ -38,6 +44,18 @@ class Category
     public function __toString(): string { return $this->name; }
     public function getName(): string { return $this->name; }
     public function setName(string $name): self { $this->name = $name; return $this; }
+    public function getNameEn(): ?string { return $this->nameEn; }
+    public function setNameEn(?string $name): self { $this->nameEn = $this->clean($name); return $this; }
+    public function getNameAr(): ?string { return $this->nameAr; }
+    public function setNameAr(?string $name): self { $this->nameAr = $this->clean($name); return $this; }
+    public function getLocalizedName(string $locale): string
+    {
+        return match ($locale) {
+            'en' => $this->nameEn ?: $this->name,
+            'ar' => $this->nameAr ?: $this->name,
+            default => $this->name,
+        };
+    }
     public function getSlug(): string { return $this->slug; }
     public function setSlug(string $slug): self { $this->slug = $slug; return $this; }
     public function getPosition(): int { return $this->position; }
@@ -49,5 +67,12 @@ class Category
     public function getActiveProductCount(): int
     {
         return $this->products->filter(static fn (Product $product): bool => $product->isActive())->count();
+    }
+
+    private function clean(?string $value): ?string
+    {
+        $value = null === $value ? null : trim($value);
+
+        return '' === $value ? null : $value;
     }
 }

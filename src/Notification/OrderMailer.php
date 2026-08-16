@@ -10,6 +10,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class OrderMailer
 {
@@ -17,18 +18,20 @@ final class OrderMailer
         private readonly MailerInterface $mailer,
         private readonly LoggerInterface $logger,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly TranslatorInterface $translator,
         private readonly string $senderAddress,
         private readonly string $adminAddress,
     ) {}
 
     public function sendOrderCreated(CustomerOrder $order, Payment $payment): void
     {
+        $confirmationPath = $this->urlGenerator->generate('app_order_confirmation', ['reference' => $order->getReference()]);
         $context = [
             'order' => $order,
             'payment' => $payment,
             'confirmationUrl' => $this->urlGenerator->generate(
-                'app_order_confirmation',
-                ['reference' => $order->getReference()],
+                'app_locale_switch',
+                ['locale' => $order->getLocale(), 'returnTo' => $confirmationPath],
                 UrlGeneratorInterface::ABSOLUTE_URL,
             ),
         ];
@@ -36,8 +39,9 @@ final class OrderMailer
         $this->send((new TemplatedEmail())
             ->from(new Address($this->senderAddress, 'AURIM'))
             ->to(new Address($order->getEmail(), $order->getCustomerName()))
-            ->subject('Commande AURIM '.$order->getReference())
+            ->subject($this->trans('email.order.subject', $order, ['%reference%' => $order->getReference()]))
             ->htmlTemplate('emails/order_confirmation.html.twig')
+            ->locale($order->getLocale())
             ->context($context));
 
         $this->send((new TemplatedEmail())
@@ -55,65 +59,43 @@ final class OrderMailer
         $this->send((new TemplatedEmail())
             ->from(new Address($this->senderAddress, 'AURIM'))
             ->to(new Address($order->getEmail(), $order->getCustomerName()))
-            ->subject('Paiement confirmé — '.$order->getReference())
+            ->subject($this->trans('email.payment.subject', $order, ['%reference%' => $order->getReference()]))
             ->htmlTemplate('emails/payment_received.html.twig')
+            ->locale($order->getLocale())
             ->context(['order' => $order, 'payment' => $payment]));
     }
 
     public function sendStatusChanged(CustomerOrder $order, string $status): void
     {
-        $content = match ($status) {
-            'preparing' => [
-                'subject' => 'Votre commande AURIM est en préparation',
-                'title' => 'Votre commande est en préparation',
-                'message' => 'Notre équipe prépare soigneusement votre commande. Nous vous informerons dès qu’elle sera prête à être remise ou expédiée.',
-            ],
-            'shipped' => 'pickup' === $order->getFulfillmentType() ? [
-                'subject' => 'Votre commande AURIM est prête au retrait',
-                'title' => 'Votre commande est prête',
-                'message' => sprintf('Votre commande vous attend au dépôt %s. Présentez votre référence lors du retrait.', $order->getFulfillmentLabel()),
-            ] : [
-                'subject' => 'Votre commande AURIM est en livraison',
-                'title' => 'Votre commande est en route',
-                'message' => 'Votre commande a quitté notre dépôt et sera livrée à l’adresse indiquée.',
-            ],
-            'delivered' => [
-                'subject' => 'Votre commande AURIM a été remise',
-                'title' => 'Votre commande a été remise',
-                'message' => 'Votre commande est maintenant terminée. Merci d’avoir choisi AURIM pour votre rituel beauté.',
-            ],
-            'cancelled' => [
-                'subject' => 'Votre commande AURIM a été annulée',
-                'title' => 'Commande annulée',
-                'message' => 'Votre commande a été annulée. Si vous avez déjà effectué un paiement, contactez AURIM en indiquant votre référence.',
-            ],
-            'payment_failed' => [
-                'subject' => 'Le paiement de votre commande AURIM a échoué',
-                'title' => 'Paiement non validé',
-                'message' => 'Nous n’avons pas pu valider votre paiement Mobile Money. La commande a été annulée et le stock réservé a été libéré.',
-            ],
-            'delivery_failed' => [
-                'subject' => 'La livraison de votre commande AURIM a échoué',
-                'title' => 'Livraison non aboutie',
-                'message' => 'La livraison n’a pas pu être effectuée. Notre équipe vous contactera pour organiser une nouvelle tentative ou une annulation.',
-            ],
-            'refunded' => [
-                'subject' => 'Votre commande AURIM a été remboursée',
-                'title' => 'Remboursement enregistré',
-                'message' => 'Le remboursement de votre commande a été enregistré. Le délai de réception dépend du moyen de paiement utilisé.',
-            ],
+        $statusKey = match ($status) {
+            'shipped' => 'pickup' === $order->getFulfillmentType() ? 'ready' : 'shipped',
+            'preparing', 'delivered', 'cancelled', 'payment_failed', 'delivery_failed', 'refunded' => $status,
             default => null,
         };
-        if (null === $content) {
+        if (null === $statusKey) {
             return;
         }
+
+        $parameters = ['%fulfillment%' => $order->getFulfillmentLabel()];
+        $content = [
+            'subject' => $this->trans('email.status.'.$statusKey.'.subject', $order, $parameters),
+            'title' => $this->trans('email.status.'.$statusKey.'.title', $order, $parameters),
+            'message' => $this->trans('email.status.'.$statusKey.'.message', $order, $parameters),
+        ];
 
         $this->send((new TemplatedEmail())
             ->from(new Address($this->senderAddress, 'AURIM'))
             ->to(new Address($order->getEmail(), $order->getCustomerName()))
             ->subject($content['subject'].' — '.$order->getReference())
             ->htmlTemplate('emails/order_status_changed.html.twig')
+            ->locale($order->getLocale())
             ->context(['order' => $order, 'title' => $content['title'], 'message' => $content['message']]));
+    }
+
+    /** @param array<string, string> $parameters */
+    private function trans(string $id, CustomerOrder $order, array $parameters = []): string
+    {
+        return $this->translator->trans($id, $parameters, locale: $order->getLocale());
     }
 
     private function send(TemplatedEmail $email): void

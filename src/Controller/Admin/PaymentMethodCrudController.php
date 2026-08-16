@@ -22,10 +22,14 @@ final class PaymentMethodCrudController extends AbstractCrudController
         yield IdField::new('id')->hideOnForm();
         yield AssociationField::new('market', 'Marché');
         yield TextField::new('name', 'Nom affiché');
+        yield TextField::new('nameEn', 'Nom affiché en anglais')->hideOnIndex()->setRequired(false);
+        yield TextField::new('nameAr', 'Nom affiché en arabe')->hideOnIndex()->setRequired(false)->setFormTypeOption('attr.dir', 'rtl');
         yield TextField::new('code', 'Code interne')->setHelp('Exemple : especes_dakar ou orange_money_sn.');
         yield ChoiceField::new('type', 'Type')->setChoices(['Mobile Money manuel' => 'mobile_money_manual', 'Espèces' => 'cash']);
         yield ChoiceField::new('fulfillmentScope', 'Compatible avec')->setChoices(['Retrait et livraison' => 'both', 'Retrait uniquement' => 'pickup', 'Livraison uniquement' => 'delivery']);
         yield TextareaField::new('instructions', 'Instructions client')->hideOnIndex();
+        yield TextareaField::new('instructionsEn', 'Instructions client en anglais')->hideOnIndex()->setRequired(false);
+        yield TextareaField::new('instructionsAr', 'Instructions client en arabe')->hideOnIndex()->setRequired(false)->setFormTypeOption('attr.dir', 'rtl');
         yield TextField::new('recipientAccount', 'Numéro bénéficiaire')
             ->setHelp('Obligatoire pour activer un paiement Mobile Money. Le client enverra réellement son paiement à ce numéro.');
         yield TextField::new('accountHolder', 'Titulaire du compte')->hideOnIndex();

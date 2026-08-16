@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="fr">
-<body style="margin:0;background:#f7f1e8;color:#30251c;font-family:Arial,sans-serif">
+<html lang="{{ order.locale }}" dir="{{ order.locale == 'ar' ? 'rtl' : 'ltr' }}">
+<body style="margin:0;background:#f7f1e8;color:#30251c;font-family:Arial,sans-serif;text-align:{{ order.locale == 'ar' ? 'right' : 'left' }}">
 <div style="max-width:640px;margin:0 auto;padding:32px 20px">
     <div style="background:#fffaf3;border:1px solid #dfc89d;padding:32px">
         <p style="margin:0;color:#a4772f;letter-spacing:3px;font-size:13px">AURIM · GLOWING BY RIMA</p>
         <h1 style="font-family:Georgia,serif;font-weight:400">{{ title }}</h1>
-        <p>Bonjour {{ order.customerName }},</p>
+        <p>{{ 'email.common.hello'|trans({'%name%': order.customerName}) }}</p>
         <p>{{ message }}</p>
-        <p><strong>Référence :</strong> {{ order.reference }}</p>
+        <p><strong>{{ 'email.status.reference'|trans }} :</strong> {{ order.reference }}</p>
         {% if order.fulfillmentType == 'pickup' and order.fulfillmentAddress %}
-            <p><strong>Adresse du dépôt :</strong><br>{{ order.fulfillmentAddress }}</p>
+            <p><strong>{{ 'email.status.pickup_address'|trans }} :</strong><br>{{ order.fulfillmentAddress }}</p>
         {% elseif order.fulfillmentType == 'delivery' %}
-            <p><strong>Adresse de livraison :</strong><br>{{ order.addressLine }}</p>
+            <p><strong>{{ 'email.status.delivery_address'|trans }} :</strong><br>{{ order.addressLine }}</p>
         {% endif %}
-        <p style="font-size:13px;color:#74675c">Merci pour votre confiance.<br>L’équipe AURIM</p>
+        <p style="font-size:13px;color:#74675c">{{ 'email.common.thanks'|trans }}<br>{{ 'email.common.team'|trans }}</p>
     </div>
 </div>
 </body>

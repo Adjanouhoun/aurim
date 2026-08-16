@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ product.name }} — AURIM{% endblock %}
+{% block title %}{{ product.localizedName(app.request.locale) }} — AURIM{% endblock %}
 
 {% block body %}
 {% include '_header.html.twig' %}
@@ -9,94 +9,94 @@
 {% set purchasable = product_offer.purchasable(product) %}
 
 <main class="pdp-page">
-    <nav class="pdp-breadcrumbs" aria-label="Fil d’Ariane">
-        <a href="{{ path('app_home') }}">Accueil</a><span>→</span>
-        <a href="{{ path('app_catalog') }}">Boutique</a><span>→</span>
-        <a href="{{ path('app_catalog', {categorie: product.category.slug}) }}">{{ product.category.name }}</a>
+    <nav class="pdp-breadcrumbs" aria-label="{{ 'product.breadcrumb'|trans }}">
+        <a href="{{ path('app_home') }}">{{ 'product.home'|trans }}</a><span>→</span>
+        <a href="{{ path('app_catalog') }}">{{ 'nav.shop'|trans }}</a><span>→</span>
+        <a href="{{ path('app_catalog', {categorie: product.category.slug}) }}">{{ product.category.localizedName(app.request.locale) }}</a>
     </nav>
 
     <section class="pdp-layout">
         <div class="pdp-gallery" data-product-gallery>
             <div class="pdp-thumbnails" aria-label="Vues du produit">
-                <button class="active" type="button" data-gallery-view="natural" aria-label="Vue principale">
+                <button class="active" type="button" data-gallery-view="natural" aria-label="{{ 'product.main_view'|trans }}">
                     <img src="{{ asset(product.imagePath) }}" alt="" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
                 </button>
-                <button type="button" data-gallery-view="detail" aria-label="Vue rapprochée">
+                <button type="button" data-gallery-view="detail" aria-label="{{ 'product.detail_view'|trans }}">
                     <img src="{{ asset(product.imagePath) }}" alt="" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
                 </button>
             </div>
             <div class="pdp-main-image product-crop-{{ product.imagePosition }}">
-                <img data-gallery-main src="{{ asset(product.imagePath) }}" alt="{{ product.name }} AURIM" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
+                <img data-gallery-main src="{{ asset(product.imagePath) }}" alt="{{ product.localizedName(app.request.locale) }} AURIM" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
                 <span class="pdp-image-label">AURIM · Glowing by Rima</span>
             </div>
         </div>
 
         <div class="pdp-info">
-            <p class="eyebrow">{{ product.category.name }} · {{ product.type }}</p>
-            <h1>{{ product.name }}</h1>
-            <p class="pdp-size">{{ product.size }} · Réf. {{ product.sku }}</p>
-            <p class="pdp-lead">{{ product.shortDescription }}</p>
+            <p class="eyebrow">{{ product.category.localizedName(app.request.locale) }} · {{ product.localizedType(app.request.locale) }}</p>
+            <h1>{{ product.localizedName(app.request.locale) }}</h1>
+            <p class="pdp-size">{{ product.size }} · {{ 'product.reference'|trans }} {{ product.sku }}</p>
+            <p class="pdp-lead">{{ product.localizedShortDescription(app.request.locale) }}</p>
 
             <ul class="pdp-benefits" aria-label="Bénéfices du produit">
-                {% for benefit in product.benefits %}<li>{{ benefit }}</li>{% endfor %}
+                {% for benefit in product.localizedBenefits(app.request.locale) %}<li>{{ benefit }}</li>{% endfor %}
             </ul>
 
             <div class="pdp-price">
                 {% if offerPrice and store_context.selectedMarket %}
                     {{ price_formatter.format(offerPrice.amountMinor, store_context.selectedMarket.currencyCode) }}
                 {% elseif store_context.selectedMarket %}
-                    Prix prochainement disponible
+                    {{ 'product.price_soon'|trans }}
                 {% else %}
-                    Sélectionnez votre pays pour voir le prix
+                    {{ 'product.select_country_price'|trans }}
                 {% endif %}
             </div>
 
-            {% for message in app.flashes('cart_error') %}<div class="product-error">{{ message }}</div>{% endfor %}
+            {% for message in app.flashes('cart_error') %}<div class="product-error">{{ message|trans }}</div>{% endfor %}
             <div class="pdp-availability">
                 <span class="{{ availableQuantity > 0 ? 'available' : '' }}"></span>
                 {% if not store_context.selectedMarket %}
-                    Choisissez votre pays pour vérifier la disponibilité
+                    {{ 'product.select_country_stock'|trans }}
                 {% elseif availableQuantity > 0 %}
-                    En stock · {{ availableQuantity }} disponible{{ availableQuantity > 1 ? 's' : '' }} dans votre pays
+                    {{ 'product.stock_available'|trans({'%count%': availableQuantity, '%suffix%': availableQuantity > 1 ? 's' : ''}) }}
                 {% else %}
-                    Indisponible dans votre pays
+                    {{ 'product.unavailable'|trans }}
                 {% endif %}
             </div>
 
             <form class="pdp-buy" action="{{ path('app_cart_add', {id: product.id}) }}" method="post" data-quantity-picker>
                 <input type="hidden" name="_token" value="{{ csrf_token('cart-add-' ~ product.id) }}">
-                <div class="pdp-quantity" aria-label="Quantité">
-                    <button type="button" data-quantity-minus aria-label="Diminuer la quantité">−</button>
-                    <input type="number" name="quantity" value="1" min="1" max="{{ availableQuantity > 20 ? 20 : (availableQuantity > 0 ? availableQuantity : 1) }}" aria-label="Quantité">
-                    <button type="button" data-quantity-plus aria-label="Augmenter la quantité">+</button>
+                <div class="pdp-quantity" aria-label="{{ 'product.quantity'|trans }}">
+                    <button type="button" data-quantity-minus aria-label="{{ 'product.quantity_decrease'|trans }}">−</button>
+                    <input type="number" name="quantity" value="1" min="1" max="{{ availableQuantity > 20 ? 20 : (availableQuantity > 0 ? availableQuantity : 1) }}" aria-label="{{ 'product.quantity'|trans }}">
+                    <button type="button" data-quantity-plus aria-label="{{ 'product.quantity_increase'|trans }}">+</button>
                 </div>
-                <button class="button {{ not purchasable ? 'button-disabled' : '' }}" type="submit" {{ not purchasable ? 'disabled' : '' }}>Ajouter au panier <span>→</span></button>
+                <button class="button {{ not purchasable ? 'button-disabled' : '' }}" type="submit" {{ not purchasable ? 'disabled' : '' }}>{{ 'product.add_to_cart'|trans }} <span>→</span></button>
             </form>
 
             <div class="pdp-reassurance">
-                <div><span>01</span><p><strong>Stock local</strong><small>Selon le marché sélectionné</small></p></div>
-                <div><span>02</span><p><strong>Livraison ou retrait</strong><small>Choix lors de la commande</small></p></div>
-                <div><span>03</span><p><strong>Paiement adapté</strong><small>Options locales sécurisées</small></p></div>
+                <div><span>01</span><p><strong>{{ 'product.reassurance.stock.title'|trans }}</strong><small>{{ 'product.reassurance.stock.text'|trans }}</small></p></div>
+                <div><span>02</span><p><strong>{{ 'product.reassurance.delivery.title'|trans }}</strong><small>{{ 'product.reassurance.delivery.text'|trans }}</small></p></div>
+                <div><span>03</span><p><strong>{{ 'product.reassurance.payment.title'|trans }}</strong><small>{{ 'product.reassurance.payment.text'|trans }}</small></p></div>
             </div>
 
             <div class="pdp-accordions">
                 <details open>
-                    <summary>Description <span>+</span></summary>
-                    <div class="pdp-accordion-content"><p>{{ product.description }}</p></div>
+                    <summary>{{ 'product.description'|trans }} <span>+</span></summary>
+                    <div class="pdp-accordion-content"><p>{{ product.localizedDescription(app.request.locale) }}</p></div>
                 </details>
                 <details>
-                    <summary>Bénéfices <span>+</span></summary>
-                    <div class="pdp-accordion-content"><ul>{% for benefit in product.benefits %}<li>{{ benefit }}</li>{% endfor %}</ul></div>
+                    <summary>{{ 'product.benefits'|trans }} <span>+</span></summary>
+                    <div class="pdp-accordion-content"><ul>{% for benefit in product.localizedBenefits(app.request.locale) %}<li>{{ benefit }}</li>{% endfor %}</ul></div>
                 </details>
                 <details>
-                    <summary>Actifs & ingrédients <span>+</span></summary>
+                    <summary>{{ 'product.ingredients'|trans }} <span>+</span></summary>
                     <div class="pdp-accordion-content pdp-actives">
-                        {% for ingredient in product.ingredients %}<article><b>0{{ loop.index }}</b><div><strong>{{ ingredient.name }}</strong><p>{{ ingredient.text }}</p></div></article>{% endfor %}
+                        {% for ingredient in product.localizedIngredients(app.request.locale) %}<article><b>0{{ loop.index }}</b><div><strong>{{ ingredient.name }}</strong><p>{{ ingredient.text }}</p></div></article>{% endfor %}
                     </div>
                 </details>
                 <details>
-                    <summary>Conseils d’utilisation <span>+</span></summary>
-                    <div class="pdp-accordion-content"><p>{{ product.usageInstructions }}</p></div>
+                    <summary>{{ 'product.usage'|trans }} <span>+</span></summary>
+                    <div class="pdp-accordion-content"><p>{{ product.localizedUsageInstructions(app.request.locale) }}</p></div>
                 </details>
             </div>
         </div>
@@ -105,10 +105,10 @@
     <section class="pdp-signature">
         <div class="pdp-signature-mark">A</div>
         <div>
-            <p class="eyebrow">Le rituel AURIM</p>
-            <h2>Une peau douce, nourrie et naturellement rayonnante.</h2>
-            <p>Des soins sensoriels imaginés pour transformer chaque geste quotidien en un moment de lumière.</p>
-            <a class="text-link" href="{{ path('app_catalog') }}">Découvrir toute la collection →</a>
+            <p class="eyebrow">{{ 'product.signature.eyebrow'|trans }}</p>
+            <h2>{{ 'product.signature.title'|trans }}</h2>
+            <p>{{ 'product.signature.text'|trans }}</p>
+            <a class="text-link" href="{{ path('app_catalog') }}">{{ 'product.signature.cta'|trans }} →</a>
         </div>
     </section>
 </main>

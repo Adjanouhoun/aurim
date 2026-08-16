@@ -24,7 +24,7 @@ final class OrderTrackingController extends AbstractController
             $email = mb_strtolower(trim((string) $request->request->get('email')));
             $order = $entityManager->getRepository(CustomerOrder::class)->findOneBy(['reference' => $reference, 'email' => $email]);
             if (!$order instanceof CustomerOrder) {
-                $error = 'Aucune commande ne correspond à cette référence et cette adresse e-mail.';
+                $error = 'tracking.error.not_found';
             }
         }
 

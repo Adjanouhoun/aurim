@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/panier')]
 final class CartController extends AbstractController
@@ -24,16 +25,18 @@ final class CartController extends AbstractController
     }
 
     #[Route('/ajouter/{id}', name: 'app_cart_add', methods: ['POST'])]
-    public function add(Product $product, Request $request, Cart $cart, ProductOffer $offer): Response
+    public function add(Product $product, Request $request, Cart $cart, ProductOffer $offer, TranslatorInterface $translator): Response
     {
         $this->assertToken($request, 'cart-add-'.$product->getId());
         $quantity = max(1, $request->request->getInt('quantity', 1));
         if (!$offer->isPurchasable($product, $quantity)) {
-            $this->addFlash('cart_error', 'Ce produit n’est pas encore disponible dans le pays sélectionné.');
+            $this->addFlash('cart_error', $translator->trans('flash.product_unavailable'));
             return $this->redirectToRoute('app_product_show', ['slug' => $product->getSlug()]);
         }
         $cart->add($product, $quantity);
-        $this->addFlash('success', sprintf('%s a été ajouté au panier.', $product->getName()));
+        $this->addFlash('success', $translator->trans('flash.product_added', [
+            '%product%' => $product->getLocalizedName($request->getLocale()),
+        ]));
 
         return $this->redirectToRoute('app_cart');
     }

@@ -96,6 +96,34 @@ final class ProductCrudController extends AbstractCrudController
             ->setRequired(true)
             ->hideOnIndex();
 
+        yield FormField::addFieldset('Traduction anglaise')->setHelp('Les champs laissés vides utilisent automatiquement le contenu français.');
+        yield TextField::new('nameEn', 'Nom commercial (EN)')->setRequired(false)->hideOnIndex();
+        yield TextField::new('typeEn', 'Type de soin (EN)')->setRequired(false)->hideOnIndex();
+        yield TextareaField::new('shortDescriptionEn', 'Résumé produit (EN)')->setRequired(false)->hideOnIndex();
+        yield TextareaField::new('descriptionEn', 'Description complète (EN)')->setRequired(false)->hideOnIndex();
+        yield CollectionField::new('benefitsEn', 'Bénéfices (EN)')
+            ->setEntryType(TextType::class)
+            ->setFormTypeOption('entry_options', ['label' => false])
+            ->allowAdd()->allowDelete()->onlyOnForms();
+        yield CollectionField::new('ingredientsEn', 'Actifs & ingrédients (EN)')
+            ->setEntryType(ProductIngredientType::class)->setEntryIsComplex()
+            ->allowAdd()->allowDelete()->onlyOnForms();
+        yield TextareaField::new('usageInstructionsEn', 'Conseils d’utilisation (EN)')->setRequired(false)->hideOnIndex();
+
+        yield FormField::addFieldset('Traduction arabe')->setHelp('Les champs laissés vides utilisent automatiquement le contenu français.');
+        yield TextField::new('nameAr', 'Nom commercial (AR)')->setRequired(false)->hideOnIndex()->setFormTypeOption('attr.dir', 'rtl');
+        yield TextField::new('typeAr', 'Type de soin (AR)')->setRequired(false)->hideOnIndex()->setFormTypeOption('attr.dir', 'rtl');
+        yield TextareaField::new('shortDescriptionAr', 'Résumé produit (AR)')->setRequired(false)->hideOnIndex()->setFormTypeOption('attr.dir', 'rtl');
+        yield TextareaField::new('descriptionAr', 'Description complète (AR)')->setRequired(false)->hideOnIndex()->setFormTypeOption('attr.dir', 'rtl');
+        yield CollectionField::new('benefitsAr', 'Bénéfices (AR)')
+            ->setEntryType(TextType::class)
+            ->setFormTypeOption('entry_options', ['label' => false, 'attr' => ['dir' => 'rtl']])
+            ->allowAdd()->allowDelete()->onlyOnForms();
+        yield CollectionField::new('ingredientsAr', 'Actifs & ingrédients (AR)')
+            ->setEntryType(ProductIngredientType::class)->setEntryIsComplex()
+            ->allowAdd()->allowDelete()->onlyOnForms();
+        yield TextareaField::new('usageInstructionsAr', 'Conseils d’utilisation (AR)')->setRequired(false)->hideOnIndex()->setFormTypeOption('attr.dir', 'rtl');
+
         yield FormField::addFieldset('Présentation visuelle');
         yield ImageField::new('imagePath', 'Photo')->setBasePath('/')->hideOnForm();
         yield Field::new('imageFile', 'Charger une photo')

@@ -9,6 +9,16 @@
 parameters:
     aurim.email_from: '%env(AURIM_EMAIL_FROM)%'
     aurim.email_admin: '%env(AURIM_EMAIL_ADMIN)%'
+    aurim.legal:
+        company_name: '%env(AURIM_LEGAL_COMPANY_NAME)%'
+        legal_form: '%env(AURIM_LEGAL_FORM)%'
+        registration: '%env(AURIM_LEGAL_REGISTRATION)%'
+        address: '%env(AURIM_LEGAL_ADDRESS)%'
+        contact_email: '%env(AURIM_LEGAL_EMAIL)%'
+        phone: '%env(AURIM_LEGAL_PHONE)%'
+        publication_director: '%env(AURIM_LEGAL_PUBLICATION_DIRECTOR)%'
+        host_name: '%env(AURIM_LEGAL_HOST_NAME)%'
+        host_address: '%env(AURIM_LEGAL_HOST_ADDRESS)%'
 
 services:
     # default configuration for services in *this* file

@@ -1,0 +1,364 @@
+meta:
+  description: "AURIM, premium cosmetics for soft, radiant-looking skin."
+nav:
+  announcement: "Local delivery in Mauritania, Senegal, Mali and Guinea"
+  aria: "Main navigation"
+  menu: "Menu"
+  open_menu: "Open menu"
+  close_menu: "Close menu"
+  shop: "Shop"
+  ritual: "Your ritual"
+  ingredients: "Our ingredients"
+  story: "Our story"
+  tracking: "Track my order"
+  country: "Country"
+  choose: "Choose"
+  language: "Website language"
+  cart: "Cart (%count%)"
+market:
+  MR: "Mauritania"
+  SN: "Senegal"
+  ML: "Mali"
+  GN: "Guinea"
+  US: "United States"
+footer:
+  tagline: "Beauty that radiates."
+  legal_navigation: "Legal information"
+  rights: "All rights reserved."
+home:
+  meta_title: "AURIM — Beauty that radiates"
+  hero:
+    eyebrow: "The illuminating body ritual"
+    title: "Reveal your skin’s natural radiance."
+    text: "Generous turmeric, vitamin C and niacinamide skincare designed to exfoliate, nourish and illuminate the skin."
+    cta: "Discover the collection"
+  trust:
+    stock: { title: "Local stock", text: "Faster delivery" }
+    payment: { title: "Suitable payment", text: "For every market" }
+    formulas: { title: "Expert formulas", text: "Recognised active ingredients" }
+    service: { title: "Customer care", text: "Here to help" }
+  essentials:
+    eyebrow: "AURIM essentials"
+    title: "The steps to radiant skin"
+    navigation: "Product navigation"
+    previous: "Previous product"
+    next: "Next product"
+    discover: "Discover this treatment"
+    empty: "No essentials are currently published."
+  ritual:
+    eyebrow: "Two steps, lasting radiance"
+    title: "The AURIM ritual"
+    step1: { title: "Exfoliate", text: "Massage the scrub onto damp skin to smooth its texture." }
+    step2: { title: "Nourish", text: "Apply the body butter to wrap your skin in comfort." }
+    step3: { title: "Glow", text: "Enjoy soft, even and naturally radiant-looking skin." }
+  ingredients:
+    eyebrow: "At the heart of our formulas"
+    title: "Ingredients selected for your radiance"
+    turmeric: { title: "Turmeric", text: "Known to help revive radiance and visibly even the skin." }
+    vitamin_c: { title: "Vitamin C", text: "An essential active ingredient for supporting a luminous complexion." }
+    niacinamide: { title: "Niacinamide", text: "Helps strengthen the skin barrier and improve texture." }
+  story:
+    title: "Radiant beauty, created for you."
+    text: "AURIM creates sensorial skincare that transforms your daily routine into a moment of softness and confidence."
+    cta: "Discover our story"
+catalog:
+  meta_title: "Shop — AURIM"
+  eyebrow: "The AURIM collection"
+  title: "Skincare that reveals your light."
+  text: "Discover the AURIM turmeric, vitamin C and niacinamide ritual."
+  filter: "Filter by"
+  all: "All skincare"
+  count: "%count% products"
+  sort: "Sort: Newest"
+  new: "New"
+  in_stock: "In stock in your country"
+  out_of_stock: "Out of stock"
+  price_soon: "Price coming soon"
+  choose_country: "Choose your country"
+product:
+  breadcrumb: "Breadcrumb"
+  home: "Home"
+  main_view: "Main view"
+  detail_view: "Close-up view"
+  reference: "Ref."
+  price_soon: "Price available soon"
+  select_country_price: "Select your country to see the price"
+  select_country_stock: "Choose your country to check availability"
+  stock_available: "In stock · %count% available in your country"
+  unavailable: "Unavailable in your country"
+  quantity: "Quantity"
+  quantity_decrease: "Decrease quantity"
+  quantity_increase: "Increase quantity"
+  add_to_cart: "Add to cart"
+  reassurance:
+    stock: { title: "Local stock", text: "Based on the selected market" }
+    delivery: { title: "Delivery or pickup", text: "Choose during checkout" }
+    payment: { title: "Suitable payment", text: "Secure local options" }
+  description: "Description"
+  benefits: "Benefits"
+  ingredients: "Active ingredients"
+  usage: "How to use"
+  signature:
+    eyebrow: "The AURIM ritual"
+    title: "Soft, nourished and naturally radiant-looking skin."
+    text: "Sensorial skincare imagined to transform every daily step into a moment of light."
+    cta: "Discover the full collection"
+flash:
+  product_unavailable: "This product is not yet available in the selected country."
+  product_added: "%product% has been added to your cart."
+cart:
+  meta_title: "Your cart — AURIM"
+  eyebrow: "Your selection"
+  title: "My cart"
+  empty: { title: "Your cart is empty.", text: "Discover AURIM skincare and create your ritual.", cta: "Visit the shop" }
+  stock:
+    none: "Out of stock in your country."
+    limited: "Only %count% available. Reduce the quantity."
+  update: "Update"
+  price_confirm: "Price to be confirmed"
+  remove: "Remove"
+  summary: "Summary"
+  subtotal: "Product subtotal"
+  to_confirm: "To be confirmed"
+  shipping_note: "Pickup or delivery charges will be added at the next step."
+  warning:
+    country: "Select your country before continuing."
+    price: "Prices for this market must be published in the administration."
+    stock: "Your cart does not have enough stock. Adjust quantities or remove the unavailable product."
+  checkout: "Choose delivery"
+checkout:
+  meta_title: "Delivery — AURIM"
+  eyebrow: "Complete your order"
+  title: "Your delivery details"
+  local_delivery: "Local delivery in %market%"
+  no_shipping: "No delivery or pickup option is configured for this country yet."
+  errors:
+    title: "The order was not created. Check the following information:"
+  full_name: "Full name"
+  email: "Email address"
+  phone: "Phone"
+  mobile_phone: "Mobile Money number used for payment"
+  fulfillment:
+    legend: "How would you like to receive your order?"
+    pickup: "Pickup from a local depot"
+    delivery: "Home delivery"
+  days: "%min%–%max% days"
+  free: "Free"
+  payment:
+    legend: "How would you like to pay?"
+    choose_fulfillment: "Choose your delivery method first to display the available payments."
+    cash: "Cash"
+    mobile: "Mobile Money"
+    online: "Online"
+    none_country: "No active payment method for this country."
+    none_fulfillment: "No payment method is configured for this delivery option yet."
+    phone_help_title: "Important: identifying your payment"
+    phone_help_text: "Enter the Mobile Money number you will use for the transfer above. AURIM will use that same number to find and validate your payment."
+  address: "Your address and directions"
+  submit: "Create order"
+  summary:
+    title: "Your order"
+    subtotal: "Subtotal"
+    fulfillment: "Delivery"
+    select: "Select an option"
+    total: "Total"
+    note: "The total is recalculated immediately based on your chosen depot or delivery option."
+  error:
+    country_price: "Select a country and check prices before continuing."
+    stock_changed: "One product in your cart is no longer available in sufficient quantity. Check your cart."
+    fulfillment: "Select a delivery method."
+    payment: "Select a payment method."
+    payment_incompatible: "This payment method is not compatible with the selected delivery method."
+    name: "Enter the recipient’s full name."
+    email: "Enter a valid email address."
+    phone: "Enter a valid phone number."
+    address: "Enter the delivery address."
+    warehouse: "No local stock is configured for this country."
+    product_stock: "One of the products does not have enough stock."
+    concurrent_stock: "Stock has just changed. Check your cart before trying again."
+confirmation:
+  eyebrow: "Order recorded"
+  thanks: "Thank you, %name%."
+  reference: "Your reference is"
+  fulfillment: "Delivery method"
+  subtotal: "Subtotal"
+  shipping: "Delivery charges"
+  total: "Total to pay"
+  cash:
+    eyebrow: "Payment at the depot"
+    amount: "Amount to pay upon pickup:"
+    reference: "Present your reference"
+  mobile:
+    eyebrow: "Mobile Money payment"
+    send: "Send exactly"
+    to_number: "to this number:"
+    number_later: "Number to be provided by AURIM"
+    holder: "Account holder"
+    payer: "Use payer number %phone%."
+    validation: "AURIM will validate your order manually after receiving the payment."
+  home: "Back to home"
+  tracking: "Track my order"
+tracking:
+  meta_title: "Track my order — AURIM"
+  error:
+    not_found: "No order matches this reference and email address."
+  hero:
+    eyebrow: "Your AURIM order"
+    title: "Follow every step of your ritual."
+    text: "Instantly check whether your order is being prepared, shipped or ready at the depot."
+    secure: "Secure reference"
+    status: "Updated status"
+    local: "Local tracking"
+  search:
+    eyebrow: "Find my order"
+    title: "Enter your details"
+    text: "Your reference is shown in the confirmation email."
+    reference: "Order reference"
+    email: "Email address"
+    submit: "Show tracking"
+  status:
+    pending_payment: "Awaiting payment"
+    preparing: "Being prepared"
+    ready: "Ready for pickup"
+    shipped: "Shipped"
+    handed: "Collected"
+    delivered: "Delivered"
+    delivery_failed: "Delivery failed"
+    payment_failed: "Payment failed / order cancelled"
+    cancelled: "Order cancelled"
+    refunded: "Order refunded"
+    attention: "This order requires your attention."
+  payment: { pending: "Pending", received: "Received", failed: "Failed", refunded: "Refunded" }
+  result: { latest: "Latest known status for your order.", total: "Total" }
+  steps: { created: "Order recorded", current: "Current step" }
+  details:
+    fulfillment: "Delivery method"
+    pickup: "Pickup from the selected depot"
+    delivery: "Delivery to the provided address"
+    payment: "Payment"
+    pending_info: "Information coming soon"
+    pickup_location: "Pickup depot"
+    delivery_address: "Delivery address"
+  help:
+    eyebrow: "Need help?"
+    title: "Your reference starts with AUR-"
+    text: "Use exactly the email address entered with your order. To protect your information, no result will be shown unless both details match."
+email:
+  common:
+    hello: "Hello %name%,"
+    thanks: "Thank you for your trust."
+    team: "The AURIM team"
+  order:
+    subject: "AURIM order %reference%"
+    title: "Thank you %name%"
+    recorded: "Your order <strong>%reference%</strong> has been recorded."
+    fulfillment: "Delivery"
+    total: "Total to pay"
+    mobile_instruction: "Make your payment using"
+    number_later: "Number to be provided by AURIM"
+    holder: "Account holder"
+    manual_validation: "Your order will be approved manually after payment is received."
+    cash_instruction: "Cash payment will be made when you collect your order from the depot."
+    view: "View my order"
+    keep_reference: "Keep your reference for any request to customer care."
+  payment:
+    subject: "Payment confirmed — %reference%"
+    title: "Payment confirmed"
+    received: "We have received your Mobile Money payment of"
+    via: "made using"
+    order_reference: "Order reference"
+    payer_phone: "Number used for payment"
+    operator_reference: "Operator reference"
+    next: "Your order is now approved. We will keep you informed as it is prepared and delivered or made ready for pickup."
+  status:
+    reference: "Reference"
+    pickup_address: "Depot address"
+    delivery_address: "Delivery address"
+    preparing:
+      subject: "Your AURIM order is being prepared"
+      title: "Your order is being prepared"
+      message: "Our team is carefully preparing your order. We will let you know as soon as it is ready for pickup or delivery."
+    ready:
+      subject: "Your AURIM order is ready for pickup"
+      title: "Your order is ready"
+      message: "Your order is waiting at %fulfillment%. Present your reference when collecting it."
+    shipped:
+      subject: "Your AURIM order is out for delivery"
+      title: "Your order is on its way"
+      message: "Your order has left our depot and will be delivered to the address provided."
+    delivered:
+      subject: "Your AURIM order has been delivered"
+      title: "Your order has been delivered"
+      message: "Your order is now complete. Thank you for choosing AURIM for your beauty ritual."
+    cancelled:
+      subject: "Your AURIM order has been cancelled"
+      title: "Order cancelled"
+      message: "Your order has been cancelled. If you have already paid, contact AURIM and include your reference."
+    payment_failed:
+      subject: "Payment for your AURIM order failed"
+      title: "Payment not approved"
+      message: "We could not approve your Mobile Money payment. The order was cancelled and the reserved stock was released."
+    delivery_failed:
+      subject: "Delivery of your AURIM order failed"
+      title: "Delivery unsuccessful"
+      message: "The delivery could not be completed. Our team will contact you to arrange another attempt or a cancellation."
+    refunded:
+      subject: "Your AURIM order has been refunded"
+      title: "Refund recorded"
+      message: "The refund for your order has been recorded. The time needed to receive it depends on the payment method used."
+legal:
+  eyebrow: "AURIM information"
+  updated: "Last updated: %date%"
+  missing_information: "Some company information must still be completed in the configuration before the website goes live."
+  field:
+    name: "Company / brand"
+    form: "Legal form"
+    registration: "Registration"
+    address: "Registered office"
+    email: "Email address"
+    phone: "Phone"
+    director: "Publication director"
+  notice:
+    title: "Legal notice"
+    publisher: { title: "Website publisher", text: "The AURIM ecommerce website is published by the entity listed below." }
+    host: { title: "Hosting", text: "The website is hosted by %name%, %address%." }
+    intellectual: { title: "Intellectual property", text: "The AURIM brand, copy, photographs, graphics and website elements are protected. Reproduction or use without prior written permission is prohibited, except where permitted by law." }
+    liability: { title: "Liability", text: "AURIM strives to provide accurate, up-to-date information. The advice shown does not replace medical advice. If you experience a reaction or have concerns, stop using the product and consult a healthcare professional." }
+    contact: { title: "Contact", text: "For questions about this website, email %email%." }
+  terms:
+    title: "Terms and conditions of sale"
+    validation_note: "This template must be reviewed and adapted by a legal professional to the rules applicable in Mauritania, Senegal, Mali and Guinea before commercial launch."
+    scope: { title: "1. Purpose and seller", text: "These terms govern cosmetic product sales made on the website between %company% and consumer customers in a supported market." }
+    products: { title: "2. Products", text: "Essential characteristics, size and directions are shown on each product page. Photographs are prepared with great care but do not guarantee against slight variations in appearance or packaging." }
+    prices: { title: "3. Prices", text: "Prices are shown in the currency of the selected country. The applicable total, including any delivery or pickup charge, is displayed before the order is confirmed." }
+    order: { title: "4. Order", text: "Customers check their cart, country, contact details, delivery and payment before confirming. Each order receives a unique reference. AURIM may reject or cancel an order in case of an anomaly, insufficient stock, suspected fraud or unpaid funds." }
+    payment: { title: "5. Payment", text: "Mobile Money payment is approved manually after funds are actually received. The customer must use the payer number entered with the order. Cash is available only for compatible pickups. A Mobile Money order remains pending until approval." }
+    delivery: { title: "6. Delivery and pickup", text: "Available options, addresses, costs and estimated times are displayed for the selected country. Customers must provide accurate contact details and remain reachable. A reasonable delay or failed attempt may require new arrangements with customer care." }
+    returns: { title: "7. Cancellation, returns and refunds", text: "For hygiene reasons, opened or unsealed cosmetics cannot be returned unless defective or non-compliant. Promptly report any damaged, incorrect or missing product to %email% with the reference and photographs. Mandatory consumer rights in the customer’s country remain fully applicable." }
+    compliance: { title: "8. Compliance and precautions", text: "Customers must read the ingredients and directions, perform a patch test where appropriate, and avoid products containing an ingredient to which they are allergic. Products are not intended to diagnose or treat disease." }
+    liability: { title: "9. Liability", text: "AURIM is responsible for proper performance of the sale within the limits of applicable law. It is not liable for misuse, inaccurate customer information or an irresistible and unforeseeable external event." }
+    disputes: { title: "10. Complaints and disputes", text: "Complaints should first be sent to %email% so an amicable solution can be sought. Applicable law and jurisdiction will be determined according to the customer’s country and mandatory consumer protection rules." }
+  privacy:
+    title: "Privacy policy"
+    controller: { title: "Data controller", text: "%company% processes AURIM shop data. The privacy contact is %email%." }
+    data: { title: "Data collected", text: "We process information supplied with an order or request: identity, email, phone, address, country, cart contents, delivery, reference, status and Mobile Money payer number. Technical data needed for security may also be recorded." }
+    purposes: { title: "Purposes and legal grounds", text: "Data is used to perform orders, reserve stock, confirm payment, deliver or hand over products, send notifications, provide customer service, prevent fraud and meet accounting and legal obligations." }
+    recipients: { title: "Recipients", text: "Access is limited to authorised AURIM teams and, where needed, hosting, email and delivery providers. Only strictly necessary information is shared. AURIM does not sell personal data." }
+    retention: { title: "Retention", text: "Order data is retained for as long as needed for performance, after-sales service and applicable accounting or tax obligations. Cart and session data expires with the session or browser settings." }
+    security: { title: "Security", text: "Technical and organisational measures are used to restrict access, protect administrator accounts and preserve confidentiality. As no system can guarantee zero risk, any significant incident will be handled under applicable requirements." }
+    rights: { title: "Your rights", text: "Depending on applicable law, you may request access, correction, deletion, restriction or objection regarding your data. Email %email% with your request and, where relevant, your order reference. You may also contact the competent authority in your country." }
+    transfers: { title: "International transfers", text: "Central stock and some providers may be located outside the customer’s country, including in the United States. AURIM limits transferred data and uses appropriate safeguards where required." }
+    changes: { title: "Updates", text: "This policy may change as services and obligations evolve. The date at the top identifies the current version." }
+  cookies:
+    title: "Cookie policy"
+    definition: { title: "What is a cookie?", text: "A cookie or similar storage saves a small piece of information in the browser to operate the website and remember a choice during browsing." }
+    used: { title: "Storage used by AURIM", text: "The current version uses only storage that is strictly necessary for the shop to function. It is not used to build advertising profiles." }
+    table: { name: "Name", purpose: "Purpose", duration: "Duration" }
+    session: "Secure the session and forms"
+    cart: "Retain products in the cart"
+    market: "Remember the selected country"
+    locale: "Remember the selected language"
+    session_duration: "Session duration"
+    analytics: { title: "Analytics and advertising", text: "No non-essential advertising or analytics cookie is currently installed. If such a tool is added, it will remain disabled until the visitor consents whenever consent is required." }
+    control: { title: "Browser controls", text: "You can delete or block cookies in your browser settings. Blocking necessary storage may prevent the cart, country selection, language or secure form validation from working." }
+    contact: { title: "Contact", text: "For questions about cookies or privacy, email %email%." }

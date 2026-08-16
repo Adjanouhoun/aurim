@@ -29,11 +29,11 @@ final class CheckoutController extends AbstractController
         $lines = $cart->getLines();
         $subtotal = $cart->getTotal();
         if (null === $market || [] === $lines || null === $subtotal) {
-            $this->addFlash('checkout_error', 'Sélectionnez un pays et vérifiez les prix avant de continuer.');
+            $this->addFlash('checkout_error', 'checkout.error.country_price');
             return $this->redirectToRoute('app_cart');
         }
         if ($request->isMethod('GET') && !$cart->hasSufficientStock()) {
-            $this->addFlash('cart_error', 'Un produit de votre panier n’est plus disponible en quantité suffisante. Vérifiez votre panier.');
+            $this->addFlash('cart_error', 'checkout.error.stock_changed');
             return $this->redirectToRoute('app_cart');
         }
 
@@ -56,21 +56,21 @@ final class CheckoutController extends AbstractController
             $email = trim((string) $request->request->get('email'));
             $phone = trim((string) $request->request->get('phone'));
             $address = trim((string) $request->request->get('address'));
-            if (!$rate instanceof ShippingRate) { $errors[] = 'Sélectionnez un mode de réception.'; }
-            if (!$paymentMethod instanceof PaymentMethod) { $errors[] = 'Sélectionnez un moyen de paiement.'; }
-            if ($rate instanceof ShippingRate && $paymentMethod instanceof PaymentMethod && !$paymentMethod->supportsFulfillment($rate->getFulfillmentType())) { $errors[] = 'Ce moyen de paiement n’est pas compatible avec le mode de réception choisi.'; }
-            if (mb_strlen($name) < 3) { $errors[] = 'Indiquez le nom complet du destinataire.'; }
-            if (false === filter_var($email, FILTER_VALIDATE_EMAIL)) { $errors[] = 'Indiquez une adresse e-mail valide.'; }
-            if (mb_strlen($phone) < 7) { $errors[] = 'Indiquez un numéro de téléphone valide.'; }
-            if (mb_strlen($address) < 8) { $errors[] = 'Précisez l’adresse de livraison.'; }
+            if (!$rate instanceof ShippingRate) { $errors[] = 'checkout.error.fulfillment'; }
+            if (!$paymentMethod instanceof PaymentMethod) { $errors[] = 'checkout.error.payment'; }
+            if ($rate instanceof ShippingRate && $paymentMethod instanceof PaymentMethod && !$paymentMethod->supportsFulfillment($rate->getFulfillmentType())) { $errors[] = 'checkout.error.payment_incompatible'; }
+            if (mb_strlen($name) < 3) { $errors[] = 'checkout.error.name'; }
+            if (false === filter_var($email, FILTER_VALIDATE_EMAIL)) { $errors[] = 'checkout.error.email'; }
+            if (mb_strlen($phone) < 7) { $errors[] = 'checkout.error.phone'; }
+            if (mb_strlen($address) < 8) { $errors[] = 'checkout.error.address'; }
 
             $warehouse = $entityManager->getRepository(Warehouse::class)->findOneBy(['market' => $market, 'active' => true, 'central' => false]);
-            if (!$warehouse instanceof Warehouse) { $errors[] = 'Aucun stock local n’est configuré pour ce pays.'; }
+            if (!$warehouse instanceof Warehouse) { $errors[] = 'checkout.error.warehouse'; }
             if ($warehouse instanceof Warehouse) {
                 foreach ($lines as $line) {
                     $inventory = $entityManager->getRepository(Inventory::class)->findOneBy(['product' => $line['product'], 'warehouse' => $warehouse]);
                     if (!$inventory instanceof Inventory || $inventory->getAvailableQuantity() < $line['quantity']) {
-                        $errors[] = sprintf('Stock insuffisant pour %s.', $line['product']->getName());
+                        $errors[] = 'checkout.error.product_stock';
                     }
                 }
             }
@@ -91,7 +91,7 @@ final class CheckoutController extends AbstractController
                             $entityManager->refresh($inventory, LockMode::PESSIMISTIC_WRITE);
                         }
                         if (!$inventory instanceof Inventory || $inventory->getAvailableQuantity() < $line['quantity']) {
-                            $errors[] = sprintf('Stock insuffisant pour %s. Une autre commande vient peut-être de réserver les dernières unités.', $line['product']->getName());
+                            $errors[] = 'checkout.error.concurrent_stock';
                             continue;
                         }
                         $lockedInventories[(int) $line['product']->getId()] = $inventory;
@@ -102,17 +102,17 @@ final class CheckoutController extends AbstractController
                     } else {
                         $order = (new CustomerOrder())
                             ->setReference('AUR-'.date('ymd').'-'.strtoupper(bin2hex(random_bytes(6))))
-                            ->setMarket($market)->setCustomerName($name)->setEmail($email)->setPhone($phone)
+                            ->setMarket($market)->setLocale($request->getLocale())->setCustomerName($name)->setEmail($email)->setPhone($phone)
                             ->setAddressLine($address)->setCity($rate->getCity())
-                            ->setFulfillmentType($rate->getFulfillmentType())->setFulfillmentLabel($rate->getLabel())->setFulfillmentAddress($rate->getAddressLine())
-                            ->setPaymentMethodName($paymentMethod->getName())->setPaymentMethodType($paymentMethod->getType())
+                            ->setFulfillmentType($rate->getFulfillmentType())->setFulfillmentLabel($rate->getLocalizedLabel($request->getLocale()))->setFulfillmentAddress($rate->getAddressLine())
+                            ->setPaymentMethodName($paymentMethod->getLocalizedName($request->getLocale()))->setPaymentMethodType($paymentMethod->getType())
                             ->setStatus('cash' === $paymentMethod->getType() ? 'preparing' : 'pending_payment')
                             ->setCurrencyCode($market->getCurrencyCode())
                             ->setSubtotalMinor($subtotal)->setShippingMinor($rate->getAmountMinor())->setTotalMinor($subtotal + $rate->getAmountMinor());
                         foreach ($lines as $line) {
                             $unitPrice = $line['price']?->getAmountMinor();
                             if (null === $unitPrice) { continue; }
-                            $order->addItem((new OrderItem())->setProduct($line['product'])->setProductName($line['product']->getName())->setUnitPriceMinor($unitPrice)->setQuantity($line['quantity'])->setTotalMinor($unitPrice * $line['quantity']));
+                            $order->addItem((new OrderItem())->setProduct($line['product'])->setProductName($line['product']->getLocalizedName($request->getLocale()))->setUnitPriceMinor($unitPrice)->setQuantity($line['quantity'])->setTotalMinor($unitPrice * $line['quantity']));
                             $inventory = $lockedInventories[(int) $line['product']->getId()];
                             $inventory->setQuantityReserved($inventory->getQuantityReserved() + $line['quantity']);
                             $movementRecorder->record(

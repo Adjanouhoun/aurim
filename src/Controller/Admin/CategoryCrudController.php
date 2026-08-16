@@ -29,6 +29,8 @@ final class CategoryCrudController extends AbstractCrudController
     {
         yield IdField::new('id')->hideOnForm();
         yield TextField::new('name', 'Nom');
+        yield TextField::new('nameEn', 'Nom anglais')->hideOnIndex()->setRequired(false);
+        yield TextField::new('nameAr', 'Nom arabe')->hideOnIndex()->setRequired(false)->setFormTypeOption('attr.dir', 'rtl');
         yield SlugField::new('slug')->setTargetFieldName('name');
         yield IntegerField::new('position', 'Ordre d’affichage');
         yield BooleanField::new('active', 'Visible');
