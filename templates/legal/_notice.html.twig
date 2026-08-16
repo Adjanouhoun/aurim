@@ -1,0 +1,17 @@
+{% set missing = 'À renseigner' in aurim_legal %}
+{% if missing %}<div class="legal-warning">{{ 'legal.missing_information'|trans }}</div>{% endif %}
+
+<section><h2>{{ 'legal.notice.publisher.title'|trans }}</h2><p>{{ 'legal.notice.publisher.text'|trans }}</p>
+<dl class="legal-data">
+    <div><dt>{{ 'legal.field.name'|trans }}</dt><dd>{{ aurim_legal.company_name }}</dd></div>
+    <div><dt>{{ 'legal.field.form'|trans }}</dt><dd>{{ aurim_legal.legal_form }}</dd></div>
+    <div><dt>{{ 'legal.field.registration'|trans }}</dt><dd>{{ aurim_legal.registration }}</dd></div>
+    <div><dt>{{ 'legal.field.address'|trans }}</dt><dd>{{ aurim_legal.address }}</dd></div>
+    <div><dt>{{ 'legal.field.email'|trans }}</dt><dd><a href="mailto:{{ aurim_legal.contact_email }}">{{ aurim_legal.contact_email }}</a></dd></div>
+    <div><dt>{{ 'legal.field.phone'|trans }}</dt><dd>{{ aurim_legal.phone }}</dd></div>
+    <div><dt>{{ 'legal.field.director'|trans }}</dt><dd>{{ aurim_legal.publication_director }}</dd></div>
+</dl></section>
+<section><h2>{{ 'legal.notice.host.title'|trans }}</h2><p>{{ 'legal.notice.host.text'|trans({'%name%': aurim_legal.host_name, '%address%': aurim_legal.host_address}) }}</p></section>
+<section><h2>{{ 'legal.notice.intellectual.title'|trans }}</h2><p>{{ 'legal.notice.intellectual.text'|trans }}</p></section>
+<section><h2>{{ 'legal.notice.liability.title'|trans }}</h2><p>{{ 'legal.notice.liability.text'|trans }}</p></section>
+<section><h2>{{ 'legal.notice.contact.title'|trans }}</h2><p>{{ 'legal.notice.contact.text'|trans({'%email%': aurim_legal.contact_email}) }}</p></section>

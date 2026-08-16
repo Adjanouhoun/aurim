@@ -1,44 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}La boutique — AURIM{% endblock %}
+{% block title %}{{ 'catalog.meta_title'|trans }}{% endblock %}
 
 {% block body %}
 {% include '_header.html.twig' %}
 <main>
     <section class="catalog-hero">
-        <p class="eyebrow">La collection AURIM</p>
-        <h1>Des soins pour révéler votre lumière.</h1>
-        <p>Découvrez le rituel AURIM au curcuma, à la vitamine C et à la niacinamide.</p>
+        <p class="eyebrow">{{ 'catalog.eyebrow'|trans }}</p>
+        <h1>{{ 'catalog.title'|trans }}</h1>
+        <p>{{ 'catalog.text'|trans }}</p>
     </section>
     <section class="catalog-layout">
         <aside class="catalog-filters">
-            <p>Filtrer par</p>
-            <a class="{{ selectedCategory == '' ? 'filter-active' : '' }}" href="{{ path('app_catalog') }}">Tous les soins</a>
+            <p>{{ 'catalog.filter'|trans }}</p>
+            <a class="{{ selectedCategory == '' ? 'filter-active' : '' }}" href="{{ path('app_catalog') }}">{{ 'catalog.all'|trans }}</a>
             {% for category in categories %}
-                <a class="{{ selectedCategory == category.slug ? 'filter-active' : '' }}" href="{{ path('app_catalog', {categorie: category.slug}) }}">{{ category.name }} <span>{{ category.activeProductCount }}</span></a>
+                <a class="{{ selectedCategory == category.slug ? 'filter-active' : '' }}" href="{{ path('app_catalog', {categorie: category.slug}) }}">{{ category.localizedName(app.request.locale) }} <span>{{ category.activeProductCount }}</span></a>
             {% endfor %}
         </aside>
         <div class="catalog-results">
-            <div class="catalog-toolbar"><p>{{ products|length }} soins</p><p>Trier : Nouveautés</p></div>
+            <div class="catalog-toolbar"><p>{{ 'catalog.count'|trans({'%count%': products|length}) }}</p><p>{{ 'catalog.sort'|trans }}</p></div>
             <div class="catalog-grid">
                 {% for product in products %}
                     <article class="catalog-card">
                         <a class="catalog-card-image product-crop-{{ product.imagePosition }}" href="{{ path('app_product_show', {slug: product.slug}) }}">
-                            <img src="{{ asset(product.imagePath) }}" alt="{{ product.name }} AURIM" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
-                            <span>Nouveau</span>
+                            <img src="{{ asset(product.imagePath) }}" alt="{{ product.localizedName(app.request.locale) }} AURIM" onerror="this.onerror=null;this.src='{{ asset('images/products/aurim-body-care-duo.jpg') }}'">
+                            <span>{{ 'catalog.new'|trans }}</span>
                         </a>
-                        <p class="tag">{{ product.type }}</p>
-                        <p class="catalog-category">{{ product.category.name }}</p>
-                        <h2><a href="{{ path('app_product_show', {slug: product.slug}) }}">{{ product.name }}</a></h2>
+                        <p class="tag">{{ product.localizedType(app.request.locale) }}</p>
+                        <p class="catalog-category">{{ product.category.localizedName(app.request.locale) }}</p>
+                        <h2><a href="{{ path('app_product_show', {slug: product.slug}) }}">{{ product.localizedName(app.request.locale) }}</a></h2>
                         <p>{{ product.size }}</p>
                         {% set offerPrice = product_offer.price(product) %}
                         {% if offerPrice and store_context.selectedMarket %}
                             <strong>{{ price_formatter.format(offerPrice.amountMinor, store_context.selectedMarket.currencyCode) }}</strong>
-                            <small class="stock-label">{{ product_offer.availableQuantity(product) > 0 ? 'En stock dans votre pays' : 'Rupture de stock' }}</small>
+                            <small class="stock-label">{{ (product_offer.availableQuantity(product) > 0 ? 'catalog.in_stock' : 'catalog.out_of_stock')|trans }}</small>
                         {% elseif store_context.selectedMarket %}
-                            <strong>Prix à venir</strong>
+                            <strong>{{ 'catalog.price_soon'|trans }}</strong>
                         {% else %}
-                            <strong>Choisissez votre pays</strong>
+                            <strong>{{ 'catalog.choose_country'|trans }}</strong>
                         {% endif %}
                     </article>
                 {% endfor %}

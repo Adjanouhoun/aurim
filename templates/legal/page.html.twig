@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% set titleKey = 'legal.' ~ legalPage ~ '.title' %}
+
+{% block title %}{{ titleKey|trans }} — AURIM{% endblock %}
+
+{% block body %}
+{% include '_header.html.twig' %}
+<main class="legal-page">
+    <header class="legal-hero">
+        <p class="eyebrow">{{ 'legal.eyebrow'|trans }}</p>
+        <h1>{{ titleKey|trans }}</h1>
+        <p>{{ 'legal.updated'|trans({'%date%': '16/08/2026'}) }}</p>
+    </header>
+    <div class="legal-layout">
+        <aside class="legal-navigation">
+            <a class="{{ legalPage == 'notice' ? 'active' : '' }}" href="{{ path('app_legal_notice') }}">{{ 'legal.notice.title'|trans }}</a>
+            <a class="{{ legalPage == 'terms' ? 'active' : '' }}" href="{{ path('app_legal_terms') }}">{{ 'legal.terms.title'|trans }}</a>
+            <a class="{{ legalPage == 'privacy' ? 'active' : '' }}" href="{{ path('app_legal_privacy') }}">{{ 'legal.privacy.title'|trans }}</a>
+            <a class="{{ legalPage == 'cookies' ? 'active' : '' }}" href="{{ path('app_legal_cookies') }}">{{ 'legal.cookies.title'|trans }}</a>
+        </aside>
+        <article class="legal-content">
+            {% include 'legal/_' ~ legalPage ~ '.html.twig' %}
+        </article>
+    </div>
+</main>
+{% include '_footer.html.twig' %}
+{% endblock %}

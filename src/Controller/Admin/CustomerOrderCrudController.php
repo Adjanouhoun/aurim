@@ -56,6 +56,7 @@ final class CustomerOrderCrudController extends AbstractCrudController
         yield IdField::new('id')->hideOnForm();
         yield AssociationField::new('market', 'Marché')->setFormTypeOption('disabled', true);
         yield TextField::new('reference', 'Référence')->setFormTypeOption('disabled', true);
+        yield ChoiceField::new('locale', 'Langue client')->setChoices(['Français' => 'fr', 'English' => 'en', 'العربية' => 'ar'])->setFormTypeOption('disabled', true);
         yield DateTimeField::new('createdAt', 'Créée le')->hideOnForm();
         yield TextField::new('customerName', 'Client')->setFormTypeOption('disabled', true);
         yield TextField::new('email', 'Adresse e-mail')->setFormTypeOption('disabled', true)->hideOnIndex();

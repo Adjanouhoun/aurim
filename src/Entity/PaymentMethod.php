@@ -18,12 +18,20 @@ class PaymentMethod
     private string $code;
     #[ORM\Column(length: 160)]
     private string $name;
+    #[ORM\Column(length: 160, nullable: true)]
+    private ?string $nameEn = null;
+    #[ORM\Column(length: 160, nullable: true)]
+    private ?string $nameAr = null;
     #[ORM\Column(length: 30)]
     private string $type = 'cash';
     #[ORM\Column(length: 20)]
     private string $fulfillmentScope = 'both';
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $instructions = null;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $instructionsEn = null;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $instructionsAr = null;
     #[ORM\Column(length: 80, nullable: true)]
     private ?string $recipientAccount = null;
     #[ORM\Column(length: 160, nullable: true)]
@@ -39,12 +47,36 @@ class PaymentMethod
     public function setCode(string $code): self { $this->code = strtolower(trim($code)); return $this; }
     public function getName(): string { return $this->name; }
     public function setName(string $name): self { $this->name = trim($name); return $this; }
+    public function getNameEn(): ?string { return $this->nameEn; }
+    public function setNameEn(?string $name): self { $this->nameEn = $this->clean($name); return $this; }
+    public function getNameAr(): ?string { return $this->nameAr; }
+    public function setNameAr(?string $name): self { $this->nameAr = $this->clean($name); return $this; }
+    public function getLocalizedName(string $locale): string
+    {
+        return match ($locale) {
+            'en' => $this->nameEn ?: $this->name,
+            'ar' => $this->nameAr ?: $this->name,
+            default => $this->name,
+        };
+    }
     public function getType(): string { return $this->type; }
     public function setType(string $type): self { $this->type = $type; return $this; }
     public function getFulfillmentScope(): string { return $this->fulfillmentScope; }
     public function setFulfillmentScope(string $scope): self { $this->fulfillmentScope = $scope; return $this; }
     public function getInstructions(): ?string { return $this->instructions; }
     public function setInstructions(?string $instructions): self { $this->instructions = null === $instructions ? null : trim($instructions); return $this; }
+    public function getInstructionsEn(): ?string { return $this->instructionsEn; }
+    public function setInstructionsEn(?string $instructions): self { $this->instructionsEn = $this->clean($instructions); return $this; }
+    public function getInstructionsAr(): ?string { return $this->instructionsAr; }
+    public function setInstructionsAr(?string $instructions): self { $this->instructionsAr = $this->clean($instructions); return $this; }
+    public function getLocalizedInstructions(string $locale): ?string
+    {
+        return match ($locale) {
+            'en' => $this->instructionsEn ?: $this->instructions,
+            'ar' => $this->instructionsAr ?: $this->instructions,
+            default => $this->instructions,
+        };
+    }
     public function getRecipientAccount(): ?string { return $this->recipientAccount; }
     public function setRecipientAccount(?string $account): self { $this->recipientAccount = null === $account ? null : trim($account); return $this; }
     public function getAccountHolder(): ?string { return $this->accountHolder; }
@@ -56,5 +88,12 @@ class PaymentMethod
     {
         return $this->active
             && ('mobile_money_manual' !== $this->type || null !== $this->recipientAccount && '' !== $this->recipientAccount);
+    }
+
+    private function clean(?string $value): ?string
+    {
+        $value = null === $value ? null : trim($value);
+
+        return '' === $value ? null : $value;
     }
 }

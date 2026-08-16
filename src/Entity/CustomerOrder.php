@@ -20,6 +20,8 @@ class CustomerOrder
     private Market $market;
     #[ORM\Column(length: 30)]
     private string $status = 'pending_payment';
+    #[ORM\Column(length: 2)]
+    private string $locale = 'fr';
     #[ORM\Column(length: 20)]
     private string $inventoryStatus = 'reserved';
     #[ORM\Column(length: 160)]
@@ -71,6 +73,8 @@ class CustomerOrder
     public function setMarket(Market $market): self { $this->market = $market; return $this; }
     public function getStatus(): string { return $this->status; }
     public function setStatus(string $status): self { $this->status = $status; return $this; }
+    public function getLocale(): string { return $this->locale; }
+    public function setLocale(string $locale): self { $this->locale = in_array($locale, ['fr', 'en', 'ar'], true) ? $locale : 'fr'; return $this; }
     public function getInventoryStatus(): string { return $this->inventoryStatus; }
     public function setInventoryStatus(string $status): self { $this->inventoryStatus = $status; return $this; }
     public function getCustomerName(): string { return $this->customerName; }

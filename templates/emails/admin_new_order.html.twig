@@ -4,6 +4,7 @@
 <h1>Nouvelle commande {{ order.reference }}</h1>
 <p><strong>Client :</strong> {{ order.customerName }} · {{ order.email }} · {{ order.phone }}</p>
 <p><strong>Pays :</strong> {{ order.market.name }}</p>
+<p><strong>Langue du client :</strong> {{ order.locale|upper }}</p>
 <p><strong>Réception :</strong> {{ order.fulfillmentLabel }} ({{ order.fulfillmentType == 'pickup' ? 'retrait' : 'livraison' }})</p>
 <p><strong>Adresse client :</strong> {{ order.addressLine }}</p>
 <p><strong>Paiement :</strong> {{ order.paymentMethodName }} — en attente de validation</p>

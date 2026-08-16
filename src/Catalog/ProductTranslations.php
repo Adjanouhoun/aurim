@@ -1,0 +1,236 @@
+<?php
+
+namespace App\Catalog;
+
+final class ProductTranslations
+{
+    /** @return array<string, mixed> */
+    public function for(string $slug): array
+    {
+        return $this->all()[$slug] ?? [];
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    private function all(): array
+    {
+        return [
+            'brightening-cleanser' => [
+                'categoryEn' => 'Cleansers', 'categoryAr' => 'منظفات',
+                'nameEn' => 'Brightening Cleanser', 'nameAr' => 'غسول الإشراقة',
+                'typeEn' => 'Brightening facial cleanser', 'typeAr' => 'غسول وجه للإشراقة',
+                'shortDescriptionEn' => 'A gentle cleanser that removes impurities and reveals fresh, supple and radiant-looking skin.',
+                'shortDescriptionAr' => 'غسول لطيف يزيل الشوائب ويكشف عن بشرة نضرة ومرنة ومشرقة.',
+                'descriptionEn' => 'This cleansing gel combines turmeric, vitamin C and niacinamide to remove impurities, excess oil and makeup. Its balanced lather cleanses without drying and helps keep the skin soft, comfortable and radiant.',
+                'descriptionAr' => 'يجمع هذا الجل المنظف بين الكركم وفيتامين C والنياسيناميد لإزالة الشوائب والدهون الزائدة والمكياج. تنظف رغوته المتوازنة من دون تجفيف وتساعد على إبقاء البشرة ناعمة ومريحة ومشرقة.',
+                'benefitsEn' => ['Cleanses without drying', 'Helps revive radiance', 'Leaves skin soft and fresh'],
+                'benefitsAr' => ['ينظف من دون تجفيف', 'يساعد على إحياء الإشراقة', 'يترك البشرة ناعمة ونضرة'],
+                'ingredientsEn' => [
+                    ['name' => 'Turmeric (curcumin)', 'text' => 'An antioxidant active that helps soothe the skin and reduce the look of uneven areas.'],
+                    ['name' => 'Stabilised vitamin C', 'text' => '3-O-Ethyl Ascorbic Acid helps support radiance and firmness.'],
+                    ['name' => 'Niacinamide', 'text' => 'Helps refine the look of pores, reduce visible redness and strengthen the skin barrier.'],
+                ],
+                'ingredientsAr' => [
+                    ['name' => 'الكركم (الكركمين)', 'text' => 'مكوّن مضاد للأكسدة يساعد على تهدئة البشرة وتقليل مظهر المناطق غير الموحدة.'],
+                    ['name' => 'فيتامين C ثابت', 'text' => 'يساعد 3-O-Ethyl Ascorbic Acid على دعم الإشراقة والتماسك.'],
+                    ['name' => 'النياسيناميد', 'text' => 'يساعد على تحسين مظهر المسام وتقليل الاحمرار المرئي وتقوية حاجز البشرة.'],
+                ],
+                'usageEn' => 'Morning and evening, apply a small amount to a damp face. Massage gently, then rinse thoroughly. Avoid the eye area.',
+                'usageAr' => 'صباحاً ومساءً، ضعي كمية صغيرة على وجه رطب. دلّكي بلطف ثم اشطفي جيداً. تجنبي محيط العينين.',
+            ],
+            'glowing-toner' => [
+                'categoryEn' => 'Toners', 'categoryAr' => 'تونر',
+                'nameEn' => 'Glowing Toner', 'nameAr' => 'تونر الإشراقة',
+                'typeEn' => 'Radiance toner', 'typeAr' => 'تونر معزز للإشراقة',
+                'shortDescriptionEn' => 'A soothing toner that hydrates, refreshes and helps visibly even the complexion.',
+                'shortDescriptionAr' => 'تونر مهدئ يرطب وينعش ويساعد على توحيد مظهر البشرة.',
+                'descriptionEn' => 'Infused with turmeric, vitamin C and niacinamide, this toner helps awaken dull complexions, reduce the look of redness and support natural radiance. Its lightweight texture hydrates and leaves skin fresh, supple and luminous.',
+                'descriptionAr' => 'غني بالكركم وفيتامين C والنياسيناميد، ويساعد على إنعاش البشرة الباهتة وتقليل مظهر الاحمرار ودعم الإشراقة الطبيعية. يرطب قوامه الخفيف ويترك البشرة نضرة ومرنة ومضيئة.',
+                'benefitsEn' => ['Hydrates and refreshes', 'Helps even the complexion', 'Supports the skin barrier'],
+                'benefitsAr' => ['يرطب وينعش', 'يساعد على توحيد مظهر البشرة', 'يدعم حاجز البشرة'],
+                'ingredientsEn' => [
+                    ['name' => 'Turmeric', 'text' => 'Helps soothe the skin and maintain a visibly even complexion.'],
+                    ['name' => 'Vitamin C', 'text' => 'Helps revive the radiance of dull skin.'],
+                    ['name' => 'Niacinamide', 'text' => 'Helps reduce visible redness and strengthen the skin barrier.'],
+                ],
+                'ingredientsAr' => [
+                    ['name' => 'الكركم', 'text' => 'يساعد على تهدئة البشرة والحفاظ على مظهر موحد.'],
+                    ['name' => 'فيتامين C', 'text' => 'يساهم في إحياء إشراقة البشرة الباهتة.'],
+                    ['name' => 'النياسيناميد', 'text' => 'يساعد على تقليل الاحمرار المرئي وتقوية حاجز البشرة.'],
+                ],
+                'usageEn' => 'After cleansing, apply morning and evening to the face and neck with your hands or a cotton pad. Do not rinse.',
+                'usageAr' => 'بعد التنظيف، ضعيه صباحاً ومساءً على الوجه والرقبة باليدين أو بقطعة قطن. لا تشطفيه.',
+            ],
+            'radiance-boosting-serum' => [
+                'categoryEn' => 'Serums', 'categoryAr' => 'سيرومات',
+                'nameEn' => 'Radiance Boosting Serum', 'nameAr' => 'سيروم تعزيز الإشراقة',
+                'typeEn' => 'Radiance facial serum', 'typeAr' => 'سيروم وجه للإشراقة',
+                'shortDescriptionEn' => 'A concentrated serum that hydrates, visibly refines skin texture and reveals a radiant complexion.',
+                'shortDescriptionAr' => 'سيروم مركز يرطب ويحسن ملمس البشرة بشكل ملحوظ ويكشف عن بشرة مشرقة.',
+                'descriptionEn' => 'This advanced serum combines antioxidant-rich turmeric, stabilised vitamin C and niacinamide to help reveal luminous, even-looking skin. Sodium hyaluronate retains moisture and supports a more supple, plump appearance.',
+                'descriptionAr' => 'يجمع هذا السيروم المتطور بين الكركم الغني بمضادات الأكسدة وفيتامين C الثابت والنياسيناميد للمساعدة على إظهار بشرة مضيئة وموحدة. يحتفظ هيالورونات الصوديوم بالرطوبة ويساهم في مظهر أكثر مرونة وامتلاءً.',
+                'benefitsEn' => ['Boosts radiance', 'Provides intense hydration', 'Helps smooth and even'],
+                'benefitsAr' => ['يعزز الإشراقة', 'يرطب بعمق', 'يساعد على التنعيم والتوحيد'],
+                'ingredientsEn' => [
+                    ['name' => 'Tetrahydrocurcumin', 'text' => 'An antioxidant form of turmeric that helps soothe skin and reduce the look of dark spots.'],
+                    ['name' => 'Stabilised vitamin C', 'text' => 'Helps support radiance and antioxidant protection.'],
+                    ['name' => 'Niacinamide', 'text' => 'Helps refine texture, calm visible redness and support elasticity.'],
+                    ['name' => 'Sodium hyaluronate', 'text' => 'Helps retain water for visibly more supple, plump skin.'],
+                ],
+                'ingredientsAr' => [
+                    ['name' => 'تتراهيدروكركمين', 'text' => 'شكل مضاد للأكسدة من الكركم يساعد على تهدئة البشرة وتقليل مظهر البقع.'],
+                    ['name' => 'فيتامين C ثابت', 'text' => 'يساعد على دعم الإشراقة والحماية المضادة للأكسدة.'],
+                    ['name' => 'النياسيناميد', 'text' => 'يساعد على تحسين الملمس وتهدئة الاحمرار ودعم المرونة.'],
+                    ['name' => 'هيالورونات الصوديوم', 'text' => 'يساعد على الاحتفاظ بالماء لبشرة أكثر مرونة وامتلاءً.'],
+                ],
+                'usageEn' => 'Apply two to three drops to a clean face and neck morning and/or evening before moisturiser. Finish with sunscreen in the morning.',
+                'usageAr' => 'ضعي قطرتين إلى ثلاث قطرات على الوجه والرقبة بعد التنظيف صباحاً و/أو مساءً قبل المرطب. استخدمي واقي الشمس صباحاً.',
+            ],
+            'brightening-cream' => [
+                'categoryEn' => 'Moisturisers', 'categoryAr' => 'مرطبات',
+                'nameEn' => 'Brightening Cream', 'nameAr' => 'كريم الإشراقة',
+                'typeEn' => 'Brightening face cream', 'typeAr' => 'كريم وجه للإشراقة',
+                'shortDescriptionEn' => 'A lightweight nourishing cream that hydrates, softens and helps reveal a brighter complexion.',
+                'shortDescriptionAr' => 'كريم مغذٍ وخفيف يرطب وينعم ويساعد على إظهار بشرة أكثر إشراقاً.',
+                'descriptionEn' => 'This cream combines turmeric, stabilised vitamin C and niacinamide with shea butter and moisturising agents. Its lightweight, non-greasy and fast-absorbing texture helps retain moisture while leaving skin soft, supple and radiant.',
+                'descriptionAr' => 'يجمع هذا الكريم بين الكركم وفيتامين C الثابت والنياسيناميد مع زبدة الشيا وعوامل الترطيب. يساعد قوامه الخفيف وغير الدهني والسريع الامتصاص على حفظ الرطوبة ويترك البشرة ناعمة ومرنة ومشرقة.',
+                'benefitsEn' => ['Nourishes without greasiness', 'Helps reduce the look of dark spots', 'Leaves skin supple and radiant'],
+                'benefitsAr' => ['يغذي من دون ملمس دهني', 'يساعد على تقليل مظهر البقع', 'يترك البشرة مرنة ومشرقة'],
+                'ingredientsEn' => [
+                    ['name' => 'Turmeric (curcumin)', 'text' => 'Helps soothe and visibly improve an uneven complexion.'],
+                    ['name' => 'Stabilised vitamin C', 'text' => 'Supports radiance and collagen.'],
+                    ['name' => 'Niacinamide', 'text' => 'Helps refine pores, reduce visible redness and improve elasticity.'],
+                    ['name' => 'Shea butter and humectants', 'text' => 'Glycerin, betaine and sodium hyaluronate help nourish and retain moisture.'],
+                ],
+                'ingredientsAr' => [
+                    ['name' => 'الكركم (الكركمين)', 'text' => 'يساعد على التهدئة وتحسين توحد مظهر البشرة.'],
+                    ['name' => 'فيتامين C ثابت', 'text' => 'يساهم في الإشراقة ودعم الكولاجين.'],
+                    ['name' => 'النياسيناميد', 'text' => 'يساعد على تحسين مظهر المسام وتقليل الاحمرار وتحسين المرونة.'],
+                    ['name' => 'زبدة الشيا ومرطبات', 'text' => 'تساعد الغليسرين والبيتين وهيالورونات الصوديوم على التغذية وحفظ الرطوبة.'],
+                ],
+                'usageEn' => 'Apply morning and evening to the face and neck after serum. Massage gently until absorbed. Finish with sunscreen in the morning.',
+                'usageAr' => 'ضعيه صباحاً ومساءً على الوجه والرقبة بعد السيروم. دلّكي بلطف حتى الامتصاص واستخدمي واقي الشمس صباحاً.',
+            ],
+            'radiance-boosting-body-wash' => [
+                'categoryEn' => 'Cleansers', 'categoryAr' => 'منظفات',
+                'nameEn' => 'Radiance Boosting Body Wash', 'nameAr' => 'غسول الجسم المعزز للإشراقة',
+                'typeEn' => 'Brightening body wash', 'typeAr' => 'غسول جسم للإشراقة',
+                'shortDescriptionEn' => 'A gentle body wash that cleanses without drying and leaves skin supple, hydrated and radiant.',
+                'shortDescriptionAr' => 'غسول جسم لطيف ينظف من دون تجفيف ويترك البشرة مرنة ومرطبة ومشرقة.',
+                'descriptionEn' => 'This body wash combines turmeric, stabilised vitamin C and niacinamide with gentle coconut-derived cleansers. It cleanses without drying, while aloe vera and glycerin help maintain softness and moisture.',
+                'descriptionAr' => 'يجمع غسول الجسم بين الكركم وفيتامين C الثابت والنياسيناميد ومنظفات لطيفة مشتقة من جوز الهند. ينظف من دون تجفيف، بينما يساعد الألوفيرا والغليسرين على الحفاظ على النعومة والرطوبة.',
+                'benefitsEn' => ['Cleanses gently', 'Helps revive radiance', 'Leaves skin supple and hydrated'],
+                'benefitsAr' => ['ينظف بلطف', 'يساعد على إحياء الإشراقة', 'يترك البشرة مرنة ومرطبة'],
+                'ingredientsEn' => [
+                    ['name' => 'Turmeric (curcumin)', 'text' => 'Helps soothe and visibly improve skin radiance.'],
+                    ['name' => 'Stabilised vitamin C', 'text' => 'Supports radiance and antioxidant protection.'],
+                    ['name' => 'Niacinamide', 'text' => 'Helps refine texture and strengthen the skin barrier.'],
+                    ['name' => 'Aloe vera and glycerin', 'text' => 'Help maintain softness and moisture after rinsing.'],
+                ],
+                'ingredientsAr' => [
+                    ['name' => 'الكركم (الكركمين)', 'text' => 'يساعد على تهدئة البشرة وتحسين إشراقتها.'],
+                    ['name' => 'فيتامين C ثابت', 'text' => 'يدعم الإشراقة والحماية المضادة للأكسدة.'],
+                    ['name' => 'النياسيناميد', 'text' => 'يساعد على تحسين الملمس وتقوية حاجز البشرة.'],
+                    ['name' => 'الألوفيرا والغليسرين', 'text' => 'يساعدان على الحفاظ على النعومة والرطوبة بعد الشطف.'],
+                ],
+                'usageEn' => 'Apply to damp skin, lather with circular movements, then rinse thoroughly. Suitable for daily use.',
+                'usageAr' => 'ضعيه على بشرة رطبة ودلّكي بحركات دائرية لتكوين رغوة ثم اشطفي جيداً. مناسب للاستخدام اليومي.',
+            ],
+            'radiance-body-lotion' => [
+                'categoryEn' => 'Moisturisers', 'categoryAr' => 'مرطبات',
+                'nameEn' => 'Radiance Body Lotion', 'nameAr' => 'لوشن الجسم للإشراقة',
+                'typeEn' => 'Brightening body lotion', 'typeAr' => 'لوشن جسم للإشراقة',
+                'shortDescriptionEn' => 'A lightweight body lotion that hydrates, softens and helps reveal smoother, more even-looking skin.',
+                'shortDescriptionAr' => 'لوشن جسم خفيف يرطب وينعم ويساعد على إظهار بشرة أكثر نعومة وتوحداً.',
+                'descriptionEn' => 'This fast-absorbing body lotion combines antioxidant turmeric, stabilised vitamin C and niacinamide. It helps soothe, improve the look of uneven areas and strengthen the skin barrier while leaving skin soft and refined.',
+                'descriptionAr' => 'يجمع هذا اللوشن السريع الامتصاص بين الكركم المضاد للأكسدة وفيتامين C الثابت والنياسيناميد. يساعد على التهدئة وتحسين مظهر المناطق غير الموحدة وتقوية حاجز البشرة مع تركها ناعمة.',
+                'benefitsEn' => ['Hydrates without stickiness', 'Helps even the look of skin', 'Improves suppleness and comfort'],
+                'benefitsAr' => ['يرطب من دون لزوجة', 'يساعد على توحيد مظهر البشرة', 'يحسن المرونة والراحة'],
+                'ingredientsEn' => [
+                    ['name' => 'Turmeric (curcumin)', 'text' => 'Helps soothe and reduce the look of uneven areas.'],
+                    ['name' => 'Oil-soluble vitamin C', 'text' => 'Ascorbyl Tetraisopalmitate supports radiance and the appearance of firmness.'],
+                    ['name' => 'Niacinamide', 'text' => 'Helps strengthen the skin barrier and retain moisture.'],
+                ],
+                'ingredientsAr' => [
+                    ['name' => 'الكركم (الكركمين)', 'text' => 'يساعد على التهدئة وتقليل مظهر المناطق غير الموحدة.'],
+                    ['name' => 'فيتامين C قابل للذوبان في الزيت', 'text' => 'يدعم الإشراقة ومظهر التماسك.'],
+                    ['name' => 'النياسيناميد', 'text' => 'يساعد على تقوية حاجز البشرة والاحتفاظ بالرطوبة.'],
+                ],
+                'usageEn' => 'Apply daily to clean, dry skin and massage until absorbed. Focus on areas that look uneven.',
+                'usageAr' => 'ضعيه يومياً على بشرة نظيفة وجافة ودلّكي حتى الامتصاص. ركزي على المناطق غير الموحدة.',
+            ],
+            'radiance-boosting-body-scrub' => [
+                'categoryEn' => 'Scrubs', 'categoryAr' => 'مقشرات',
+                'nameEn' => 'Radiance-Boosting Body Scrub', 'nameAr' => 'مقشر الجسم المعزز للإشراقة',
+                'typeEn' => 'Brightening body scrub', 'typeAr' => 'مقشر جسم للإشراقة',
+                'shortDescriptionEn' => 'A sea-salt scrub that exfoliates, smooths and reveals the skin’s natural radiance.',
+                'shortDescriptionAr' => 'مقشر بملح البحر يقشر وينعم ويكشف عن إشراقة البشرة الطبيعية.',
+                'descriptionEn' => 'This generous scrub combines fine sea-salt grains with turmeric, vitamin C and niacinamide. It helps remove dead cells, smooth texture and revive radiance. Coconut oil and shea butter help maintain comfort after exfoliation.',
+                'descriptionAr' => 'يجمع هذا المقشر الغني بين حبيبات ملح البحر الناعمة والكركم وفيتامين C والنياسيناميد. يساعد على إزالة الخلايا الميتة وتنعيم الملمس وإحياء الإشراقة، بينما يحافظ زيت جوز الهند وزبدة الشيا على راحة البشرة.',
+                'benefitsEn' => ['Exfoliates dead cells', 'Helps smooth skin texture', 'Nourishes and revives radiance'],
+                'benefitsAr' => ['يقشر الخلايا الميتة', 'يساعد على تنعيم ملمس البشرة', 'يغذي ويعيد الإشراقة'],
+                'ingredientsEn' => [
+                    ['name' => 'Fine sea salt', 'text' => 'Provides mechanical exfoliation for visibly smoother skin.'],
+                    ['name' => 'Turmeric, vitamin C and niacinamide', 'text' => 'Help support radiance, even the look of skin and strengthen its barrier.'],
+                    ['name' => 'Coconut oil and shea butter', 'text' => 'Help nourish and reduce dryness after exfoliation.'],
+                ],
+                'ingredientsAr' => [
+                    ['name' => 'ملح بحر ناعم', 'text' => 'يقشر ميكانيكياً لبشرة أكثر نعومة.'],
+                    ['name' => 'الكركم وفيتامين C والنياسيناميد', 'text' => 'تساعد على دعم الإشراقة وتوحيد المظهر وتقوية حاجز البشرة.'],
+                    ['name' => 'زيت جوز الهند وزبدة الشيا', 'text' => 'يساعدان على التغذية وتقليل الجفاف بعد التقشير.'],
+                ],
+                'usageEn' => 'Apply to damp skin, massage gently in circular motions, then rinse. Use once or twice a week.',
+                'usageAr' => 'ضعيه على بشرة رطبة ودلّكي بلطف بحركات دائرية ثم اشطفي. استخدميه مرة أو مرتين أسبوعياً.',
+            ],
+            'radiant-body-butter' => [
+                'categoryEn' => 'Moisturisers', 'categoryAr' => 'مرطبات',
+                'nameEn' => 'Radiant Body Butter', 'nameAr' => 'زبدة الجسم المشرقة',
+                'typeEn' => 'Nourishing body butter', 'typeAr' => 'زبدة جسم مغذية',
+                'shortDescriptionEn' => 'A rich body butter that deeply nourishes and leaves skin soft, smooth and radiant.',
+                'shortDescriptionAr' => 'زبدة جسم غنية تغذي بعمق وتترك البشرة ناعمة وملساء ومشرقة.',
+                'descriptionEn' => 'This nourishing body butter combines turmeric root extract, stabilised vitamin C and niacinamide with a rich blend of butters and oils. It provides deep hydration and helps leave skin supple, smooth and radiant.',
+                'descriptionAr' => 'تجمع زبدة الجسم المغذية بين مستخلص جذر الكركم وفيتامين C الثابت والنياسيناميد ومزيج غني من الزبدات والزيوت. توفر ترطيباً عميقاً وتساعد على ترك البشرة مرنة وناعمة ومشرقة.',
+                'benefitsEn' => ['Deeply nourishes', 'Helps strengthen the skin barrier', 'Leaves skin soft and radiant'],
+                'benefitsAr' => ['يغذي بعمق', 'يساعد على تقوية حاجز البشرة', 'يترك البشرة ناعمة ومشرقة'],
+                'ingredientsEn' => [
+                    ['name' => 'Turmeric root extract', 'text' => 'Helps soothe and reduce the look of uneven areas.'],
+                    ['name' => 'Oil-soluble vitamin C', 'text' => 'Supports radiance and an even-looking complexion.'],
+                    ['name' => 'Niacinamide', 'text' => 'Helps strengthen the skin barrier.'],
+                    ['name' => 'Nourishing butters and oils', 'text' => 'Provide deep hydration and lasting comfort.'],
+                ],
+                'ingredientsAr' => [
+                    ['name' => 'مستخلص جذر الكركم', 'text' => 'يساعد على التهدئة وتقليل مظهر المناطق غير الموحدة.'],
+                    ['name' => 'فيتامين C قابل للذوبان في الزيت', 'text' => 'يدعم الإشراقة والمظهر الموحد.'],
+                    ['name' => 'النياسيناميد', 'text' => 'يساعد على تقوية حاجز البشرة.'],
+                    ['name' => 'زبدات وزيوت مغذية', 'text' => 'توفر ترطيباً عميقاً وراحة تدوم.'],
+                ],
+                'usageEn' => 'Apply daily to clean skin, preferably after showering. Massage until absorbed and focus on dry areas.',
+                'usageAr' => 'ضعيها يومياً على بشرة نظيفة، ويفضل بعد الاستحمام. دلّكي حتى الامتصاص وركزي على المناطق الجافة.',
+            ],
+            'radiance-body-oil' => [
+                'categoryEn' => 'Moisturisers', 'categoryAr' => 'مرطبات',
+                'nameEn' => 'Radiance Body Oil', 'nameAr' => 'زيت الجسم للإشراقة',
+                'typeEn' => 'Radiance body oil', 'typeAr' => 'زيت جسم للإشراقة',
+                'shortDescriptionEn' => 'A lightweight body oil that nourishes, softens and enhances the skin without a heavy finish.',
+                'shortDescriptionAr' => 'زيت جسم خفيف يغذي ويلين ويعزز جمال البشرة من دون ملمس ثقيل.',
+                'descriptionEn' => 'This lightweight, fast-absorbing body oil combines antioxidant turmeric, stabilised vitamin C and niacinamide with sweet almond, jojoba and rosehip oils. It deeply nourishes, supports suppleness and enhances the skin’s natural radiance.',
+                'descriptionAr' => 'يجمع زيت الجسم الخفيف والسريع الامتصاص بين الكركم المضاد للأكسدة وفيتامين C الثابت والنياسيناميد وزيوت اللوز الحلو والجوجوبا وثمر الورد. يغذي بعمق ويدعم المرونة ويعزز إشراقة البشرة الطبيعية.',
+                'benefitsEn' => ['Deeply nourishes', 'Improves suppleness', 'Enhances radiance without heaviness'],
+                'benefitsAr' => ['يغذي بعمق', 'يحسن المرونة', 'يعزز الإشراقة من دون ثقل'],
+                'ingredientsEn' => [
+                    ['name' => 'Tetrahydrocurcumin', 'text' => 'An antioxidant form of turmeric that helps soothe and visibly even the skin.'],
+                    ['name' => 'Oil-soluble vitamin C', 'text' => 'Supports radiance and the appearance of firmness.'],
+                    ['name' => 'Niacinamide', 'text' => 'Helps strengthen the skin barrier.'],
+                    ['name' => 'Sweet almond, jojoba and rosehip', 'text' => 'A blend of oils that nourishes and supports more supple skin.'],
+                ],
+                'ingredientsAr' => [
+                    ['name' => 'تتراهيدروكركمين', 'text' => 'شكل مضاد للأكسدة من الكركم يساعد على التهدئة وتوحيد المظهر.'],
+                    ['name' => 'فيتامين C قابل للذوبان في الزيت', 'text' => 'يدعم الإشراقة ومظهر التماسك.'],
+                    ['name' => 'النياسيناميد', 'text' => 'يساعد على تقوية حاجز البشرة.'],
+                    ['name' => 'اللوز الحلو والجوجوبا وثمر الورد', 'text' => 'مزيج زيوت يغذي ويساهم في بشرة أكثر مرونة.'],
+                ],
+                'usageEn' => 'Apply a few pumps to clean skin, ideally while slightly damp. Massage until absorbed. Use alone or after body lotion.',
+                'usageAr' => 'ضعي بضع ضغطات على بشرة نظيفة ويفضل أن تكون رطبة قليلاً. دلّكي حتى الامتصاص. استخدميه منفرداً أو بعد لوشن الجسم.',
+            ],
+        ];
+    }
+}

@@ -1,6 +1,12 @@
 <footer>
     <a class="brand brand-light" href="{{ path('app_home') }}">AURIM<span>Glowing by Rima</span></a>
-    <p>La beauté qui rayonne.</p>
-    <p class="markets">Mauritanie · Sénégal · Mali · Guinée</p>
-    <p class="copyright">© {{ 'now'|date('Y') }} AURIM. Tous droits réservés.</p>
+    <p>{{ 'footer.tagline'|trans }}</p>
+    <p class="markets">{{ 'market.MR'|trans }} · {{ 'market.SN'|trans }} · {{ 'market.ML'|trans }} · {{ 'market.GN'|trans }}</p>
+    <nav class="footer-links" aria-label="{{ 'footer.legal_navigation'|trans }}">
+        <a href="{{ path('app_legal_notice') }}">{{ 'legal.notice.title'|trans }}</a>
+        <a href="{{ path('app_legal_terms') }}">{{ 'legal.terms.title'|trans }}</a>
+        <a href="{{ path('app_legal_privacy') }}">{{ 'legal.privacy.title'|trans }}</a>
+        <a href="{{ path('app_legal_cookies') }}">{{ 'legal.cookies.title'|trans }}</a>
+    </nav>
+    <p class="copyright">© {{ 'now'|date('Y') }} AURIM. {{ 'footer.rights'|trans }}</p>
 </footer>

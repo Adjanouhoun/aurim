@@ -1,0 +1,364 @@
+meta:
+  description: "AURIM, soins cosmétiques premium pour une peau douce et lumineuse."
+nav:
+  announcement: "Livraison locale en Mauritanie, au Sénégal, au Mali et en Guinée"
+  aria: "Navigation principale"
+  menu: "Menu"
+  open_menu: "Ouvrir le menu"
+  close_menu: "Fermer le menu"
+  shop: "Boutique"
+  ritual: "Votre rituel"
+  ingredients: "Nos ingrédients"
+  story: "Notre histoire"
+  tracking: "Suivre ma commande"
+  country: "Pays"
+  choose: "Choisir"
+  language: "Langue du site"
+  cart: "Panier (%count%)"
+market:
+  MR: "Mauritanie"
+  SN: "Sénégal"
+  ML: "Mali"
+  GN: "Guinée"
+  US: "États-Unis"
+footer:
+  tagline: "La beauté qui rayonne."
+  legal_navigation: "Informations légales"
+  rights: "Tous droits réservés."
+home:
+  meta_title: "AURIM — La beauté qui rayonne"
+  hero:
+    eyebrow: "Le rituel corps illuminateur"
+    title: "Révélez l’éclat naturel de votre peau."
+    text: "Des soins généreux au curcuma, à la vitamine C et à la niacinamide, pensés pour exfolier, nourrir et illuminer la peau."
+    cta: "Découvrir la collection"
+  trust:
+    stock: { title: "Stock local", text: "Livraison plus rapide" }
+    payment: { title: "Paiement adapté", text: "À chaque marché" }
+    formulas: { title: "Formules expertes", text: "Des actifs reconnus" }
+    service: { title: "Service client", text: "À votre écoute" }
+  essentials:
+    eyebrow: "Les essentiels AURIM"
+    title: "Les gestes d’une peau rayonnante"
+    navigation: "Navigation des produits"
+    previous: "Produit précédent"
+    next: "Produit suivant"
+    discover: "Découvrir le soin"
+    empty: "Aucun essentiel n’est publié pour le moment."
+  ritual:
+    eyebrow: "Deux gestes, un éclat durable"
+    title: "Le rituel AURIM"
+    step1: { title: "Exfolier", text: "Massez le gommage sur peau humide pour lisser le grain de peau." }
+    step2: { title: "Nourrir", text: "Appliquez le beurre corporel pour envelopper la peau de confort." }
+    step3: { title: "Rayonner", text: "Retrouvez une peau douce, uniforme et naturellement lumineuse." }
+  ingredients:
+    eyebrow: "Au cœur des formules"
+    title: "Des ingrédients choisis pour votre éclat"
+    turmeric: { title: "Curcuma", text: "Connu pour aider à raviver l’éclat et unifier visiblement la peau." }
+    vitamin_c: { title: "Vitamine C", text: "Un actif incontournable pour soutenir la luminosité du teint." }
+    niacinamide: { title: "Niacinamide", text: "Aide à renforcer la barrière cutanée et à améliorer la texture." }
+  story:
+    title: "Une beauté lumineuse, pensée pour vous."
+    text: "AURIM imagine des soins sensoriels qui transforment la routine quotidienne en un moment de douceur et de confiance."
+    cta: "Découvrir notre histoire"
+catalog:
+  meta_title: "La boutique — AURIM"
+  eyebrow: "La collection AURIM"
+  title: "Des soins pour révéler votre lumière."
+  text: "Découvrez le rituel AURIM au curcuma, à la vitamine C et à la niacinamide."
+  filter: "Filtrer par"
+  all: "Tous les soins"
+  count: "%count% soins"
+  sort: "Trier : Nouveautés"
+  new: "Nouveau"
+  in_stock: "En stock dans votre pays"
+  out_of_stock: "Rupture de stock"
+  price_soon: "Prix à venir"
+  choose_country: "Choisissez votre pays"
+product:
+  breadcrumb: "Fil d’Ariane"
+  home: "Accueil"
+  main_view: "Vue principale"
+  detail_view: "Vue rapprochée"
+  reference: "Réf."
+  price_soon: "Prix prochainement disponible"
+  select_country_price: "Sélectionnez votre pays pour voir le prix"
+  select_country_stock: "Choisissez votre pays pour vérifier la disponibilité"
+  stock_available: "En stock · %count% disponible%suffix% dans votre pays"
+  unavailable: "Indisponible dans votre pays"
+  quantity: "Quantité"
+  quantity_decrease: "Diminuer la quantité"
+  quantity_increase: "Augmenter la quantité"
+  add_to_cart: "Ajouter au panier"
+  reassurance:
+    stock: { title: "Stock local", text: "Selon le marché sélectionné" }
+    delivery: { title: "Livraison ou retrait", text: "Choix lors de la commande" }
+    payment: { title: "Paiement adapté", text: "Options locales sécurisées" }
+  description: "Description"
+  benefits: "Bénéfices"
+  ingredients: "Actifs & ingrédients"
+  usage: "Conseils d’utilisation"
+  signature:
+    eyebrow: "Le rituel AURIM"
+    title: "Une peau douce, nourrie et naturellement rayonnante."
+    text: "Des soins sensoriels imaginés pour transformer chaque geste quotidien en un moment de lumière."
+    cta: "Découvrir toute la collection"
+flash:
+  product_unavailable: "Ce produit n’est pas encore disponible dans le pays sélectionné."
+  product_added: "%product% a été ajouté au panier."
+cart:
+  meta_title: "Votre panier — AURIM"
+  eyebrow: "Votre sélection"
+  title: "Mon panier"
+  empty: { title: "Votre panier est vide.", text: "Découvrez les soins AURIM et composez votre rituel.", cta: "Découvrir la boutique" }
+  stock:
+    none: "Rupture de stock dans votre pays."
+    limited: "Seulement %count% disponible(s). Réduisez la quantité."
+  update: "Mettre à jour"
+  price_confirm: "Prix à confirmer"
+  remove: "Supprimer"
+  summary: "Récapitulatif"
+  subtotal: "Sous-total des produits"
+  to_confirm: "À confirmer"
+  shipping_note: "Le retrait en dépôt ou le tarif de livraison sera ajouté à l’étape suivante."
+  warning:
+    country: "Sélectionnez votre pays avant de continuer."
+    price: "Les prix de ce marché doivent être publiés dans l’administration."
+    stock: "Le stock de votre panier est insuffisant. Modifiez les quantités ou retirez le produit indisponible."
+  checkout: "Choisir la réception"
+checkout:
+  meta_title: "Livraison — AURIM"
+  eyebrow: "Finaliser la commande"
+  title: "Vos informations de livraison"
+  local_delivery: "Livraison locale en %market%"
+  no_shipping: "Aucun mode de réception n’est encore configuré pour ce pays."
+  errors:
+    title: "La commande n’a pas été créée. Vérifiez les informations suivantes :"
+  full_name: "Nom complet"
+  email: "Adresse e-mail"
+  phone: "Téléphone"
+  mobile_phone: "Numéro Mobile Money utilisé pour le paiement"
+  fulfillment:
+    legend: "Comment souhaitez-vous recevoir votre commande ?"
+    pickup: "Retrait dans un dépôt local"
+    delivery: "Livraison à domicile"
+  days: "%min%–%max% jours"
+  free: "Gratuit"
+  payment:
+    legend: "Comment souhaitez-vous payer ?"
+    choose_fulfillment: "Choisissez d’abord votre mode de réception pour afficher les paiements disponibles."
+    cash: "Espèces"
+    mobile: "Mobile Money"
+    online: "En ligne"
+    none_country: "Aucun moyen de paiement actif pour ce pays."
+    none_fulfillment: "Aucun moyen de paiement n’est encore configuré pour ce mode de réception."
+    phone_help_title: "Important pour identifier votre paiement"
+    phone_help_text: "Saisissez plus haut le numéro Mobile Money avec lequel vous effectuerez le transfert. Ce même numéro permettra à AURIM de retrouver et valider votre paiement."
+  address: "Votre adresse et indications"
+  submit: "Créer la commande"
+  summary:
+    title: "Votre commande"
+    subtotal: "Sous-total"
+    fulfillment: "Réception"
+    select: "À sélectionner"
+    total: "Total"
+    note: "Le total est recalculé immédiatement selon le dépôt ou la livraison choisis."
+  error:
+    country_price: "Sélectionnez un pays et vérifiez les prix avant de continuer."
+    stock_changed: "Un produit de votre panier n’est plus disponible en quantité suffisante. Vérifiez votre panier."
+    fulfillment: "Sélectionnez un mode de réception."
+    payment: "Sélectionnez un moyen de paiement."
+    payment_incompatible: "Ce moyen de paiement n’est pas compatible avec le mode de réception choisi."
+    name: "Indiquez le nom complet du destinataire."
+    email: "Indiquez une adresse e-mail valide."
+    phone: "Indiquez un numéro de téléphone valide."
+    address: "Précisez l’adresse de livraison."
+    warehouse: "Aucun stock local n’est configuré pour ce pays."
+    product_stock: "Le stock de l’un des produits est insuffisant."
+    concurrent_stock: "Le stock vient de changer. Vérifiez votre panier avant de recommencer."
+confirmation:
+  eyebrow: "Commande enregistrée"
+  thanks: "Merci, %name%."
+  reference: "Votre référence est"
+  fulfillment: "Mode de réception"
+  subtotal: "Sous-total"
+  shipping: "Frais de réception"
+  total: "Total à payer"
+  cash:
+    eyebrow: "Paiement au dépôt"
+    amount: "Montant à régler lors du retrait :"
+    reference: "Présentez votre référence"
+  mobile:
+    eyebrow: "Paiement Mobile Money"
+    send: "Envoyez exactement"
+    to_number: "au numéro :"
+    number_later: "Numéro à communiquer par AURIM"
+    holder: "Titulaire"
+    payer: "Utilisez le numéro payeur %phone%."
+    validation: "AURIM validera manuellement la commande après réception du paiement."
+  home: "Retour à l’accueil"
+  tracking: "Suivre l’avancement de ma commande"
+tracking:
+  meta_title: "Suivre ma commande — AURIM"
+  error:
+    not_found: "Aucune commande ne correspond à cette référence et cette adresse e-mail."
+  hero:
+    eyebrow: "Votre commande AURIM"
+    title: "Suivez chaque étape de votre rituel."
+    text: "Consultez en un instant la préparation, l’expédition ou la disponibilité de votre commande au dépôt."
+    secure: "Référence sécurisée"
+    status: "Mise à jour du statut"
+    local: "Suivi local"
+  search:
+    eyebrow: "Retrouver ma commande"
+    title: "Renseignez vos informations"
+    text: "Votre référence figure dans l’e-mail de confirmation."
+    reference: "Référence de commande"
+    email: "Adresse e-mail"
+    submit: "Afficher le suivi"
+  status:
+    pending_payment: "En attente de paiement"
+    preparing: "En préparation"
+    ready: "Prête au retrait"
+    shipped: "Expédiée"
+    handed: "Remise"
+    delivered: "Livrée"
+    delivery_failed: "Livraison échouée"
+    payment_failed: "Paiement échoué / commande annulée"
+    cancelled: "Commande annulée"
+    refunded: "Commande remboursée"
+    attention: "Cette commande nécessite votre attention."
+  payment: { pending: "En attente", received: "Reçu", failed: "Échoué", refunded: "Remboursé" }
+  result: { latest: "Dernier statut connu de votre commande.", total: "Total" }
+  steps: { created: "Commande enregistrée", current: "Étape actuelle" }
+  details:
+    fulfillment: "Mode de réception"
+    pickup: "Retrait au dépôt choisi"
+    delivery: "Livraison à l’adresse indiquée"
+    payment: "Paiement"
+    pending_info: "Information à venir"
+    pickup_location: "Dépôt de retrait"
+    delivery_address: "Adresse de livraison"
+  help:
+    eyebrow: "Besoin d’aide ?"
+    title: "Votre référence commence par AUR-"
+    text: "Utilisez exactement l’adresse e-mail saisie lors de la commande. Pour protéger vos informations, aucun résultat ne sera affiché si les deux données ne correspondent pas."
+email:
+  common:
+    hello: "Bonjour %name%,"
+    thanks: "Merci pour votre confiance."
+    team: "L’équipe AURIM"
+  order:
+    subject: "Commande AURIM %reference%"
+    title: "Merci %name%"
+    recorded: "Votre commande <strong>%reference%</strong> a bien été enregistrée."
+    fulfillment: "Réception"
+    total: "Total à payer"
+    mobile_instruction: "Effectuez le paiement via"
+    number_later: "Numéro à communiquer par AURIM"
+    holder: "Titulaire"
+    manual_validation: "Votre commande sera validée manuellement après réception."
+    cash_instruction: "Le règlement en espèces sera effectué lors du retrait au dépôt."
+    view: "Voir ma commande"
+    keep_reference: "Conservez votre référence pour toute demande auprès du service client."
+  payment:
+    subject: "Paiement confirmé — %reference%"
+    title: "Paiement confirmé"
+    received: "Nous avons bien reçu votre paiement Mobile Money de"
+    via: "effectué via"
+    order_reference: "Référence de commande"
+    payer_phone: "Numéro utilisé pour le paiement"
+    operator_reference: "Référence opérateur"
+    next: "Votre commande est maintenant validée. Nous vous tiendrons informé(e) de sa préparation et de sa remise ou livraison."
+  status:
+    reference: "Référence"
+    pickup_address: "Adresse du dépôt"
+    delivery_address: "Adresse de livraison"
+    preparing:
+      subject: "Votre commande AURIM est en préparation"
+      title: "Votre commande est en préparation"
+      message: "Notre équipe prépare soigneusement votre commande. Nous vous informerons dès qu’elle sera prête à être remise ou expédiée."
+    ready:
+      subject: "Votre commande AURIM est prête au retrait"
+      title: "Votre commande est prête"
+      message: "Votre commande vous attend au dépôt %fulfillment%. Présentez votre référence lors du retrait."
+    shipped:
+      subject: "Votre commande AURIM est en livraison"
+      title: "Votre commande est en route"
+      message: "Votre commande a quitté notre dépôt et sera livrée à l’adresse indiquée."
+    delivered:
+      subject: "Votre commande AURIM a été remise"
+      title: "Votre commande a été remise"
+      message: "Votre commande est maintenant terminée. Merci d’avoir choisi AURIM pour votre rituel beauté."
+    cancelled:
+      subject: "Votre commande AURIM a été annulée"
+      title: "Commande annulée"
+      message: "Votre commande a été annulée. Si vous avez déjà effectué un paiement, contactez AURIM en indiquant votre référence."
+    payment_failed:
+      subject: "Le paiement de votre commande AURIM a échoué"
+      title: "Paiement non validé"
+      message: "Nous n’avons pas pu valider votre paiement Mobile Money. La commande a été annulée et le stock réservé a été libéré."
+    delivery_failed:
+      subject: "La livraison de votre commande AURIM a échoué"
+      title: "Livraison non aboutie"
+      message: "La livraison n’a pas pu être effectuée. Notre équipe vous contactera pour organiser une nouvelle tentative ou une annulation."
+    refunded:
+      subject: "Votre commande AURIM a été remboursée"
+      title: "Remboursement enregistré"
+      message: "Le remboursement de votre commande a été enregistré. Le délai de réception dépend du moyen de paiement utilisé."
+legal:
+  eyebrow: "Informations AURIM"
+  updated: "Dernière mise à jour : %date%"
+  missing_information: "Certaines informations d’entreprise doivent encore être complétées dans la configuration avant la mise en ligne."
+  field:
+    name: "Entreprise / marque"
+    form: "Forme juridique"
+    registration: "Immatriculation"
+    address: "Siège social"
+    email: "Adresse e-mail"
+    phone: "Téléphone"
+    director: "Direction de la publication"
+  notice:
+    title: "Mentions légales"
+    publisher: { title: "Éditeur du site", text: "Le site de commerce électronique AURIM est édité par l’entité présentée ci-dessous." }
+    host: { title: "Hébergement", text: "Le site est hébergé par %name%, %address%." }
+    intellectual: { title: "Propriété intellectuelle", text: "La marque AURIM, les textes, photographies, graphismes et éléments du site sont protégés. Toute reproduction ou utilisation sans autorisation écrite préalable est interdite, sauf exception prévue par la loi." }
+    liability: { title: "Responsabilité", text: "AURIM s’efforce de fournir des informations exactes et actualisées. Les conseils présentés ne remplacent pas un avis médical. En cas de réaction ou de doute, cessez l’utilisation et consultez un professionnel de santé." }
+    contact: { title: "Contact", text: "Pour toute question concernant le site, écrivez à %email%." }
+  terms:
+    title: "Conditions générales de vente"
+    validation_note: "Ce modèle doit être validé et adapté par un professionnel du droit aux règles applicables en Mauritanie, au Sénégal, au Mali et en Guinée avant l’ouverture commerciale."
+    scope: { title: "1. Objet et vendeur", text: "Les présentes conditions encadrent les ventes de produits cosmétiques conclues sur le site entre %company% et tout client consommateur d’un marché desservi." }
+    products: { title: "2. Produits", text: "Les caractéristiques essentielles, la contenance et les conseils d’utilisation figurent sur chaque fiche. Les photographies sont présentées avec le plus grand soin mais ne constituent pas un engagement sur de légères variations d’apparence ou d’emballage." }
+    prices: { title: "3. Prix", text: "Les prix sont affichés dans la devise du pays sélectionné. Le total applicable, incluant les frais de livraison ou de retrait éventuels, est affiché avant la validation de la commande." }
+    order: { title: "4. Commande", text: "Le client vérifie son panier, son pays, ses coordonnées, son mode de réception et son paiement avant validation. La commande est enregistrée sous une référence unique. AURIM peut refuser ou annuler une commande en cas d’anomalie, de stock insuffisant, de fraude présumée ou de paiement non reçu." }
+    payment: { title: "5. Paiement", text: "Le paiement Mobile Money est validé manuellement après réception effective des fonds. Le client doit utiliser le numéro payeur indiqué lors de la commande. Le paiement en espèces est disponible uniquement pour les retraits compatibles. Une commande Mobile Money reste en attente jusqu’à validation." }
+    delivery: { title: "6. Livraison et retrait", text: "Les options, adresses, coûts et délais estimatifs sont présentés selon le pays choisi. Le client doit fournir des coordonnées exactes et rester joignable. Un retard raisonnable ou une tentative échouée peut conduire à une nouvelle organisation avec le service client." }
+    returns: { title: "7. Annulation, retours et remboursements", text: "Pour des raisons d’hygiène, un produit cosmétique ouvert ou descellé ne peut être repris sauf défaut ou non-conformité. Signalez rapidement tout produit endommagé, erroné ou manquant à %email% avec la référence et des photographies. Les droits impératifs du consommateur applicables dans le pays restent pleinement réservés." }
+    compliance: { title: "8. Conformité et précautions", text: "Le client doit lire la composition et les conseils d’utilisation, effectuer un test local si nécessaire et ne pas utiliser un produit contenant un ingrédient auquel il est allergique. Les produits ne sont pas destinés à diagnostiquer ou traiter une maladie." }
+    liability: { title: "9. Responsabilité", text: "AURIM répond de la bonne exécution de la vente dans les limites prévues par la loi applicable. Sa responsabilité ne peut être engagée pour une mauvaise utilisation, des informations client inexactes ou un événement extérieur irrésistible et imprévisible." }
+    disputes: { title: "10. Réclamations et litiges", text: "Toute réclamation doit d’abord être adressée à %email% afin de rechercher une solution amiable. La loi et les juridictions compétentes seront déterminées selon le pays du client et les règles impératives de protection du consommateur." }
+  privacy:
+    title: "Politique de confidentialité"
+    controller: { title: "Responsable du traitement", text: "%company% traite les données de la boutique AURIM. Le contact relatif à la confidentialité est %email%." }
+    data: { title: "Données collectées", text: "Nous traitons les informations fournies lors d’une commande ou d’une demande : identité, e-mail, téléphone, adresse, pays, contenu du panier, livraison, référence, statut et numéro payeur Mobile Money. Des données techniques nécessaires à la sécurité peuvent également être enregistrées." }
+    purposes: { title: "Finalités et bases", text: "Les données servent à exécuter la commande, réserver le stock, confirmer le paiement, livrer ou remettre les produits, envoyer les notifications, répondre au service client, prévenir la fraude et respecter les obligations comptables et légales." }
+    recipients: { title: "Destinataires", text: "L’accès est limité aux équipes AURIM habilitées et, selon les besoins, aux prestataires d’hébergement, de messagerie et de livraison. Seules les informations strictement utiles sont communiquées. AURIM ne vend pas les données personnelles." }
+    retention: { title: "Durée de conservation", text: "Les données de commande sont conservées pendant la durée nécessaire à l’exécution, au service après-vente et aux obligations comptables ou fiscales applicables. Les données de panier et de session sont supprimées à l’expiration de la session ou selon les réglages du navigateur." }
+    security: { title: "Sécurité", text: "Des mesures techniques et organisationnelles sont mises en œuvre pour limiter l’accès, protéger les comptes administrateurs et préserver la confidentialité des données. Aucun système ne pouvant garantir un risque nul, tout incident significatif sera traité selon les exigences applicables." }
+    rights: { title: "Vos droits", text: "Selon la réglementation applicable, vous pouvez demander l’accès, la rectification, l’effacement, la limitation ou l’opposition au traitement de vos données. Écrivez à %email% en précisant votre demande et, si nécessaire, votre référence de commande. Vous pouvez également saisir l’autorité compétente de votre pays." }
+    transfers: { title: "Transferts internationaux", text: "Le stock central et certains prestataires peuvent être situés hors du pays du client, notamment aux États-Unis. AURIM veille à limiter les données transférées et à utiliser des garanties adaptées lorsque la réglementation l’exige." }
+    changes: { title: "Mises à jour", text: "Cette politique peut évoluer avec les services et les obligations applicables. La date affichée en haut de page permet d’identifier la version en vigueur." }
+  cookies:
+    title: "Politique des cookies"
+    definition: { title: "Qu’est-ce qu’un cookie ?", text: "Un cookie ou stockage équivalent conserve une petite information dans le navigateur pour faire fonctionner le site et mémoriser un choix pendant la navigation." }
+    used: { title: "Stockages utilisés par AURIM", text: "La version actuelle utilise uniquement des stockages strictement nécessaires au fonctionnement de la boutique. Ils ne servent pas à créer un profil publicitaire." }
+    table: { name: "Nom", purpose: "Finalité", duration: "Durée" }
+    session: "Sécuriser la session et les formulaires"
+    cart: "Conserver les produits du panier"
+    market: "Mémoriser le pays sélectionné"
+    locale: "Mémoriser la langue choisie"
+    session_duration: "Durée de la session"
+    analytics: { title: "Mesure d’audience et publicité", text: "Aucun cookie publicitaire ou de mesure d’audience non essentiel n’est actuellement installé. Si un tel outil est ajouté, il restera désactivé jusqu’au consentement du visiteur lorsque celui-ci est requis." }
+    control: { title: "Contrôle depuis le navigateur", text: "Vous pouvez supprimer ou bloquer les cookies dans les réglages du navigateur. Le blocage des stockages nécessaires peut empêcher le panier, le choix du pays, la langue ou la validation sécurisée des formulaires de fonctionner." }
+    contact: { title: "Contact", text: "Pour toute question relative aux cookies ou à la confidentialité, écrivez à %email%." }

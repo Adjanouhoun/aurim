@@ -1,22 +1,47 @@
-<div class="announcement">Livraison locale en Mauritanie, au Sénégal, au Mali et en Guinée</div>
+<div class="announcement">{{ 'nav.announcement'|trans }}</div>
 <header class="site-header">
     <a class="brand" href="{{ path('app_home') }}">AURIM<span>Glowing by Rima</span></a>
-    <nav aria-label="Navigation principale">
-        <a href="{{ path('app_catalog') }}">Boutique</a>
-        <a href="{{ path('app_home') }}#rituel">Votre rituel</a>
-        <a href="{{ path('app_home') }}#ingredients">Nos ingrédients</a>
-        <a href="{{ path('app_home') }}#histoire">Notre histoire</a>
-        <a href="{{ path('app_order_tracking') }}">Suivre ma commande</a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation" aria-label="{{ 'nav.open_menu'|trans }}" data-menu-toggle data-open-label="{{ 'nav.open_menu'|trans }}" data-close-label="{{ 'nav.close_menu'|trans }}">
+        <span class="menu-toggle-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>{{ 'nav.menu'|trans }}</span>
+    </button>
+    <nav id="main-navigation" aria-label="{{ 'nav.aria'|trans }}">
+        <a href="{{ path('app_catalog') }}">{{ 'nav.shop'|trans }}</a>
+        <a href="{{ path('app_home') }}#rituel">{{ 'nav.ritual'|trans }}</a>
+        <a href="{{ path('app_home') }}#ingredients">{{ 'nav.ingredients'|trans }}</a>
+        <a href="{{ path('app_home') }}#histoire">{{ 'nav.story'|trans }}</a>
+        <a href="{{ path('app_order_tracking') }}">{{ 'nav.tracking'|trans }}</a>
+        <div class="mobile-navigation-tools">
+            <form class="market-selector mobile-market-selector" action="{{ path('app_market_select') }}" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token('select-market') }}">
+                <label for="mobile-market">{{ 'nav.country'|trans }}</label>
+                <select id="mobile-market" name="market" onchange="this.form.submit()">
+                    <option value="">{{ 'nav.choose'|trans }}</option>
+                    {% for market in store_context.markets %}<option value="{{ market.countryCode }}" {{ store_context.selectedMarket and store_context.selectedMarket.id == market.id ? 'selected' : '' }}>{{ ('market.' ~ market.countryCode)|trans }}</option>{% endfor %}
+                </select>
+            </form>
+            <div class="locale-selector mobile-locale-selector" aria-label="{{ 'nav.language'|trans }}">
+                <span>{{ 'nav.language'|trans }}</span>
+                {% for locale, label in {'fr':'FR','en':'EN','ar':'AR'} %}
+                    <a class="{{ app.request.locale == locale ? 'active' : '' }}" lang="{{ locale }}" hreflang="{{ locale }}" href="{{ path('app_locale_switch', {locale: locale, returnTo: app.request.requestUri}) }}">{{ label }}</a>
+                {% endfor %}
+            </div>
+        </div>
     </nav>
     <div class="header-actions">
         <form class="market-selector" action="{{ path('app_market_select') }}" method="post">
             <input type="hidden" name="_token" value="{{ csrf_token('select-market') }}">
-            <label for="market">Pays</label>
+            <label for="market">{{ 'nav.country'|trans }}</label>
             <select id="market" name="market" onchange="this.form.submit()">
-                <option value="">Choisir</option>
-                {% for market in store_context.markets %}<option value="{{ market.countryCode }}" {{ store_context.selectedMarket and store_context.selectedMarket.id == market.id ? 'selected' : '' }}>{{ market.name }}</option>{% endfor %}
+                <option value="">{{ 'nav.choose'|trans }}</option>
+                {% for market in store_context.markets %}<option value="{{ market.countryCode }}" {{ store_context.selectedMarket and store_context.selectedMarket.id == market.id ? 'selected' : '' }}>{{ ('market.' ~ market.countryCode)|trans }}</option>{% endfor %}
             </select>
         </form>
-        <a href="{{ path('app_cart') }}">Panier ({{ cart.count }})</a>
+        <div class="locale-selector" aria-label="{{ 'nav.language'|trans }}">
+            {% for locale, label in {'fr':'FR','en':'EN','ar':'AR'} %}
+                <a class="{{ app.request.locale == locale ? 'active' : '' }}" lang="{{ locale }}" hreflang="{{ locale }}" href="{{ path('app_locale_switch', {locale: locale, returnTo: app.request.requestUri}) }}">{{ label }}</a>
+            {% endfor %}
+        </div>
+        <a href="{{ path('app_cart') }}">{{ 'nav.cart'|trans({'%count%': cart.count}) }}</a>
     </div>
 </header>

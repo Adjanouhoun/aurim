@@ -1,29 +1,29 @@
 <!doctype html>
-<html lang="fr">
-<body style="margin:0;background:#f7f1e8;color:#30251c;font-family:Arial,sans-serif">
+<html lang="{{ order.locale }}" dir="{{ order.locale == 'ar' ? 'rtl' : 'ltr' }}">
+<body style="margin:0;background:#f7f1e8;color:#30251c;font-family:Arial,sans-serif;text-align:{{ order.locale == 'ar' ? 'right' : 'left' }}">
 <div style="max-width:640px;margin:0 auto;padding:32px 20px">
     <div style="background:#fffaf3;border:1px solid #dfc89d;padding:32px">
         <p style="margin:0;color:#a4772f;letter-spacing:3px;font-size:13px">AURIM · GLOWING BY RIMA</p>
-        <h1 style="font-family:Georgia,serif;font-weight:400">Merci {{ order.customerName }}</h1>
-        <p>Votre commande <strong>{{ order.reference }}</strong> a bien été enregistrée.</p>
+        <h1 style="font-family:Georgia,serif;font-weight:400">{{ 'email.order.title'|trans({'%name%': order.customerName}) }}</h1>
+        <p>{{ 'email.order.recorded'|trans({'%reference%': order.reference})|raw }}</p>
         <table style="width:100%;border-collapse:collapse;margin:24px 0">
             {% for item in order.items %}
-                <tr><td style="padding:8px 0">{{ item.productName }} × {{ item.quantity }}</td><td style="text-align:right">{{ item.totalMinor|price(order.currencyCode) }}</td></tr>
+                <tr><td style="padding:8px 0">{{ item.productName }} × {{ item.quantity }}</td><td style="text-align:{{ order.locale == 'ar' ? 'left' : 'right' }}">{{ item.totalMinor|price(order.currencyCode) }}</td></tr>
             {% endfor %}
-            <tr><td style="padding:8px 0;border-top:1px solid #dfc89d">Réception — {{ order.fulfillmentLabel }}</td><td style="text-align:right;border-top:1px solid #dfc89d">{{ order.shippingMinor|price(order.currencyCode) }}</td></tr>
-            <tr><td style="padding:12px 0;font-weight:bold">Total à payer</td><td style="text-align:right;font-weight:bold">{{ order.totalMinor|price(order.currencyCode) }}</td></tr>
+            <tr><td style="padding:8px 0;border-top:1px solid #dfc89d">{{ 'email.order.fulfillment'|trans }} — {{ order.fulfillmentLabel }}</td><td style="text-align:{{ order.locale == 'ar' ? 'left' : 'right' }};border-top:1px solid #dfc89d">{{ order.shippingMinor|price(order.currencyCode) }}</td></tr>
+            <tr><td style="padding:12px 0;font-weight:bold">{{ 'email.order.total'|trans }}</td><td style="text-align:{{ order.locale == 'ar' ? 'left' : 'right' }};font-weight:bold">{{ order.totalMinor|price(order.currencyCode) }}</td></tr>
         </table>
         {% if order.paymentMethodType == 'mobile_money_manual' %}
-            <p>Effectuez le paiement via <strong>{{ order.paymentMethodName }}</strong> au compte :</p>
-            <p style="font-size:20px;font-weight:bold">{{ payment.method.recipientAccount ?: 'Numéro à communiquer par AURIM' }}</p>
-            {% if payment.method.accountHolder %}<p>Titulaire : {{ payment.method.accountHolder }}</p>{% endif %}
-            {% if payment.method.instructions %}<p>{{ payment.method.instructions }}</p>{% endif %}
-            <p>Votre commande sera validée manuellement après réception.</p>
+            <p>{{ 'email.order.mobile_instruction'|trans }} <strong>{{ order.paymentMethodName }}</strong> :</p>
+            <p style="font-size:20px;font-weight:bold">{{ payment.method.recipientAccount ?: 'email.order.number_later'|trans }}</p>
+            {% if payment.method.accountHolder %}<p>{{ 'email.order.holder'|trans }} : {{ payment.method.accountHolder }}</p>{% endif %}
+            {% if payment.method.localizedInstructions(order.locale) %}<p>{{ payment.method.localizedInstructions(order.locale) }}</p>{% endif %}
+            <p>{{ 'email.order.manual_validation'|trans }}</p>
         {% else %}
-            <p>Le règlement en espèces sera effectué lors du retrait au dépôt.</p>
+            <p>{{ 'email.order.cash_instruction'|trans }}</p>
         {% endif %}
-        <p><a href="{{ confirmationUrl }}" style="display:inline-block;background:#a4772f;color:white;padding:12px 20px;text-decoration:none">Voir ma commande</a></p>
-        <p style="font-size:13px;color:#74675c">Conservez votre référence pour toute demande auprès du service client.</p>
+        <p><a href="{{ confirmationUrl }}" style="display:inline-block;background:#a4772f;color:white;padding:12px 20px;text-decoration:none">{{ 'email.order.view'|trans }}</a></p>
+        <p style="font-size:13px;color:#74675c">{{ 'email.order.keep_reference'|trans }}</p>
     </div>
 </div>
 </body>

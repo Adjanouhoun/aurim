@@ -19,6 +19,10 @@ class ShippingRate
     private string $fulfillmentType = 'delivery';
     #[ORM\Column(length: 160)]
     private string $label;
+    #[ORM\Column(length: 160, nullable: true)]
+    private ?string $labelEn = null;
+    #[ORM\Column(length: 160, nullable: true)]
+    private ?string $labelAr = null;
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $addressLine = null;
     #[ORM\Column]
@@ -40,6 +44,18 @@ class ShippingRate
     public function setFulfillmentType(string $type): self { $this->fulfillmentType = in_array($type, ['delivery', 'pickup'], true) ? $type : 'delivery'; return $this; }
     public function getLabel(): string { return $this->label; }
     public function setLabel(string $label): self { $this->label = trim($label); return $this; }
+    public function getLabelEn(): ?string { return $this->labelEn; }
+    public function setLabelEn(?string $label): self { $this->labelEn = $this->clean($label); return $this; }
+    public function getLabelAr(): ?string { return $this->labelAr; }
+    public function setLabelAr(?string $label): self { $this->labelAr = $this->clean($label); return $this; }
+    public function getLocalizedLabel(string $locale): string
+    {
+        return match ($locale) {
+            'en' => $this->labelEn ?: $this->label,
+            'ar' => $this->labelAr ?: $this->label,
+            default => $this->label,
+        };
+    }
     public function getAddressLine(): ?string { return $this->addressLine; }
     public function setAddressLine(?string $address): self { $this->addressLine = null === $address ? null : trim($address); return $this; }
     public function getAmountMinor(): int { return $this->amountMinor; }
@@ -50,4 +66,11 @@ class ShippingRate
     public function setMaximumDays(int $days): self { $this->maximumDays = max($this->minimumDays, $days); return $this; }
     public function isActive(): bool { return $this->active; }
     public function setActive(bool $active): self { $this->active = $active; return $this; }
+
+    private function clean(?string $value): ?string
+    {
+        $value = null === $value ? null : trim($value);
+
+        return '' === $value ? null : $value;
+    }
 }

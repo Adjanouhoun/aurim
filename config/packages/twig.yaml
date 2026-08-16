@@ -5,6 +5,7 @@ twig:
         cart: '@App\Store\Cart'
         price_formatter: '@App\Store\PriceFormatter'
         product_offer: '@App\Store\ProductOffer'
+        aurim_legal: '%aurim.legal%'
 
 when@test:
     twig:

@@ -62,9 +62,51 @@ function initProductPages() {
     });
 }
 
+function closeMobileMenu(header) {
+    const toggle = header?.querySelector('[data-menu-toggle]');
+    if (!header || !toggle) return;
+    header.classList.remove('menu-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', toggle.dataset.openLabel || 'Menu');
+}
+
+function initMobileNavigation() {
+    document.querySelectorAll('.site-header:not([data-menu-ready])').forEach((header) => {
+        const toggle = header.querySelector('[data-menu-toggle]');
+        if (!toggle) return;
+        toggle.addEventListener('click', () => {
+            const opening = !header.classList.contains('menu-open');
+            document.querySelectorAll('.site-header.menu-open').forEach(closeMobileMenu);
+            header.classList.toggle('menu-open', opening);
+            toggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
+            toggle.setAttribute('aria-label', opening ? toggle.dataset.closeLabel : toggle.dataset.openLabel);
+        });
+        header.querySelectorAll('#main-navigation a').forEach((link) => link.addEventListener('click', () => closeMobileMenu(header)));
+        header.dataset.menuReady = 'true';
+    });
+}
+
+if (!document.documentElement.dataset.mobileMenuEvents) {
+    document.addEventListener('click', (event) => {
+        document.querySelectorAll('.site-header.menu-open').forEach((header) => {
+            if (!header.contains(event.target)) closeMobileMenu(header);
+        });
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') document.querySelectorAll('.site-header.menu-open').forEach(closeMobileMenu);
+    });
+    window.matchMedia('(min-width: 901px)').addEventListener('change', (event) => {
+        if (event.matches) document.querySelectorAll('.site-header.menu-open').forEach(closeMobileMenu);
+    });
+    document.documentElement.dataset.mobileMenuEvents = 'true';
+}
+
 document.addEventListener('DOMContentLoaded', initEssentialsSliders);
 document.addEventListener('turbo:load', initEssentialsSliders);
 initEssentialsSliders();
 document.addEventListener('DOMContentLoaded', initProductPages);
 document.addEventListener('turbo:load', initProductPages);
 initProductPages();
+document.addEventListener('DOMContentLoaded', initMobileNavigation);
+document.addEventListener('turbo:load', initMobileNavigation);
+initMobileNavigation();

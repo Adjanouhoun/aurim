@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Catalog\ProductCatalog;
+use App\Catalog\ProductTranslations;
 use App\Entity\Category;
 use App\Entity\Inventory;
 use App\Entity\Market;
@@ -15,9 +16,10 @@ use Doctrine\Persistence\ObjectManager;
 
 final class CatalogFixtures extends Fixture implements FixtureGroupInterface
 {
-    public function __construct(private readonly ProductCatalog $catalog)
-    {
-    }
+    public function __construct(
+        private readonly ProductCatalog $catalog,
+        private readonly ProductTranslations $translations,
+    ) {}
 
     public static function getGroups(): array
     {
@@ -70,6 +72,7 @@ final class CatalogFixtures extends Fixture implements FixtureGroupInterface
         $categories = [];
         foreach ($this->catalog->all() as $data) {
             $categoryData = $data['category'];
+            $translation = $this->translations->for($data['slug']);
             if (!isset($categories[$categoryData['slug']])) {
                 $category = $manager->getRepository(Category::class)->findOneBy(['slug' => $categoryData['slug']]);
                 if (!$category instanceof Category) {
@@ -77,6 +80,8 @@ final class CatalogFixtures extends Fixture implements FixtureGroupInterface
                 }
                 $category
                     ->setName($categoryData['name'])
+                    ->setNameEn($translation['categoryEn'] ?? null)
+                    ->setNameAr($translation['categoryAr'] ?? null)
                     ->setPosition($categoryData['position']);
                 $manager->persist($category);
                 $categories[$categoryData['slug']] = $category;
@@ -92,14 +97,28 @@ final class CatalogFixtures extends Fixture implements FixtureGroupInterface
                 ->setSku($data['sku'])
                 ->setSlug($data['slug'])
                 ->setName($data['name'])
+                ->setNameEn($translation['nameEn'] ?? null)
+                ->setNameAr($translation['nameAr'] ?? null)
                 ->setCategory($category)
                 ->setType($data['type'])
+                ->setTypeEn($translation['typeEn'] ?? null)
+                ->setTypeAr($translation['typeAr'] ?? null)
                 ->setSize($data['size'])
                 ->setShortDescription($data['shortDescription'])
+                ->setShortDescriptionEn($translation['shortDescriptionEn'] ?? null)
+                ->setShortDescriptionAr($translation['shortDescriptionAr'] ?? null)
                 ->setDescription($data['description'])
+                ->setDescriptionEn($translation['descriptionEn'] ?? null)
+                ->setDescriptionAr($translation['descriptionAr'] ?? null)
                 ->setBenefits($data['benefits'])
+                ->setBenefitsEn($translation['benefitsEn'] ?? null)
+                ->setBenefitsAr($translation['benefitsAr'] ?? null)
                 ->setIngredients($data['ingredients'])
+                ->setIngredientsEn($translation['ingredientsEn'] ?? null)
+                ->setIngredientsAr($translation['ingredientsAr'] ?? null)
                 ->setUsageInstructions($data['usage'])
+                ->setUsageInstructionsEn($translation['usageEn'] ?? null)
+                ->setUsageInstructionsAr($translation['usageAr'] ?? null)
                 ->setImagePath($data['imagePath'])
                 ->setImagePosition($data['imagePosition']);
             $manager->persist($product);
