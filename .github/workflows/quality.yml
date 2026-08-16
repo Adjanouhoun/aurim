@@ -1,0 +1,61 @@
+name: Qualité AURIM
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Tests PHP 8.2
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      APP_ENV: test
+      APP_SECRET: aurim-ci-secret-not-used-in-production
+      DATABASE_URL: 'sqlite:///:memory:'
+      MAILER_DSN: 'null://null'
+      MESSENGER_TRANSPORT_DSN: 'sync://'
+      AURIM_EMAIL_FROM: contact@example.test
+      AURIM_EMAIL_ADMIN: admin@example.test
+
+    steps:
+      - name: Récupérer le projet
+        uses: actions/checkout@v6
+
+      - name: Installer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: ctype, iconv, intl, mbstring, pdo_sqlite, sqlite3
+          tools: composer:v2
+          coverage: none
+
+      - name: Préparer la configuration neutre
+        run: cp .env.example .env
+
+      - name: Vérifier Composer
+        run: composer validate --strict
+
+      - name: Installer les dépendances
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Auditer les dépendances
+        run: composer audit --locked --no-interaction
+
+      - name: Vérifier Symfony
+        run: php bin/console lint:container --env=test
+
+      - name: Vérifier les modèles Twig
+        run: php bin/console lint:twig templates --env=test
+
+      - name: Exécuter les tests
+        run: php bin/phpunit
