@@ -125,11 +125,13 @@ final class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToRoute('Transferts de stock', 'fa fa-arrow-right-arrow-left', 'admin_stock_transfers');
         yield MenuItem::linkToRoute('Journal des stocks', 'fa fa-clock-rotate-left', 'admin_stock_movements');
         yield MenuItem::linkToRoute('Stocks à surveiller', 'fa fa-triangle-exclamation', 'admin_stock_alerts_by_market');
+        yield MenuItem::linkToRoute('Stocks · consultation', 'fa fa-boxes-stacked', 'admin_stock_consultation_by_market');
+        yield MenuItem::linkToRoute('Tarifs de livraison', 'fa fa-truck', 'admin_shipping_rates_by_market');
         if ($this->isGranted('ROLE_SUPER_ADMIN')) {
-            yield MenuItem::linkTo(InventoryCrudController::class, 'Stocks · consultation', 'fa fa-boxes-stacked');
             yield MenuItem::linkTo(WarehouseCrudController::class, 'Entrepôts', 'fa fa-warehouse');
             yield MenuItem::linkTo(MarketCrudController::class, 'Marchés', 'fa fa-earth-africa');
-            yield MenuItem::linkTo(ShippingRateCrudController::class, 'Tarifs de livraison', 'fa fa-truck');
+            yield MenuItem::section('Administration');
+            yield MenuItem::linkToRoute('Utilisateurs', 'fa fa-users-gear', 'admin_users');
         }
         yield MenuItem::section();
         yield MenuItem::linkToRoute('Voir la boutique', 'fa fa-arrow-up-right-from-square', 'app_catalog');

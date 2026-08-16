@@ -1,0 +1,55 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Consultation des stocks{% endblock %}
+
+{% block main %}
+    <style>
+        .stock-view-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}.stock-view-tab{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.2rem;border:1px solid #ded7cd;border-radius:12px;background:#fff;color:#4f463d;text-decoration:none}.stock-view-tab:hover{border-color:#b88a43;color:#6f512b}.stock-view-tab.active{border-color:#8b6637;background:#2d261f;color:#fff}.stock-view-tab small{display:block;margin-top:.2rem;color:inherit;opacity:.7}.stock-view-tab span{font-size:.72rem}.stock-view-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.3rem}.stock-view-summary article{padding:1.2rem;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.stock-view-summary strong{display:block;color:#8b6637;font-size:1.5rem}.stock-view-summary span{color:#756b62;font-size:.78rem}.stock-view-notice{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.2rem;margin-bottom:1.2rem;border-left:4px solid #c99c58;background:#faf4ea}.stock-view-notice p{margin:0}.stock-view-notice a{display:inline-flex;padding:.7rem 1rem;border-radius:7px;background:#8b6637;color:#fff;text-decoration:none;font-weight:700;white-space:nowrap}.stock-view-table-wrap{overflow:auto;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.stock-view-table{width:100%;margin:0;border-collapse:collapse}.stock-view-table th{padding:.9rem;background:#f8f4ee;color:#766b60;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}.stock-view-table td{padding:.85rem;border-top:1px solid #ece6de;vertical-align:middle}.stock-view-product{display:flex;align-items:center;gap:.8rem;min-width:270px}.stock-view-product img{width:52px;height:52px;border-radius:8px;object-fit:cover;background:#f0e9df}.stock-view-product strong,.stock-view-product small{display:block}.stock-view-product small{color:#837a71}.stock-view-number{font-weight:700}.stock-view-status{display:inline-flex;padding:.3rem .6rem;border-radius:999px;background:#e9f2e5;color:#4e703f;font-size:.72rem;font-weight:700;white-space:nowrap}.stock-view-status.low{background:#fff0d9;color:#8a5b16}.stock-view-status.out{background:#f5e4e1;color:#a24136}.stock-view-empty,.stock-view-inactive{padding:1rem 1.2rem;border-left:4px solid #a24136;background:#f8e9e6;color:#873c33}@media(max-width:900px){.stock-view-tabs{grid-template-columns:1fr 1fr}.stock-view-summary{grid-template-columns:1fr 1fr}.stock-view-notice{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.stock-view-tabs,.stock-view-summary{grid-template-columns:1fr}}
+    </style>
+
+    <nav class="stock-view-tabs" aria-label="Choisir le marché">
+        {% for market in markets %}
+            <a class="stock-view-tab {{ selectedMarket and selectedMarket.id == market.id ? 'active' : '' }}" href="{{ path('admin_stock_consultation_by_market', {pays: market.countryCode}) }}">
+                <div><strong>{{ market.name }}</strong><small>{{ market.currencyCode }}</small></div>
+                <span>{{ market.active ? 'Marché actif' : 'Inactif' }}</span>
+            </a>
+        {% endfor %}
+    </nav>
+
+    {% if selectedMarket %}
+        {% if not warehouse %}
+            <div class="stock-view-empty">Aucun entrepôt local n’est associé au marché {{ selectedMarket.name }}.</div>
+        {% else %}
+            {% if not selectedMarket.active or not warehouse.active %}<div class="stock-view-inactive">Ce marché ou son entrepôt est désactivé : il n’est pas proposé aux clients.</div>{% endif %}
+            <section class="stock-view-summary">
+                <article><strong>{{ physicalTotal }}</strong><span>Unités en stock physique</span></article>
+                <article><strong>{{ reservedTotal }}</strong><span>Unités réservées</span></article>
+                <article><strong>{{ availableTotal }}</strong><span>Unités disponibles</span></article>
+                <article><strong>{{ lowStockCount }}</strong><span>Références à surveiller</span></article>
+            </section>
+            <div class="stock-view-notice">
+                <p><strong>{{ warehouse.name }}</strong><br>Le disponible correspond au stock physique moins les unités réservées par les commandes.</p>
+                <a href="{{ path('admin_catalog_by_market', {pays: selectedMarket.countryCode}) }}">Modifier les stocks</a>
+            </div>
+            <div class="stock-view-table-wrap">
+                <table class="stock-view-table">
+                    <thead><tr><th>Produit</th><th>Stock physique</th><th>Réservé</th><th>Disponible</th><th>Seuil</th><th>État</th></tr></thead>
+                    <tbody>
+                    {% for row in rows %}
+                        <tr>
+                            <td><div class="stock-view-product"><img src="{{ asset(row.product.imagePath) }}" alt=""><div><strong>{{ row.product.name }}</strong><small>{{ row.product.sku }} · {{ row.product.size }}</small></div></div></td>
+                            <td class="stock-view-number">{{ row.physical }}</td>
+                            <td>{{ row.reserved }}</td>
+                            <td class="stock-view-number">{{ row.available }}</td>
+                            <td>{{ row.threshold }}</td>
+                            <td><span class="stock-view-status {{ row.available == 0 ? 'out' : (row.isLowStock ? 'low' : '') }}">{{ row.available == 0 ? 'Rupture' : (row.isLowStock ? 'Stock faible' : 'Disponible') }}</span></td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="6">Aucun produit actif dans le catalogue.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

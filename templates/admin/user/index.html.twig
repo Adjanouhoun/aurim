@@ -1,0 +1,54 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Utilisateurs de l’administration{% endblock %}
+
+{% block main %}
+    <style>
+        .user-admin-intro{padding:1rem 1.2rem;margin-bottom:1.3rem;border-left:4px solid #c99c58;background:#faf4ea}.user-admin-grid{display:grid;grid-template-columns:minmax(320px,.8fr) minmax(480px,1.4fr);gap:1.3rem}.user-admin-card{border:1px solid #e2dbd2;border-radius:12px;background:#fff;overflow:hidden}.user-admin-card h3{margin:0;padding:1.1rem 1.2rem;background:#f8f4ee;color:#4f463d}.user-admin-form{display:grid;gap:1rem;padding:1.2rem}.user-admin-field label{display:block;margin-bottom:.35rem;color:#6f655b;font-size:.76rem;font-weight:700}.user-admin-field input,.user-admin-field select{width:100%;padding:.72rem;border:1px solid #d8cec2;border-radius:7px;background:#fff}.user-admin-help{margin:0;color:#82776d;font-size:.75rem}.user-admin-button{border:0;border-radius:7px;background:#8b6637;color:#fff;padding:.82rem 1.2rem;font-weight:700;cursor:pointer}.user-admin-table-wrap{overflow:auto}.user-admin-table{width:100%;margin:0;border-collapse:collapse}.user-admin-table th{padding:.9rem;background:#f8f4ee;color:#766b60;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}.user-admin-table td{padding:.9rem;border-top:1px solid #ece6de}.user-admin-badge{display:inline-flex;padding:.3rem .58rem;border-radius:999px;background:#ede6dc;color:#6f512b;font-size:.7rem;font-weight:700}.user-admin-badge.super{background:#2d261f;color:#fff}@media(max-width:980px){.user-admin-grid{grid-template-columns:1fr}}
+    </style>
+
+    {% for type in ['success', 'danger'] %}{% for message in app.flashes(type) %}<div class="alert alert-{{ type }}">{{ message }}</div>{% endfor %}{% endfor %}
+    <p class="user-admin-intro">Un administrateur local accède uniquement aux commandes, paiements, stocks et tarifs du pays qui lui est attribué. Réservez le rôle super-administrateur aux responsables globaux.</p>
+
+    <div class="user-admin-grid">
+        <section class="user-admin-card">
+            <h3>Créer un utilisateur</h3>
+            <form method="post" class="user-admin-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('create-admin-user') }}">
+                <div class="user-admin-field"><label for="user-email">Adresse e-mail</label><input id="user-email" type="email" name="email" required autocomplete="off"></div>
+                <div class="user-admin-field"><label for="user-password">Mot de passe temporaire</label><input id="user-password" type="password" name="password" minlength="12" required autocomplete="new-password"><p class="user-admin-help">12 caractères minimum. Transmettez-le à l’utilisateur par un canal sûr.</p></div>
+                <div class="user-admin-field"><label for="user-role">Niveau d’accès</label><select id="user-role" name="role"><option value="admin">Administrateur d’un pays</option><option value="super_admin">Super-administrateur · tous les pays</option></select></div>
+                <div class="user-admin-field"><label for="user-market">Pays attribué</label><select id="user-market" name="market"><option value="">Sélectionner un pays</option>{% for market in markets %}<option value="{{ market.countryCode }}">{{ market.name }}</option>{% endfor %}</select><p class="user-admin-help">Ignoré si le compte est super-administrateur.</p></div>
+                <button class="user-admin-button" type="submit">Créer le compte</button>
+            </form>
+        </section>
+        <section class="user-admin-card">
+            <h3>Comptes existants</h3>
+            <div class="user-admin-table-wrap">
+                <table class="user-admin-table">
+                    <thead><tr><th>Utilisateur</th><th>Niveau</th><th>Pays attribué</th></tr></thead>
+                    <tbody>
+                    {% for user in users %}
+                        {% set superAdmin = 'ROLE_SUPER_ADMIN' in user.roles %}
+                        <tr><td><strong>{{ user.email }}</strong></td><td><span class="user-admin-badge {{ superAdmin ? 'super' : '' }}">{{ superAdmin ? 'Super-administrateur' : 'Administrateur local' }}</span></td><td>{{ superAdmin ? 'Tous les pays' : (user.market ? user.market.name : 'Non attribué') }}</td></tr>
+                    {% else %}<tr><td colspan="3">Aucun utilisateur créé.</td></tr>{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <script>
+        (() => {
+            const role = document.getElementById('user-role');
+            const market = document.getElementById('user-market');
+            const synchronizeMarket = () => {
+                const localAdministrator = role.value === 'admin';
+                market.required = localAdministrator;
+                market.disabled = !localAdministrator;
+                if (!localAdministrator) market.value = '';
+            };
+            role.addEventListener('change', synchronizeMarket);
+            synchronizeMarket();
+        })();
+    </script>
+{% endblock %}

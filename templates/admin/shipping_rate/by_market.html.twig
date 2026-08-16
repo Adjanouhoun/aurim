@@ -1,0 +1,59 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Tarifs de livraison par pays{% endblock %}
+
+{% block main %}
+    <style>
+        .shipping-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}.shipping-tab{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.2rem;border:1px solid #ded7cd;border-radius:12px;background:#fff;color:#4f463d;text-decoration:none}.shipping-tab:hover{border-color:#b88a43;color:#6f512b}.shipping-tab.active{border-color:#8b6637;background:#2d261f;color:#fff}.shipping-tab small{display:block;margin-top:.2rem;color:inherit;opacity:.7}.shipping-tab span{font-size:.72rem}.shipping-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-bottom:1.3rem}.shipping-summary article{padding:1.2rem;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.shipping-summary strong{display:block;color:#8b6637;font-size:1.5rem}.shipping-summary span{color:#756b62;font-size:.78rem}.shipping-notice{padding:1rem 1.2rem;margin-bottom:1.2rem;border-left:4px solid #c99c58;background:#faf4ea}.shipping-form{overflow:auto;border:1px solid #e2dbd2;border-radius:12px;background:#fff}.shipping-table{width:100%;margin:0;border-collapse:collapse}.shipping-table th{padding:.9rem;background:#f8f4ee;color:#766b60;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}.shipping-table td{padding:.75rem;border-top:1px solid #ece6de;vertical-align:middle}.shipping-table tr.new-rate td{background:#fcf8f1}.shipping-input,.shipping-select{width:100%;min-width:125px;padding:.62rem .65rem;border:1px solid #d8cec2;border-radius:7px;background:#fff}.shipping-input.name{min-width:210px}.shipping-input.address{min-width:230px}.shipping-input.small{min-width:78px;width:78px}.shipping-switch{text-align:center}.shipping-switch input{width:19px;height:19px;accent-color:#8b6637}.shipping-actions{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.1rem 1.2rem;border-top:1px solid #e2dbd2;background:#fbf8f3}.shipping-actions p{margin:0;color:#756b62;font-size:.78rem}.shipping-actions button{border:0;border-radius:7px;background:#8b6637;color:#fff;padding:.8rem 1.2rem;font-weight:700;cursor:pointer}@media(max-width:900px){.shipping-tabs{grid-template-columns:1fr 1fr}.shipping-summary{grid-template-columns:1fr}.shipping-actions{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.shipping-tabs{grid-template-columns:1fr}}
+    </style>
+
+    {% for type in ['success', 'danger'] %}{% for message in app.flashes(type) %}<div class="alert alert-{{ type }}">{{ message }}</div>{% endfor %}{% endfor %}
+
+    <nav class="shipping-tabs" aria-label="Choisir le marché">
+        {% for market in markets %}
+            <a class="shipping-tab {{ selectedMarket and selectedMarket.id == market.id ? 'active' : '' }}" href="{{ path('admin_shipping_rates_by_market', {pays: market.countryCode}) }}">
+                <div><strong>{{ market.name }}</strong><small>{{ market.currencyCode }}</small></div><span>{{ market.active ? 'Marché actif' : 'Inactif' }}</span>
+            </a>
+        {% endfor %}
+    </nav>
+
+    {% if selectedMarket %}
+        <section class="shipping-summary">
+            <article><strong>{{ activeRateCount }}/{{ rates|length }}</strong><span>Options actives pour les clients</span></article>
+            <article><strong>{{ deliveryRateCount }}</strong><span>Options de livraison</span></article>
+            <article><strong>{{ pickupRateCount }}</strong><span>Dépôts de retrait</span></article>
+        </section>
+        <p class="shipping-notice">Les tarifs ci-dessous s’appliquent uniquement au marché {{ selectedMarket.name }}. Une adresse est obligatoire pour chaque option de retrait en dépôt.</p>
+        <form method="post" class="shipping-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('shipping-rates-market-' ~ selectedMarket.id) }}">
+            <table class="shipping-table">
+                <thead><tr><th>Nom affiché</th><th>Mode</th><th>Ville / zone</th><th>Adresse du dépôt</th><th>Prix ({{ selectedMarket.currencyCode }})</th><th>Délai min.</th><th>Délai max.</th><th>Actif</th></tr></thead>
+                <tbody>
+                {% for rate in rates %}
+                    <tr>
+                        <td><input class="shipping-input name" name="labels[{{ rate.id }}]" value="{{ rate.label }}" required></td>
+                        <td><select class="shipping-select" name="types[{{ rate.id }}]"><option value="delivery" {{ rate.fulfillmentType == 'delivery' ? 'selected' : '' }}>Livraison</option><option value="pickup" {{ rate.fulfillmentType == 'pickup' ? 'selected' : '' }}>Retrait dépôt</option></select></td>
+                        <td><input class="shipping-input" name="cities[{{ rate.id }}]" value="{{ rate.city }}" required></td>
+                        <td><input class="shipping-input address" name="addresses[{{ rate.id }}]" value="{{ rate.addressLine }}" placeholder="Obligatoire pour un retrait"></td>
+                        <td><input class="shipping-input small" type="number" min="0" step="{{ currencyDecimals ? '0.01' : '1' }}" name="amounts[{{ rate.id }}]" value="{{ (rate.amountMinor / currencyDivisor)|number_format(currencyDecimals, '.', '') }}" required></td>
+                        <td><input class="shipping-input small" type="number" min="1" name="minimum_days[{{ rate.id }}]" value="{{ rate.minimumDays }}" required></td>
+                        <td><input class="shipping-input small" type="number" min="1" name="maximum_days[{{ rate.id }}]" value="{{ rate.maximumDays }}" required></td>
+                        <td class="shipping-switch"><input type="checkbox" name="active[{{ rate.id }}]" value="1" {{ rate.active ? 'checked' : '' }} aria-label="Activer {{ rate.label }}"></td>
+                    </tr>
+                {% endfor %}
+                    <tr class="new-rate">
+                        <td><input class="shipping-input name" name="new_rate[label]" placeholder="Nouvelle option"></td>
+                        <td><select class="shipping-select" name="new_rate[type]"><option value="delivery">Livraison</option><option value="pickup">Retrait dépôt</option></select></td>
+                        <td><input class="shipping-input" name="new_rate[city]" placeholder="Ville ou zone"></td>
+                        <td><input class="shipping-input address" name="new_rate[address]" placeholder="Adresse si retrait"></td>
+                        <td><input class="shipping-input small" type="number" min="0" step="{{ currencyDecimals ? '0.01' : '1' }}" name="new_rate[amount]" value="0"></td>
+                        <td><input class="shipping-input small" type="number" min="1" name="new_rate[minimumDays]" value="1"></td>
+                        <td><input class="shipping-input small" type="number" min="1" name="new_rate[maximumDays]" value="3"></td>
+                        <td class="shipping-switch"><input type="checkbox" name="new_rate[active]" value="1" checked aria-label="Activer la nouvelle option"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="shipping-actions"><p>Pour masquer temporairement une option aux clients, décochez simplement « Actif ».</p><button type="submit">Enregistrer {{ selectedMarket.name }}</button></div>
+        </form>
+    {% endif %}
+{% endblock %}
