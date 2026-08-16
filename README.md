@@ -55,6 +55,8 @@ php bin/console doctrine:fixtures:load \
 
 ## Tests et contrôles
 
+La suite de tests utilise une base SQLite en mémoire et désactive l’envoi réel des e-mails. Elle ne modifie donc pas les commandes, les stocks ou les utilisateurs de votre base locale.
+
 ```bash
 php bin/phpunit
 php bin/console lint:container
